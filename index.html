@@ -1,0 +1,881 @@
+﻿<html>
+<head>
+    <title>3D data visualization</title>
+    <style>
+        #frame {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 285;
+            right: 0;
+            z-index: 0;
+        }
+
+        #sliderObj {
+            position: absolute;
+            top: 35;
+            left: 305;
+            z-index: 1;
+            font-family: sans-serif;
+        }
+
+        #labelproperty2 {
+            position: absolute;
+            top: 5;
+            left: 305;
+            z-index: 1;
+            color: black;
+            font-family: sans-serif;
+        }
+
+        #title {
+            position: absolute;
+            top: 15;
+            right: 15;
+            z-index: 1;
+            color: white;
+            font-family: sans-serif;
+        }
+
+        /*#comboObj {
+            position: absolute;
+            top: 260;
+            left: 15;
+            z-index: 1;
+            font-family: sans-serif;
+        }*/
+
+        #colortable {
+            position: absolute;
+            top: 320;
+            left: 15;
+            z-index: 1;
+            font-family: sans-serif;
+        }
+        #label {
+            position: absolute;
+            top: 25;
+            left: 305;
+            z-index: 1;
+            color: darkblue;
+            font-family: sans-serif;
+        }
+        #labelsearch {
+            position: absolute;
+            bottom: 5;
+            left: 305;
+            z-index: 1;
+            color: darkblue;
+            font-family: sans-serif;
+        }
+    </style>
+    <style type="text/css">
+        .fieldset-auto-width {
+            display: inline-block;
+        }
+    </style>
+
+</head>
+
+<body>
+    <h1 style=" font: 20px Arial ; color: darkblue">3D data visualization</h1>
+
+    <p> </p>
+    <p> </p>
+    <p> </p>
+    <!--UI components-->
+    <fieldset class="fieldset-auto-width" style="font: 15px Arial">
+        <legend style=" font: 15px Arial">Upload local data file </legend>
+        <input type="file" id="dataFile" multiple size="50" onchange="LoadLocalDataSet()">
+    </fieldset>
+    <p> </p> <p> </p>
+    <fieldset class="fieldset-auto-width" style="font: 15px Arial">
+        <legend style=" font: 15px Arial">Search by id, name, category, etc... </legend>
+        
+        <input type="text" name="search" id="search" class="textbox" onclick="empty_notification()" />
+        <button style=" font: 14px Arial" onclick="searchSequence()" name="button">Search</button>
+        <br>
+        <label style=" font: 12px Arial; color: darkred" id="label_search2"></label>
+        <br> <text style=" font: 12px Arial" >Example: x OR y AND NOT z <br> x, y and z are regular expressions. <br>
+         NOT has the highest priority, OR the lowest. </text>  
+        <p> </p>
+        <input type="checkbox" name="show_found_nodes" id="show_found_nodes" />
+        <label style=" font: 15px Arial"> Show only found nodes</label>
+    </fieldset>
+    <p> </p> <p> </p>
+    <fieldset class="fieldset-auto-width" style="font: 15px Arial">
+        <legend style=" font: 15px Arial">Visualization options</legend>
+        <!--<p> </p>
+        <input type="checkbox" name="showedges" id="showedges" />
+        <label style=" font: 15px Arial"> Show links to representatives</label>
+
+        <p> </p>
+        <button style=" font: 14px Arial" onclick="ShowExpandableNodes()" name="button">Show expandables</button>
+        <button style=" font: 14px Arial" onclick="ReturnAllColors()" name="button">Resume colors</button>
+        <p> </p>-->
+        <button style=" font: 14px Arial" onclick="redrawInitialScene()" name="button">Centralize</button>
+        <p> </p>
+        <input type="checkbox" name="sizeattenuation" id="sizeattenuation" />
+        <label style=" font: 15px Arial"> Point size attenuation </label>
+        <text style=" font: 12px Arial">
+           <br> Uncheck to zoom-in into a dense region
+        </text>
+        <p> </p>
+        <input type="checkbox" name="show_popup" id="show_popup" />
+        <label style=" font: 15px Arial"> Show point info in popup </label>
+        
+      
+    </fieldset>
+    <p> </p>
+    <div id="frame"></div>
+    <div id="label" style=" font: 12px Arial ; color: darkblue"></div>
+    <div id="labelsearch" style=" font: 12px Arial ; color: darkblue"></div>
+    <div id="sliderObj" min="0" step="1" value="0" vertical="false" size="245"></div>
+    <div id="labelproperty2" style=" font: 15px Arial">Hover over a point to see its information. Right-click to rotate, right-click again to stop a rotation.</div>
+    <div>
+        <fieldset class="fieldset-auto-width" style="font: 15px Arial">
+            <legend style=" font: 15px Arial">Coloring by intensity of property</legend>
+            <p> Select a property: </p>
+            <select name="combo" id="combo"></select>
+            <p> Click inside the field to select a color: </p>
+            <input type="text" id="inputcolor" colorbox="true">
+            <p>
+                <button style=" font: 14px Arial" onclick="ReturnAllColors()" name="button">Resume colors</button>
+            </p>
+        </fieldset>
+    </div>
+    <link rel="stylesheet" type="text/css" href="src/dhtmlx.css">
+    <script src="src/dhtmlx.js"></script>
+    <script src="dist/graphosaurus.js"></script>
+    <script src="src/search.js"></script>
+    <script src="src/uifunctions.js"></script>
+    <script src="data/MetaData.js"></script>
+    <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+    <script charset="4">
+
+        //################# global variables definitions start here
+
+        //var dataFolder = "data";
+        //var smallDataFile = "smalldata.json";
+        //var dataFile = "data.json";
+        var loadFirstTime = true;
+        var frameStartsAt = 285;
+        //var edgesShow = document.getElementById("showedges");
+        var sizeAtShow = document.getElementById("sizeattenuation");
+        var myColorpicker;//UI
+        var cursorX;//used in Popup for UI
+        var cursorY;//used in Popup for UI
+        //var mySlider;//UI
+        var myPop = new dhtmlXPopup();//UI
+
+        //var myPopSlider;//the popup over the slider
+        var pointsSet;
+        //var previousNumberOfNodes = []; //is used in ctrl+z, holds the previous number of nodes for every click
+        //var previousNumberOfEdges = []; //is used in ctrl+z, holds the previous number of edges for every click
+        //var clicked = 0; //counter of node clicks, is used in ctrl+z
+        //var lastOpenNode = [];//is used in ctrl+z, holds the open node for every click
+        var nodesColor = "yellow";
+        //var CurrentDir = [];//for every nodeID
+        //var CurrentLevel = [];//also
+        //var edges = [];//edges is a backup of the current edges in the graph, regardless of whether they are shown or not.
+        var previoslyhoveredNode;//hovering changes temporarily the color of a node to white, therefore we need to remember this
+        var previosHoveredcolor;//the color of previoslyhoveredNode
+        var smallData; // would hold all data in case bigdata == false
+        var node_size = 0.016;
+        var size_attenuation = true;
+        var graph = InitializeGraph();
+        //var totalNumberOfLevels;// in the hierarchical clustering
+        var selectedPropertyIndex;//holds the index of the most recently selected numerical property (by the user)
+        var previousColor = [];//used in resume colors
+        //var expandable = new Object();//expandable[5987][3] is true if and only if node with id 5987 is expandable at level 3
+        var priority = DefinePrioritiesOfOperators();
+        var searchExprWellDefined;
+        var allNodes = [];
+        var foundNodes=[];
+
+        //################# global variables definitions end here
+
+        //################# global code starts here
+
+        //if (bigData == false) {//bigData is defined in "data/MetaData.js"
+        //    mySlider = new dhtmlXSlider("sliderObj");
+        //    myPopSlider = new dhtmlXPopup({ slider: mySlider });
+        //    defineSlider();
+        //    updateSliderPopupValue(mySlider.getValue());
+        //}
+        InitEventHandlers();
+        InitGlobalDataVariables();
+        defineColorPicker2();
+        LoadLocalDataSet();
+
+        document.onmousemove = function (e) {//we have to track where the mouse is for the pop-up message
+            cursorX = e.clientX;
+            cursorY = e.clientY;
+        }
+        document.onclick = function (e) {
+            myPop.hide();
+        }
+
+        
+       // var filename = dataFolder + "/" + smallDataFile;
+
+        //fetchJSONFile(filename, function (datasmall) {
+        //    smallData = datasmall;
+        //    //totalNumberOfLevels = FindTotalNumberOfLevels(datasmall);
+        //    //ComputeExpandables(datasmall);
+        //    InitDrawing();
+        //    InitEventHandlers();
+        //    //var sliderValue = totalNumberOfLevels - 2;
+        //    //if (sliderValue < 0) { sliderValue = 0;}
+        //    //mySlider.setValue(sliderValue);
+        //    //showedges.checked = true;            
+        //    //LoadData();
+        //});
+        
+        
+
+        //################## global code ends here
+
+        //################## the functions definitions start here
+
+        function InitGlobalDataVariables() {           
+            previousColor = [];
+            pointsSet = undefined;
+            previoslyhoveredNode = undefined;
+            smallData = undefined;                                 
+            selectedPropertyIndex = undefined;//holds the index of the most recently selected numerical property (by the user)
+            previousColor = [];//used in resume colors
+            //var expandable = new Object();//expandable[5987][3] is true if and only if node with id 5987 is expandable at level 3            
+            searchExprWellDefined = undefined;
+            allNodes = [];
+            foundNodes = [];
+            
+        }
+
+        function LoadLocalDataSet() {
+            var x = document.getElementById("dataFile");
+            var txt = "";
+            if ('files' in x) {
+                if (x.files.length == 0) {
+                    txt = "Select a file.";
+                } else {                              
+                var file = x.files[0];                        
+                LoadDataFromFile(file);                    
+                }
+            }
+            
+        }
+
+        function LoadDataFromFile(file) {
+            var reader = new FileReader();
+            reader.readAsText(file);
+            reader.onloadend = function (e) {
+                var contents = e.target.result;                
+                InitGlobalDataVariables();
+                smallData = JSON.parse(contents);
+                defineCombo();
+                InitDrawing();
+                loadFirstTime = false;
+            }           
+        }
+
+        function InitDrawing() {
+            //this requests the file and executes a callback with the parsed result once
+            // it is available. Calling the level zero
+            //var filename = dataFolder + "/" + smallDataFile;
+            //fetchJSONFile(filename, function (data) {
+            //    // do something with your data
+            //    //totalNumberOfLevels = FindTotalNumberOfLevels(data);
+            //    //if (bigData == false) {
+            //    //    mySlider.setMax(totalNumberOfLevels - 1);
+            //    //}
+            //    //AddLevelZero(data);
+            //    LoadData();
+            //    renderFrame = graph.renderIn("frame");
+            //    redrawInitialScene();
+               
+            //});
+            LoadData();
+            if (loadFirstTime) {
+                renderFrame = graph.renderIn("frame");
+            }
+            redrawInitialScene();
+        }
+
+        function InitEventHandlers() {
+            //document.onkeydown = KeyPress;//see src/uifunctions.js. This function is for handling ctrl+z events
+            sizeAtShow.checked = true;
+            show_popup.checked = true;
+            show_found_nodes.checked = false;
+            //edgesShow.checked = false//
+            //edgesShow.onchange = function () {
+            //    redrawSameScene();
+            //}
+            sizeAtShow.onchange = function () {
+                HandleSizeAttenuationChange();
+            }
+            show_found_nodes.onchange = function () {
+                HandleShowFoundNodesChange();                
+            }
+        }
+        
+        function HandleSizeAttenuationChange()
+        {
+            var sizeAtBool = sizeAtShow.checked;
+            if (sizeAtBool) {
+                size_attenuation = true;
+                node_size = 0.016;
+            }
+            else {
+                size_attenuation = false;
+                node_size = 10;
+            }
+            redrawSameScene();
+        }
+
+        function HandleShowFoundNodesChange()
+        {
+            if (show_found_nodes.checked) {
+                LoadOnlyFoundNodes();
+            }
+            else {
+                LoadAllNodes();
+            }
+            redrawSameScene();
+        }
+
+        function LoadOnlyFoundNodes() {
+            RemoveAllNodes();
+            for (var i = 0; i < foundNodes.length; i++) {
+                graph.addNode(foundNodes[i]);
+            }
+           
+        }
+
+        function LoadAllNodes() {
+            for (var i = 0; i < allNodes.length; i++) {
+                graph.addNode(allNodes[i]);
+            }
+        }
+
+        function InitializeGraph() {
+            return G.graph({
+                sizeAttenuation: size_attenuation,//whether to change the size of the nodes for a 3D effect or not
+                nodeImage: "imgs/disc.png",
+                nodeImageTransparent: true,
+                antialias: true,
+                bgColor: 'lightgrey',//'lightskyblue',
+                nodeSize: node_size,//10,//0.016,//change to 10 if sizeAttenuation = false, otherwise the nodes are too small and not visible
+                // AK 02/06/2016: hover->mousedown and disable second mousedown
+                edgeWidth: 0.005,//change to 1 if sizeAttenuation = false
+                hover: function (node) {//what should happen when a user hovers over a node with the mouse
+                    HandleNodeHovering(node);
+                }/*,
+                mousedown: function (node) {//what should happen when a user clicks on a node
+                    HandleNodeClicking(node);
+                }*/
+            });
+        }
+
+        function fetchJSONFile(path, callback)  //for asynchronously downloading a file from the server. do not change it
+        {
+            var httpRequest = new XMLHttpRequest();
+            httpRequest.onreadystatechange = function () {
+                if (httpRequest.readyState === 4) {
+                    if (httpRequest.status === 200) {
+                        var data = JSON.parse(httpRequest.responseText);
+                        if (callback) callback(data);
+                    }
+                }
+            };
+            httpRequest.open('GET', path);
+            httpRequest.send();
+        }
+
+        //function ComputeExpandables(data)//is called in case of small data. Parameter data contains all (small) data. Computes the global double array expandable
+        //{
+        //    for (var key in data) {
+        //        expandable[key] = [];
+        //        for (var i = 0; i < totalNumberOfLevels; i++) {
+        //            expandable[key][i] = false;
+        //        }
+        //    }
+        //    for (var key in data) {
+        //        var path = data[key].Path.slice();
+        //        path.push(key);
+        //        for (var i = 0; i < path.length; i++) {
+        //            var tempKey = path[i];
+        //            for (var j = i + 1; j < path.length; j++) {
+        //                if (path[j] != tempKey && expandable[tempKey] != undefined) {
+        //                    expandable[tempKey][i] = true;
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
+
+        function HandleNodeHovering(node) {
+            if (previoslyhoveredNode != undefined)//if some node was hovered before, return its color
+            { previoslyhoveredNode.setColorHex("#" + previosHoveredcolor); }
+            previosHoveredcolor = node.getColor();
+            previoslyhoveredNode = node;
+            node.setColor("white");//make hovered node white
+            redrawSameScene();
+            var categories = node._categoriesValues;
+            var text = node.getId(); //+ "<br>" + props[0] + "<br>" + props[2] + "<br>" + props[4]            
+            //if (node._expandable) { text = "Click to open! <br> " + text; }
+            if (show_popup.checked) {
+                $("#label").text("");
+                for (var i = 0; i < categories.length; i++) { text += "<br>" + categories[i]; }
+                myPop.attachHTML(text);
+                myPop.show(cursorX, cursorY, 0, 0); //params are: x, y, width, height. 3 and 5 are number of pixels relative to the node where the message should appear(you can play with these numbers)
+            }
+            else {
+                for (var i = 0; i < categories.length; i++) { text += " ; " + categories[i]; }
+                $("#label").text("Point info:  " + text);
+            }
+            
+        }
+
+        //function HandleNodeClicking(node) {
+        //    if (node._expandable) {
+        //        clicked++;
+        //        lastOpenNode[clicked] = node;
+        //        previousNumberOfNodes[clicked] = graph.getNodes().length;
+        //        if (edges.length == 0)
+        //        { previousNumberOfEdges[clicked] = 0; }
+        //        else
+        //        { previousNumberOfEdges[clicked] = edges.length; }
+        //        AddNextLevelForNode(node.getId());
+        //    }
+        //}
+
+        //function AddLevelZero(data) //adds all data in 'data', the latter should contain only the zero level
+        //{
+        //    for (var key in data) {
+        //        AddNodeAtLevelZero(data, key);
+        //        CheckIfNodeIsExpandable(key, dataFolder);
+        //    }
+        //}
+
+        function PrepareColorZero(coords) {
+            var red = Math.floor((coords[0] * coords[0] * 1643 % 256) + 1);
+            var green = Math.floor((coords[1] * coords[1] * 328 % 256) + 1);
+            var blue = Math.floor((coords[2] * coords[2] * 487 % 256) + 1);
+            return "rgb(" + red + "," + green + "," + blue + ")";
+        }
+
+        //function AddNextLevelForNode(nodeId) {
+        //    //this requests the file and executes a callback with the parsed result once
+        //    // it is available
+        //    var path = CurrentDir[nodeId] + "/" + nodeId + "/" + dataFile; 
+
+        //    fetchJSONFile(path, function (data) {
+        //        var dir = CurrentDir[nodeId];
+        //        AddPointsFromList(data, nodeId, CurrentLevel[nodeId], dir);
+        //        redrawSameScene();
+        //    });
+        //}
+
+        //function CheckIfNodeIsExpandable(nodeId, startdir) {
+        //    var level = NumberOfLevels(startdir);
+        //    var node = graph._nodeIds[nodeId];
+        //    if (bigData == false) {
+        //        node._expandable = expandable[nodeId][level];
+        //    }
+        //    else {
+
+        //        if (node != undefined) {
+        //            node._expandable = false;
+        //            if (level < totalNumberOfLevels - 1) {
+        //                var file = startdir + "/" + nodeId + "/" + dataFile;
+        //                fetchJSONFile(file, function (data) {
+        //                    if (Object.keys(data).length > 1) {
+        //                        node._expandable = true;
+        //                    }
+        //                    else {
+        //                        CheckIfNodeIsExpandable(nodeId, startdir + "/" + nodeId);
+        //                    }
+        //                });
+        //            }
+        //        }
+        //    }
+        //}
+
+        //function NumberOfLevels(startdir) {
+        //    var r = (startdir.split("/").length - 1)
+        //    return r;
+        //}
+
+        //function AddPointsFromList(data, parentid, level, dir) {
+        //    var colorPoint = PrepareColor(level + 1, parentid);
+        //    for (var key in data) {
+        //        PrepareNodeAndAddIt(data, key, colorPoint);
+        //        var pointid = key;
+        //        CurrentDir[pointid] = dir + "/" + parentid;
+        //        CurrentLevel[pointid]++;
+
+        //        //CheckIfNodeIsExpandable(pointid, CurrentDir[pointid]);
+        //        //AddNewEdge(parentid, pointid, colorPoint);
+        //    }
+        //}
+
+        function PrepareColor(level, parentId)// a unique color per parent and level
+        {
+            var y = parentId;
+            return "rgb(" + 111 * (level + 1) * (y + 1) % 256 + "," + 20 * (level + 1) * (y + 1) % 256 + "," + 50 * (level + 1) * (y + 1) % 256 + ")";
+        }
+
+        function PrepareNodeAndAddIt(data, key, colorPoint) {
+            var point = data[key];
+            var pointid = key;
+            var coords = point.Coordinates;
+            var nodecategories = point.Categories;
+            var nodeProperties = point.Properties;
+            var node = G.node(coords, {
+                id: pointid,
+                categoriesValues: nodecategories,
+                propertiesValues: nodeProperties,
+                color: colorPoint,
+            });
+            node.addTo(graph);
+            var node = graph.getNode(key);
+            node.setColor(colorPoint);
+        }
+
+        //function fastLoadAllData() {
+        //    if (bigData == true) {
+        //        alert("There is too much data, please click on nodes to expand their clusters");
+        //    }
+        //    else {
+        //        fastLoadUpToLevel(totalNumberOfLevels - 1);
+        //    }
+        //}
+
+        //function fastLoadUpToLevel(level) {
+        //    if (smallData == undefined) {
+        //        var fileName = dataFolder + "/" + smallDataFile;
+        //        fetchJSONFile(fileName, function (data) {
+        //            smallData = data;
+        //            FastImportData(smallData, level);
+        //        });
+        //    }
+        //    else {
+        //        FastImportData(smallData, level);
+        //    }
+        //}
+
+        function LoadData() {
+            if (smallData == undefined) {
+                var fileName = dataFolder + "/" + smallDataFile;
+                fetchJSONFile(fileName, function (data) {
+                    smallData = data;
+                    LoadDataInGraph(smallData);
+                });
+            }
+            else {
+                LoadDataInGraph(smallData);
+            }
+        }
+
+        function LoadDataInGraph(data) {
+            RemoveAllNodes();
+            var level = 0;
+            for (var key in data) {
+                if (key != "NamesOfProperties") {
+                    AddNode(data, key);
+                }
+
+            }
+            var nodes = graph.getNodes();
+            for (var i = 0 ; i < nodes.length; i++)
+            {
+                allNodes.push(nodes[i]);
+            }
+        }
+
+
+        //function FastImportData(data, level) {
+        //    RemoveAllEdges();
+        //    RemoveAllNodes();
+        //    FastAddUpToLevel(level, totalNumberOfLevels, data);
+        //    redrawSameScene();
+        //}
+
+        //function FindTotalNumberOfLevels(data) {
+        //    var levels = 0;
+        //    for (var key in data) {
+        //        var path = data[key].Path;
+        //        levels = path.length + 1;
+        //        return levels;
+        //    }
+        //    return levels;
+        //}
+
+        //function FastAddUpToLevel(sliderlevel, total, data) {
+        //    if (sliderlevel < total) {
+        //        FastLoadLevelZero(data, sliderlevel);
+        //        for (var level = 1; level <= sliderlevel; level++) {
+        //            for (var key in data) {
+        //                var system = data[key];
+        //                var path = system.Path;
+        //                if (level < total - 1) {
+        //                    if (path[level] == key) {
+        //                        FastAddNode(path, level, data, key);
+        //                        var node = graph.getNode(key);
+        //                        if (level == sliderlevel) {
+        //                            CheckIfNodeIsExpandable(key, CurrentDir[key]);
+        //                        }
+        //                    }
+        //                }
+        //                else {
+        //                    FastAddNode(path, level, data, key);
+        //                    var node = graph.getNode(key);
+        //                    node._expandable = false;
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
+
+        //function FastAddNode(path, level, data, key) {
+        //    var systemId = key;
+        //    var parent = path[level - 1];
+        //    var colorPoint = PrepareColor(level, parent);
+        //    PrepareNodeAndAddIt(data, key, colorPoint);
+        //    //if (level > 0 && parent != systemId) {
+        //    //    AddNewEdge(parent, systemId, colorPoint);
+        //    //}
+        //    var node = graph.getNode(systemId);
+
+        //    var currentDir = dataFolder;
+        //    for (var i = 0; i < level; i++) {
+        //        currentDir = currentDir + "/" + parseInt(path[i]);
+        //    }
+        //    CurrentDir[systemId] = currentDir;
+        //    CurrentLevel[systemId]++;
+        //}
+
+        //function FastLoadLevelZero(data, sliderlevel) {
+        //    var level = 0;
+        //    for (var key in data) {
+        //        var point = data[key];
+        //        CurrentLevel[key] = undefined;
+        //        CurrentDir[key] = undefined;
+        //        var path = point.Path;
+        //        if (graph._nodeIds[key] == undefined) {
+        //            if (path[level] == key) {
+        //                AddNodeAtLevelZero(data, key);
+        //                graph.getNode(key)._expandable = false;
+        //                if (sliderlevel == 0) {
+        //                    CheckIfNodeIsExpandable(key, dataFolder);
+        //                }
+        //            }
+        //        }
+
+        //    }
+        //}
+
+        function AddNode(data, key) {
+            var point = data[key];
+            var coords = point.Coordinates;
+            var colorNode = PrepareColorZero(coords);
+            PrepareNodeAndAddIt(data, key, colorNode);
+        }
+
+
+        //function AddNodeAtLevelZero(data, key) {
+        //    var point = data[key];
+        //    var coords = point.Coordinates;
+        //    var colorNode = PrepareColorZero(coords);
+        //    PrepareNodeAndAddIt(data, key, colorNode);
+        //    var node = graph.getNode(key);
+
+        //    CurrentDir[key] = dataFolder;
+        //    CurrentLevel[key] = 0;
+        //}
+
+        //function AddNewEdge(parentId, pointId, colorPoint) {
+        //    var y = parentId;
+        //    var newedge = G.edge([y, pointId], {
+        //        color: colorPoint,
+        //    });
+        //    newedge.addTo(graph);
+        //    edges.push(newedge);
+        //}
+
+        //function RemoveAllEdges() {
+        //    edges.splice(0, edges.length);
+        //}
+
+        function RemoveAllNodes() {
+            var numberOfNodes = graph.getNodes().length;
+            for (var i = 0; i < numberOfNodes; i++) {
+                graph.removeLastNode();
+            }
+        }
+
+        function RemoveLastNodes() {//when the user has asked to close an open node
+            var numberOfNodes = graph.getNodes().length;
+            for (var i = 0; i < numberOfNodes - previousNumberOfNodes[clicked]; i++) {
+                graph.removeLastNode();
+            }
+        }
+
+        //function RemoveLastEdges() {//when the user has asked to close an open node
+        //    edges.splice(previousNumberOfEdges[clicked], edges.length - previousNumberOfEdges[clicked]);
+        //}
+
+        //function HideAllEdges() {//when the checkbox for show edges is unchecked
+        //    var numberOfEdges = graph._edges.length;
+        //    graph._edges.splice(0, numberOfEdges);
+        //}
+
+        //function ShowAllEdges() {// when the  checkbox for show edges is checked. edges is a backup of the current edges in the graph, regardless of whether they are shown or not
+        //    graph._edges = edges.slice();
+        //}
+
+        function Colorize(col, indexOfProperty)//colorizes the nodes that are already loaded in the graph. Means if you color while still loading data, the new data will not be colored
+        {
+            // init max and min value of property accross nodes
+            var max = graph._nodes[0]._propertiesValues[indexOfProperty];
+            var min = max;
+
+            for (var i = 0; i < graph._nodes.length; i++) {
+                var value = graph._nodes[i]._propertiesValues[indexOfProperty];
+                if (value > max) { max = value; }
+                if (value < min) { min = value; }
+            }
+
+            var range = max - min;
+
+            //find the max intensity for red or blue or green
+            var maxColor = col[1][0];
+            if (col[1][1] > maxColor) { maxColor = col[1][1]; }
+            if (col[1][2] > maxColor) { maxColor = col[1][2]; }
+
+            //adjust the RGB components
+            var redNew = col[1][0];
+            var greenNew = col[1][1];
+
+            if (maxColor > 0) {
+                var factor = 255 / maxColor;
+                redNew = factor * col[1][0];
+                greenNew = factor * col[1][1];
+                blueNew = factor * col[1][2];
+            }
+
+            //colorize the nodes with different shades of the color, according to the selecgted property intensity
+            for (var i = 0; i < graph._nodes.length; i++) {
+                var node = graph._nodes[i];
+                var value = node._propertiesValues[indexOfProperty];
+                var red = col[1][0];
+                var green = col[1][1];
+                var blue = col[1][2];
+                if (range > 0) {
+                    red = Math.floor(redNew * (value - min) / range);
+                    green = Math.floor(greenNew * (value - min) / range);
+                    blue = Math.floor(blueNew * (value - min) / range);
+                }
+                var color = "rgb(" + red + "," + green + "," + blue + ")";
+                ChangeColor(node, color);
+            }
+            redrawSameScene();
+        }
+
+        //function SearchAndColorizeByNameOld(name)//searches the nodes that are already loaded in the graph. Means if you color while still loading data, the new data will not be colored
+        //{
+        //    var count = 0;
+        //    var singleNode;
+        //    var nodes = graph.getNodes();
+        //    for (var i = 0; i < nodes.length; i++) {
+        //        var node = nodes[i];
+        //        var found = false;
+        //        var nodeId = node.getId();
+        //        nodeId = nodeId.toLowerCase();
+        //        name = name.toLowerCase();
+        //        if (nodeId.search(name) > -1) {
+        //            found = true;
+        //        }
+        //        else {
+        //            var categories = node._categoriesValues;
+        //            for (var j = 0; j < categories.length; j++) {
+        //                var prop = categories[j].toLowerCase();
+        //                if (prop.search(name) > -1) { found = true; }
+        //            }
+        //        }
+        //        if (found) {
+        //            ChangeColor(node, "red");
+        //            singleNode = node;
+        //            count++;
+        //        }
+        //        else { ChangeColor(node, "lightgrey"); }
+        //    }
+        //    redrawSameScene();
+        //    alert("Number of selected data points: " + count); //AK 02/06/2016
+        //}
+
+        
+        function redrawSameScene() {
+            //if (edgesShow.checked) {
+            //    ShowAllEdges();
+            //}
+            //else {
+            //    HideAllEdges();
+            //}
+            if (size_attenuation) {
+                renderFrame.reDrawMeInSameScene();
+            }
+            else { renderFrame.reDrawMeInSameSceneWithoutSizeAttenuation();}
+        }
+
+            function redrawInitialScene() {
+                //if (edgesShow.checked) {
+                //    ShowAllEdges();
+                //}
+                //else {
+                //    HideAllEdges();
+                //}
+                if (size_attenuation) {
+                    renderFrame.reDrawMe();
+                }
+                else { renderFrame.reDrawMeWithoutSizeAttenuation(); }
+            }
+
+            function ChangeColor(node, color) {
+                var id = node.getId();
+                previousColor[id] = node.getColor();
+                node.setColor(color);
+            }
+
+            function ReturnPreviousColor(node) {
+                var id = node.getId();
+                var color = previousColor[id];
+                if (color != undefined) {
+                    node.setColorHex("#" + color);
+                }
+            }
+
+            function ReturnAllColors() {
+                var nodes = graph.getNodes();
+                for (var i = 0; i < nodes.length; i++) {
+                    ReturnPreviousColor(nodes[i]);
+                }
+                redrawSameScene();
+            }
+
+            //function ShowExpandableNodes() {
+            //    var nodes = graph.getNodes();
+            //    for (var i = 0; i < nodes.length; i++) {
+            //        var node = nodes[i];
+            //        if (node._expandable) {
+            //            ChangeColor(node, "yellow");
+            //        }
+            //        else { ChangeColor(node, "grey") };
+            //    }
+            //    redrawSameScene();
+            //}
+            //################## the functions definitions end here
+    </script>
+</body>
+</html>
