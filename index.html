@@ -149,7 +149,7 @@
     <script src="dist/graphosaurus.js"></script>
     <script src="src/search.js"></script>
     <script src="src/uifunctions.js"></script>
-    <script src="data/MetaData.js"></script>
+    <!--<script src="data/MetaData.js"></script>-->
     <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
     <script charset="4">
 
@@ -258,11 +258,23 @@
             if ('files' in x) {
                 if (x.files.length == 0) {
                     txt = "Select a file.";
-                } else {                              
-                var file = x.files[0];                        
-                LoadDataFromFile(file);                    
+                } else {
+                    var file = x.files[0];
+                    LoadDataFromFile(file);
                 }
             }
+            //else {
+            //    if (smallData == undefined) {
+            //        var fileName = "data/smalldata.json";
+            //        fetchJSONFile(fileName, function (data) {
+            //            smallData = data;
+            //            LoadDataInGraph(smallData);
+            //            defineCombo();
+            //            InitDrawing();
+            //            loadFirstTime = false;
+            //        });
+            //    }
+            //}
             
         }
 

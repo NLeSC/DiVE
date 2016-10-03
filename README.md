@@ -2,12 +2,12 @@
 
 
 
-# CClusTera – Hierarchical and interactive visualization of big data in 3D 
+# DiVE  Interactive Visualization of Embedded Data
 
  
-The purpose of the web application CClusTera is to enable 3D visualization of big data in a hierarchical manner. 
+DiVE is an interactive 3D web viewer of up to million points on one screen that represent data. It is meant to provide interaction for viewing high-dimensional data that has been previously embedded in 3D. For embedding (non-linear dimensionality reduction, or manifold learning) we recommend LargeVis (by Microsoft Research, http://sonjageorgievska.github.io/LargeVis/) or tSNE.       
 
-For an online demo go to  [http://sonjageorgievska.github.io/CClusTera/](http://sonjageorgievska.github.io/CClusTera/ "online demo"). Or open index.html in Mozzila Firefox to run a demo on your local computer.   
+For an online demo go to  [http://sonjageorgievska.github.io/CClusTera/](http://sonjageorgievska.github.io/DiVE/ "online demo"). Or open index.html in Mozzila Firefox to run a demo on your local computer.   
 
 
 ##Overview ##
