@@ -101,7 +101,8 @@
         <p> </p>
         <input type="checkbox" name="show_found_nodes" id="show_found_nodes" />
         <label style=" font: 15px Arial"> Show only found nodes</label>
-    </fieldset>
+        <br> <text style=" font: 12px Arial">For perspective, it shows at least 15 nodes <br>
+</fieldset>
     <p> </p> <p> </p>
     <fieldset class="fieldset-auto-width" style="font: 15px Arial">
         <legend style=" font: 15px Arial">Visualization options</legend>
@@ -149,7 +150,7 @@
     <script src="dist/graphosaurus.js"></script>
     <script src="src/search.js"></script>
     <script src="src/uifunctions.js"></script>
-    <script src="data/MetaData.js"></script>
+    <!--<script src="data/MetaData.js"></script>-->
     <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
     <script charset="4">
 
@@ -258,11 +259,23 @@
             if ('files' in x) {
                 if (x.files.length == 0) {
                     txt = "Select a file.";
-                } else {                              
-                var file = x.files[0];                        
-                LoadDataFromFile(file);                    
+                } else {
+                    var file = x.files[0];
+                    LoadDataFromFile(file);
                 }
             }
+            //else {
+            //    if (smallData == undefined) {
+            //        var fileName = "data/smalldata.json";
+            //        fetchJSONFile(fileName, function (data) {
+            //            smallData = data;
+            //            LoadDataInGraph(smallData);
+            //            defineCombo();
+            //            InitDrawing();
+            //            loadFirstTime = false;
+            //        });
+            //    }
+            //}
             
         }
 
@@ -349,7 +362,15 @@
             for (var i = 0; i < foundNodes.length; i++) {
                 graph.addNode(foundNodes[i]);
             }
-           
+            var n = graph.getNodes().length;
+            //cause it does not work well for a small amount of nodes
+            if (n < 15)
+            {
+                for (var i = 0; i < 15 - n; i++)
+                {
+                    graph.addNode(allNodes[i]);
+                }
+            }
         }
 
         function LoadAllNodes() {

@@ -48,13 +48,6 @@ def ReadMetaDataFile(metaDataFile):
                     metaDataDict[id] = items
         return metaDataDict
 
-#def ReadMetaDataFileOld(metaDataFile):        
-#        with open(metaDataFile) as data_file:    
-#            data = json.load(data_file)
-#        metaDataDict = dict()
-#        for key in data.keys():
-#            metaDataDict[key] = data[key]["Categories"]
-#        return metaDataDict
 
 def ReadPropertiesIntensitiesFile(propertiesIntensitiesFile):
     """File format: [id] [intensityOfProperty1] [intensityOfProperty2]... [intensityOfPropertyN]"""      
@@ -96,20 +89,17 @@ def CreateSmallDataJSONFile(allPoints, startingFolder):
     file.write(string)
     file.close()
    
-def CreateMetaDataFileForBigDataMode(startingFolder, bigdatamode):
-    string = "var bigData =" + bigdatamode + ";"
-    file = open(os.path.join(startingFolder, "MetaData.js"), "w")
-    file.write(string)
-    file.close()
 
 
-def CreatePointsDictionary(fixedCoordinates,  metaDataDict, intensitiesOfPropertiesDict):
+def CreatePointsDictionary(fixedCoordinates,  metaDataDict, intensitiesOfPropertiesDict, namesOfPropertiesFile):
     pointsDict = dict()
-    
+    if namesOfPropertiesFile != "No":
+        with open(namesOfPropertiesFile) as json_data:
+            list = json.load(json_data)
+        pointsDict["NamesOfProperties"] = list
     for key in fixedCoordinates.keys():
         point = dict()
 
-        point["Path"] = ["0"]
         point["Coordinates"] = fixedCoordinates[key]
         if (metaDataDict != "no" ):
             if key in metaDataDict:
@@ -124,6 +114,7 @@ def CreatePointsDictionary(fixedCoordinates,  metaDataDict, intensitiesOfPropert
             point["Properties"] = []
         pointsDict[key] = point
     return pointsDict
+
 
 def CreateDirIfDoesNotExist(dirname):
     if not os.path.exists(dirname):          
@@ -154,16 +145,13 @@ def Workflow(coordinatesFile, metaDataFile, namesOfPropertiesFile, propertiesInt
     if propertiesIntensitiesFile != "No":
         intensitiesDict = ReadPropertiesIntensitiesFile(propertiesIntensitiesFile)
     else:
-        intensitiesDict = "no"   
-        
+        intensitiesDict = "no"           
     fixedCoordinate = ReadCoordinates(coordinatesFile)
     ConvertCoordinatesToList(fixedCoordinate)   
-    pointsDict = CreatePointsDictionary(fixedCoordinate, metaDataDict, intensitiesDict)        
+    pointsDict = CreatePointsDictionary(fixedCoordinate, metaDataDict, intensitiesDict, namesOfPropertiesFile)        
     print(str(datetime.now()) + ": Start writing output...")         
     CreateDirIfDoesNotExist(dirname1)
     CreateSmallDataJSONFile(pointsDict, dirname1)
-    shutil.copy(namesOfPropertiesFile, dirname1)
-    CreateMetaDataFileForBigDataMode(dirname1, "false")
     print(str(datetime.now()) + ": Finished writing output.")
 #endregion
          
