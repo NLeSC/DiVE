@@ -101,7 +101,8 @@
         <p> </p>
         <input type="checkbox" name="show_found_nodes" id="show_found_nodes" />
         <label style=" font: 15px Arial"> Show only found nodes</label>
-    </fieldset>
+        <br> <text style=" font: 12px Arial">For perspective, it shows at least 15 nodes <br>
+</fieldset>
     <p> </p> <p> </p>
     <fieldset class="fieldset-auto-width" style="font: 15px Arial">
         <legend style=" font: 15px Arial">Visualization options</legend>
@@ -361,7 +362,15 @@
             for (var i = 0; i < foundNodes.length; i++) {
                 graph.addNode(foundNodes[i]);
             }
-           
+            var n = graph.getNodes().length;
+            //cause it does not work well for a small amount of nodes
+            if (n < 15)
+            {
+                for (var i = 0; i < 15 - n; i++)
+                {
+                    graph.addNode(allNodes[i]);
+                }
+            }
         }
 
         function LoadAllNodes() {
