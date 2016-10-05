@@ -56,7 +56,9 @@ is created in any programming language, where the keys are the id’s of the poi
 Next, the dictionary is serialized using JavaScriptSerializer and written in *data.json* (name is flexible). 
 Here is an example of an entry of the serialized dictionary in a *data.json* file:
 
-		"3951":{"Path":["3951","3951","3951","3951"],"Coordinates":[0.99860800383893167,0.61276015046241838,0.450976426942296],"Categories":["Prototheca cutis","Prototheca cutis","Prototheca","",""],"Properties":[9,4,4]}
+		"3951":{"Coordinates":[0.99860800383893167,0.61276015046241838,0.450976426942296],
+			"Categories":["Prototheca cutis","Prototheca cutis","Prototheca","",""],
+			"Properties":[9,4,4]}
 
 
 The output of LargeVis can be processed into an input of the viewer by using the scripts in "the folder "prepareData"... (TBC)...
