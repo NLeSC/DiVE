@@ -37,10 +37,10 @@ The “Resume colors” buttons return the colors of the points to the previous 
 
 ## Data format ##
 
-- The data is in a JSON (JavaScript Object Notation)  format. 
+- The data is in a JSON (JavaScript Object Notation)  format. (See data/smalldata.json for an example.)
 To obtain *data.js*, first a data structure
 
-		`Dictionary<string, Point>` 
+		Dictionary<string, Point>
 
 is created in any programming language, where the keys are the id’s of the points and `Point` is an object of the class 
   
