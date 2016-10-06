@@ -27,13 +27,24 @@ If you would like to use Google Chrome or any other browser, you would have to
  
 - A point can optionally have “Categories” and “Properties”:
  
- - “Categories” is a list of names associated with the point. This list is displayed when a user hovers over a point with the mouse or equivalent.
+ - “Categories” is a list of strings associated with the point. This list is displayed when a user hovers over a point with the mouse or equivalent.
   
  - “Properties” is a list of real numbers. Each number represents the intensity of a respective property. These numbers are used in the Coloring section of the UI of the web-page. When the user selects a property, and a color, every point is colored with a shade of the selected color. The intensity of the color corresponds to the intensity of the selected property for the particular point. 
 
-A user can search for all points that contain a certain substring in their ids, names or categories, by using the Search section. Then all points that are a match become red, and the rest become grey. One can search also for boolean expressions of regular expressions. An example of a boolean expression is `xx AND yy OR NOT zz`, where xx, yy, and zz are regular expressions and NOT binds more than AND, which binds more than OR. In this case all points that contain in their metadata the regular espressions xx and yy, or that do not contain zz, will be coloured in red. 
+## User interaction ##
+### Search ###
+* A user can search for all points that contain a certain substring in their ids, names or categories, by using the Search section. Then all points that are a match become red, and the rest become grey. One can search also for boolean expressions of regular expressions. An example of a boolean expression is `xx AND yy OR NOT zz`, where xx, yy, and zz are regular expressions and NOT binds more than AND, which binds more than OR. In this case all points that contain in their metadata the regular espressions xx and yy, or that do not contain zz, will be coloured in red. 
+
+* Show only found nodes will show only the nodes that result from the search.
   
-The “Resume colors” buttons return the colors of the points to the previous coloring scheme. 
+* The “Resume colors” button at the bottom return the colors of the points to the previous coloring scheme. 
+
+### Visualization options ###
+
+* Centralize  : will move data back to center of the screen
+* Point size attenuation: very useful when the user has zoomed-in enough. When this option is not selected, the points do not get bigger as the camera moves closer to them, so that they can be separated and inspected individually. 
+* Show point info in popup : when de-selected, the information about a point whne hovering over it will be displayet at the top left corner of the screen rather than in a pop-up message
+* Coloring by intensity of property: as explained in section "Data description and functionality" 
 
 ## Data format ##
 
