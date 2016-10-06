@@ -61,5 +61,9 @@ Here is an example of an entry of the serialized dictionary in a *data.json* fil
 			"Properties":[9,4,4]}
 
 ## From output of LargeVis to input of DiVE ##
-The output of LargeVis can be processed into an input of the viewer by using the scripts in "the folder "prepareData"... (TBC)...
+The output of LargeVis can be processed into an input of the viewer by using the python script "MakeVizDataWithProperMetaData.py" in the folder "prepareData". It is called with 
+		
+		python MakeVizDataWithProperMetaData.py -coord coordinatesFile -metadata metaDataFile -dir baseDir -np -namesOfPropertiesFile -pif -propertiesIntensitiesFile
+		
+		
 
