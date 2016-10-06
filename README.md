@@ -70,6 +70,6 @@ The output of LargeVis can be processed into an input of the viewer by using the
 * `coordinatesFile`: the output file of LargeVis
 * `metaData`: file containing meta information about data. Format: `[id] [metadata]`. Format of metadata:  `"first_line" "second_line" "third_line"` (number of lines is not limited)
 * `baseDir`: base directory to store output file
-* `namesOfPropertiesFile`: A json file containing list of numerical properties names. Ex: ["Pressure", "Height", "Weight"]. If file is omitted, its name should be "No"
-* `propertiesIntensitiesFile`: A file containing intensities of properties. File format: [id] [intensityOfProperty1] [intensityOfProperty2]... [intensityOfPropertyN].  If file is omitted, its name should be "No"
+* `namesOfPropertiesFile`: A json file containing list of numerical properties names. Ex: `["Pressure", "Height", "Weight"]`. If file is omitted, its name should be `"No"`
+* `propertiesIntensitiesFile`: A file containing intensities of properties. File format: [id] [intensityOfProperty1] [intensityOfProperty2]... [intensityOfPropertyN].  If file is omitted, its name should be `"No"`
 
