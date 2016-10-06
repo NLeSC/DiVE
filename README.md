@@ -6,9 +6,9 @@ Please cite the software if you are using it in your scientific publication:
 # DiVE   -  Interactive Visualization of Embedded Data
 
  
-DiVE is an interactive 3D web viewer of up to million points on one screen that represent data. It is meant to provide interaction for viewing high-dimensional data that has been previously [embedded] https://en.wikipedia.org/wiki/Nonlinear_dimensionality_reduction in 3D. For embedding (non-linear dimensionality reduction, or manifold learning) we recommend [LargeVis] http://github.com/sonjageorgievska/LargeVis/ (a new algorithm by Microsoft Research, ) or [tSNE] https://github.com/lvdmaaten/bhtsne .       
+DiVE is an interactive 3D web viewer of up to million points on one screen that represent data. It is meant to provide interaction for viewing high-dimensional data that has been previously [embedded](https://en.wikipedia.org/wiki/Nonlinear_dimensionality_reduction) in 3D. For embedding (non-linear dimensionality reduction, or manifold learning) we recommend [LargeVis](http://github.com/sonjageorgievska/LargeVis/) (a new algorithm by Microsoft Research, ) or [tSNE](https://github.com/lvdmaaten/bhtsne) .       
 
-For an online demo click  [here] (http://sonjageorgievska.github.io/DiVE/ "online demo"). Or open index.html in Mozzila Firefox to run a demo on your local computer.   
+For an online demo click  [here](http://sonjageorgievska.github.io/DiVE/ "online demo"). Or open index.html in Mozzila Firefox to run a demo on your local computer.   
 
 
 ##Installation##
@@ -80,7 +80,7 @@ Optionally, if data has numerical properties, the dictionary should also contain
 		"NamesOfProperties":{"name1", "name2", "name3"}
 
 ## From output of LargeVis to input of DiVE ##
-The output of [LargeVis] http://github.com/sonjageorgievska/LargeVis/) can be processed into an input of the viewer by using the python script "MakeVizDataWithProperMetaData.py" in the folder "prepareData". It is called with 
+The output of [LargeVis](http://github.com/sonjageorgievska/LargeVis/) can be processed into an input of the viewer by using the python script "MakeVizDataWithProperMetaData.py" in the folder "prepareData". It is called with 
 		
 		python MakeVizDataWithProperMetaData.py -coord coordinatesFile -metadata metaDataFile -dir baseDir -np -namesOfPropertiesFile -pif -propertiesIntensitiesFile
 		
