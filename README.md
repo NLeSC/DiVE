@@ -95,6 +95,6 @@ The output of LargeVis can be processed into an input of the viewer by using the
 * `propertiesIntensitiesFile`: A file containing intensities of properties. File format: `[id] [intensityOfProperty1] [intensityOfProperty2]... [intensityOfPropertyN]`.  If file is omitted, its name should be `"No"`
 
 ## Licence ##
-
-Contact the author s.georgievska@esciencecenter.nl if you would like a version with an Apache licence.
+The software is released under the Creative Commons Attribution-NoDerivatives licence.
+Contact the author s.georgievska@esciencecenter.nl if you would like a version with an Apache licence. 
 
