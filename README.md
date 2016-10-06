@@ -1,3 +1,5 @@
+Please cite the software if you are using it in your scientific publication:
+
 [![DOI](https://zenodo.org/badge/69663950.svg)](https://zenodo.org/badge/latestdoi/69663950)
 
 
@@ -87,4 +89,8 @@ The output of LargeVis can be processed into an input of the viewer by using the
 
 * `namesOfPropertiesFile`: A json file containing list of numerical properties names. Ex: `["Pressure", "Height", "Weight"]`. If file is omitted, its name should be `"No"`
 * `propertiesIntensitiesFile`: A file containing intensities of properties. File format: `[id] [intensityOfProperty1] [intensityOfProperty2]... [intensityOfPropertyN]`.  If file is omitted, its name should be `"No"`
+
+## Licence ##
+
+Contact the author s.georgievska@esciencecenter.nl if you would like a version with an Apache licence.
 
