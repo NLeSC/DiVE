@@ -28,9 +28,9 @@ If you would like to use Google Chrome or any other browser, you would have to
  
 * A point also has “Categories” and “Properties”:
  
- ** “Categories” is a list of strings associated with the point. This list is displayed when a user hovers over a point with the mouse or equivalent. The list can be empty.
+  - “Categories” is a list of strings associated with the point. This list is displayed when a user hovers over a point with the mouse or 	equivalent. The list can be empty.
   
- ** “Properties” is a list of real numbers, which can be empty. Each number represents the intensity of a respective property. These numbers are used in the Coloring section of the UI of the web-page. When the user selects a property, and a color, every point is colored with a shade of the selected color. The intensity of the color corresponds to the intensity of the selected property for the particular point. 
+  - “Properties” is a list of real numbers, which can be empty. Each number represents the intensity of a respective property. These 		numbers are used in the Coloring section of the UI of the web-page. When the user selects a property, and a color, every point is 	  colored with a shade of the selected color. The intensity of the color corresponds to the intensity of the selected 			property for the particular point. 
 
 ## User interaction ##
 ### Search ###
