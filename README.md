@@ -1,5 +1,4 @@
-[![DOI](https://zenodo.org/badge/24090/sonjageorgievska/CClusTera.svg)](https://zenodo.org/badge/latestdoi/24090/sonjageorgievska/CClusTera)
-
+[![DOI](https://zenodo.org/badge/69663950.svg)](https://zenodo.org/badge/latestdoi/69663950)
 
 
 # DiVE   -  Interactive Visualization of Embedded Data
