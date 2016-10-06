@@ -73,5 +73,5 @@ The output of LargeVis can be processed into an input of the viewer by using the
 * `baseDir`: base directory to store output file
 
 * `namesOfPropertiesFile`: A json file containing list of numerical properties names. Ex: `["Pressure", "Height", "Weight"]`. If file is omitted, its name should be `"No"`
-* `propertiesIntensitiesFile`: A file containing intensities of properties. File format: [id] [intensityOfProperty1] [intensityOfProperty2]... [intensityOfPropertyN].  If file is omitted, its name should be `"No"`
+* `propertiesIntensitiesFile`: A file containing intensities of properties. File format: `[id] [intensityOfProperty1] [intensityOfProperty2]... [intensityOfPropertyN]`.  If file is omitted, its name should be `"No"`
 
