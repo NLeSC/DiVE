@@ -60,6 +60,6 @@ Here is an example of an entry of the serialized dictionary in a *data.json* fil
 			"Categories":["Prototheca cutis","Prototheca cutis","Prototheca","",""],
 			"Properties":[9,4,4]}
 
-
+## From output of LargeVis to input of DiVE ##
 The output of LargeVis can be processed into an input of the viewer by using the scripts in "the folder "prepareData"... (TBC)...
 
