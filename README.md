@@ -44,7 +44,7 @@ If you would like to use Google Chrome or any other browser, you would have to
 
 * Centralize  : will move data back to center of the screen
 * Point size attenuation: very useful when the user has zoomed-in enough. When this option is not selected, the points do not get bigger as the camera moves closer to them, so that they can be separated and inspected individually. 
-* Show point info in popup : when de-selected, the information about a point whne hovering over it will be displayet at the top left corner of the screen rather than in a pop-up message
+* Show point info in popup : when de-selected, the information about a point whne hovering over it will be displayed at the top left corner of the screen rather than in a pop-up message
 
 ### Coloring by intensity of property###
 
