@@ -68,15 +68,7 @@ The output of LargeVis can be processed into an input of the viewer by using the
 		
 		
 * `coordinatesFile`: the output file of LargeVis
-* `metaData`: file containing meta information about data. Format: 
-
-		`[id] [metadata]`. 
-		
-	Format of metadata:  
-
-		"first_line" "second_line" "third_line"` 
-		
-	(number of lines is not limited)
+* `metaData`: file containing meta information about data. Format: `[id] [metadata]`.  Format of metadata:  `"first_line" "second_line" "third_line"` (number of lines is not limited)
 	
 * `baseDir`: base directory to store output file
 
