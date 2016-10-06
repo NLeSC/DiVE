@@ -80,7 +80,7 @@ Optionally, if data has numerical properties, the dictionary should also contain
 		"NamesOfProperties":{"name1", "name2", "name3"}
 
 ## From output of LargeVis to input of DiVE ##
-The output of LargeVis can be processed into an input of the viewer by using the python script "MakeVizDataWithProperMetaData.py" in the folder "prepareData". It is called with 
+The output of LargeVis http://github.com/sonjageorgievska/LargeVis/) can be processed into an input of the viewer by using the python script "MakeVizDataWithProperMetaData.py" in the folder "prepareData". It is called with 
 		
 		python MakeVizDataWithProperMetaData.py -coord coordinatesFile -metadata metaDataFile -dir baseDir -np -namesOfPropertiesFile -pif -propertiesIntensitiesFile
 		
