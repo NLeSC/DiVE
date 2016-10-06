@@ -75,6 +75,10 @@ Here is an example of an entry of the serialized dictionary in a *data.json* fil
 			"Categories":["Prototheca cutis","Prototheca cutis","Prototheca","",""],
 			"Properties":[9,4,4]}
 
+Optionally, if data has numerical properties, the dictionary should also contain an entry 
+
+		"NamesOfProperties":{"name1", "name2", "name3"}
+
 ## From output of LargeVis to input of DiVE ##
 The output of LargeVis can be processed into an input of the viewer by using the python script "MakeVizDataWithProperMetaData.py" in the folder "prepareData". It is called with 
 		
