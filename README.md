@@ -69,7 +69,7 @@ Next, the dictionary is serialized using JavaScriptSerializer and written in *da
 Here is an example of an entry of the serialized dictionary in a *data.json* file:
 
 		"3951":{"Coordinates":[0.99860800383893167,0.61276015046241838,0.450976426942296],
-			"Properties":["Prototheca cutis","Prototheca cutis","Prototheca","",""]}
+			"Properties":["Prototheca cutis","Prototheca cutis", 46.2, "Prototheca", 34.78]}
 
 ## Licence ##
 The software is released under the Creative Commons Attribution-NoDerivatives licence.
