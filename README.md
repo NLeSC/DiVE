@@ -26,15 +26,13 @@ If you would like to use Google Chrome or any other browser, you would have to
 
 * Every point has 3 coordinates and a unique ID.
  
-* A point also has “Categories” and “Properties”:
+* A point also has  “Properties”:
  
-  - “Categories” is a list of strings associated with the point. This list is displayed when a user hovers over a point with the mouse or 	equivalent. The list can be empty.
-  
-  - “Properties” is a list of real numbers, which can be empty. Each number represents the intensity of a respective property. These 		numbers are used in the Coloring section of the UI of the web-page. When the user selects a property, and a color, every point is 	  colored with a shade of the selected color. The intensity of the color corresponds to the intensity of the selected 			property for the particular point. 
+  - “Properties” is a list of real numbers or strings, which can be empty. Each number represents the intensity of a respective property, and each string a certain information. The 		numbers are used in the Coloring section of the UI of the web-page. When the user selects a real-numbered property, and a color, every point is 	  colored with a shade of the selected color. The intensity of the color corresponds to the intensity of the selected 			property for the particular point. When the user selects a string-valued property, a mapping from strings to colors is performed and the points a coloured based on the value of the string. 
 
 ## User interaction ##
 ### Search ###
-* A user can search for all points that contain a certain substring in their ids, names or categories, by using the Search section. Then all points that are a match become red, and the rest become grey. One can search also for boolean expressions of regular expressions. An example of a boolean expression is `xx AND yy OR NOT zz`, where xx, yy, and zz are regular expressions and NOT binds more than AND, which binds more than OR. In this case all points that contain in their metadata the regular espressions xx and yy, or that do not contain zz, will be coloured in red. 
+* A user can search for all points that contain a certain substring in their ids, names or properties, by using the Search section. Then all points that are a match become red, and the rest become grey. One can search also for boolean expressions of regular expressions. An example of a boolean expression is `xx AND yy OR NOT zz`, where xx, yy, and zz are regular expressions and NOT binds more than AND, which binds more than OR. In this case all points that contain in their metadata the regular espressions xx and yy, or that do not contain zz, will be coloured in red. 
 
 * Show only found nodes will show only the nodes that result from the search.
   
@@ -62,37 +60,16 @@ is created in any programming language, where the keys are the id’s of the poi
 		public class Point
 		    {
 		        public List<double> Coordinates;
-		        public List<object> Categories;
-		        public List<double> Properties;
+		        public List<object> Properties;
 		    }
 
-`Coordinates, Categories` and `Properties` are as discussed in the previous section.
+`Coordinates` and `Properties` are as discussed in the previous section.
 
 Next, the dictionary is serialized using JavaScriptSerializer and written in *data.json* (name is flexible). 
 Here is an example of an entry of the serialized dictionary in a *data.json* file:
 
 		"3951":{"Coordinates":[0.99860800383893167,0.61276015046241838,0.450976426942296],
-			"Categories":["Prototheca cutis","Prototheca cutis","Prototheca","",""],
-			"Properties":[9,4,4]}
-
-Optionally, if data has numerical properties, the dictionary should also contain an entry 
-
-		"NamesOfProperties":{"name1", "name2", "name3"}
-
-## From output of LargeVis to input of DiVE ##
-The output of [LargeVis](http://github.com/sonjageorgievska/LargeVis/) can be processed into an input of the viewer by using the python script "MakeVizDataWithProperMetaData.py" in the folder "prepareData". It is called with 
-		
-		python MakeVizDataWithProperMetaData.py -coord coordinatesFile -metadata metaDataFile -dir baseDir -np -namesOfPropertiesFile -pif -propertiesIntensitiesFile
-		
-		
-		
-* `coordinatesFile`: the output file of LargeVis
-* `metaData`: file containing meta information about data. Format: `[id] [metadata]`.  Format of metadata:  `"first_line" "second_line" "third_line"` (number of lines is not limited)
-	
-* `baseDir`: base directory to store output file
-
-* `namesOfPropertiesFile`: A json file containing list of numerical properties names. Ex: `["Pressure", "Height", "Weight"]`. If file is omitted, its name should be `"No"`
-* `propertiesIntensitiesFile`: A file containing intensities of properties. File format: `[id] [intensityOfProperty1] [intensityOfProperty2]... [intensityOfPropertyN]`.  If file is omitted, its name should be `"No"`
+			"Properties":["Prototheca cutis","Prototheca cutis","Prototheca","",""]}
 
 ## Licence ##
 The software is released under the Creative Commons Attribution-NoDerivatives licence.
