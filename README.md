@@ -96,5 +96,5 @@ The output of [LargeVis](http://github.com/sonjageorgievska/LargeVis/) can be pr
 
 ## Licence ##
 The software is released under the Creative Commons Attribution-NoDerivatives licence.
-Contact the author if you would like a version with an Apache licence. 
+[Contact](mailto:s.georgievska@esciencecenter.nl) the author if you would like a version with an Apache licence. 
 
