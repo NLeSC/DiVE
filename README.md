@@ -34,7 +34,7 @@ If you would like to use Google Chrome or any other browser, you would have to
 
 ## User interaction ##
 ### Search ###
-* A user can search for all points that contain a certain substring in their ids, names or categories, by using the Search section. Then all points that are a match become red, and the rest become grey. One can search also for boolean expressions of regular expressions. An example of a boolean expression is `xx AND yy OR NOT zz`, where xx, yy, and zz are regular expressions and NOT binds more than AND, which binds more than OR. In this case all points that contain in their metadata the regular espressions xx and yy, or that do not contain zz, will be coloured in red. 
+* A user can search for all points that contain a certain substring in their ids, names or categories, by using the *Search* section. Then all points that are a match become red, and the rest become grey. One can search also for boolean expressions of regular expressions. An example of a boolean expression is `xx AND yy OR NOT zz`, where xx, yy, and zz are regular expressions and NOT binds more than AND, which binds more than OR. In this case all points that contain in their metadata the regular espressions xx and yy, or that do not contain zz, will be coloured in red. 
 
 * *Show only found nodes* will show only the nodes that result from the search.
   
