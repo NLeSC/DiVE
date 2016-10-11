@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+    <title>JSDoc: Source: src/uifunctions.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,32 +17,76 @@
 
 <div id="main">
 
-    <h1 class="page-title">Home</h1>
+    <h1 class="page-title">Source: src/uifunctions.js</h1>
 
     
 
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>//functions for defining UI components and handling their events
+
+ /** Defines what happens when the user has pressed the search button */
+ function searchSequence() {
+     var value = document.getElementById("search").value;
+     SearchAndColorizeByExpression(value);
+ }
 
 
-    <h3> </h3>
+ /** Creates the combobox and populates it with properties names from the data 
+  * @param {dictionary} data as loaded from the json file
+  */
+ function defineCombo(data) {
+     var myCombo = document.getElementById("combo");
+     //remove all options
+     var length = myCombo.options.length;
+     for (i = 0; i &lt; length; i++) {
+         myCombo.options[i] = null;
+     }
+     var listOfProperties;         
+     listOfProperties = data["NamesOfProperties"];
+     if (listOfProperties != undefined) {
+         var len = listOfProperties.length;
+         listOfProperties = listOfProperties.slice(0, len);
+         for (var i = 0; i &lt; listOfProperties.length; i++) {
+             var option = document.createElement("option");
+             option.text = listOfProperties[i];
+             option.value = i;
+             try {
+                 myCombo.add(option, null); //Standard 
+             } catch (error) {
+                 myCombo.add(option); // IE only
+             }
+         }
+     }     
+ }
+ 
+ /** Creates the color picker and attaches events to it. */
+ function defineColorPicker2() {
+     myColorpicker = new dhtmlXColorPicker(["inputcolor"]);
+     myColorpicker.setCustomColors(true);
+     myColorpicker.setColor("#05ff50");
+     myColorpicker.setCustomColors(true);
+     myColorpicker.showMemory(true);
+
+     myColorpicker.attachEvent("onSelect", function (color, node) {
+         var col = myColorpicker.getSelectedColor();
+         var myCombo = document.getElementById("combo");
+         var selectedPropertyIndex = myCombo.options[myCombo.selectedIndex].value;
+
+         Colorize(col, selectedPropertyIndex);
+         //$("#label2").text(color);
+     });
+
+     myColorpicker.attachEvent("onCancel", function (node) { myColorpicker.hide() });
+ }
 
 
-
-
-
-
-
-
-
-
-    
-
-
-
-
-
+</code></pre>
+        </article>
+    </section>
 
 
 

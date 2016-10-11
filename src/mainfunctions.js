@@ -1,17 +1,22 @@
- function InitGlobalDataVariables() {           
+ /**
+ * Inits global data variables 
+ */
+ 
+ /** Initiates the global variables
+  */
+ function InitGlobalDataVariables() {    
+            pointsSet = undefined;       
             previousColor = [];
-            pointsSet = undefined;
-            previoslyhoveredNode = undefined;
-            smallData = undefined;                                 
+            previoslyhoveredNode = undefined;                                
             selectedPropertyIndex = undefined;//holds the index of the most recently selected numerical property (by the user)
-            previousColor = [];//used in resume colors
-            //var expandable = new Object();//expandable[5987][3] is true if and only if node with id 5987 is expandable at level 3            
+            previousColor = [];//used in resume colors            
             searchExprWellDefined = undefined;
             allNodes = [];
             foundNodes = [];
             
         }
 
+        /**Is called when the user selects a file to upload */
         function LoadLocalDataSet() {
             var x = document.getElementById("dataFile");
             var txt = "";
@@ -25,27 +30,33 @@
             }                      
         }
 
+        /** Loads data from file and makes initializations necessary to render data points
+             @param {file} file - The file selected by the user
+        */
         function LoadDataFromFile(file) {
             var reader = new FileReader();
             reader.readAsText(file);
             reader.onloadend = function (e) {
                 var contents = e.target.result;                
                 InitGlobalDataVariables();
-                smallData = JSON.parse(contents);
-                defineCombo();
-                InitDrawing();
+                var data = JSON.parse(contents);
+                defineCombo(data);
+                InitDrawing(data);
                 loadFirstTime = false;
             }           
         }
-
-        function InitDrawing() {           
-            LoadData();
+        /** Initializes rendering frame and draws the graph in an initial scene
+         * @param {dictionary} data - The dictionary of points as loaded from the json file
+         */
+        function InitDrawing(data) {           
+            LoadDataInGraph(data);
             if (loadFirstTime) {
                 renderFrame = graph.renderIn("frame");
             }
             redrawInitialScene();
         }
 
+        /** Initializes the check boxes and the event handlers for the checkboxes */
         function InitEventHandlers() {
             sizeAtShow.checked = true;
             show_popup.checked = true;
@@ -58,6 +69,7 @@
             }
         }
         
+        /** What to do when the user clicks on the size attenuation box */
         function HandleSizeAttenuationChange()
         {
             var sizeAtBool = sizeAtShow.checked;
@@ -71,7 +83,7 @@
             }
             redrawSameScene();
         }
-
+        /** What to do when the "show found nodes" box is changed */
         function HandleShowFoundNodesChange()
         {
             if (show_found_nodes.checked) {
@@ -83,13 +95,14 @@
             redrawSameScene();
         }
 
+        /** Loads only the points that result from a search in the graph. At least 15 nodes are loaded, however. */
         function LoadOnlyFoundNodes() {
             RemoveAllNodes();
             for (var i = 0; i < foundNodes.length; i++) {
                 graph.addNode(foundNodes[i]);
             }
             var n = graph.getNodes().length;
-            //cause it does not work well for a small amount of nodes
+            //cause it does not work well for a small amount of nodes (problem with the graphics)
             if (n < 15)
             {
                 for (var i = 0; i < 15 - n; i++)
@@ -99,12 +112,14 @@
             }
         }
 
+        /** Loads all points from the data file in the graph */
         function LoadAllNodes() {
             for (var i = 0; i < allNodes.length; i++) {
                 graph.addNode(allNodes[i]);
             }
         }
 
+        /**Initializes the graph */
         function InitializeGraph() {
             return G.graph({
                 sizeAttenuation: size_attenuation,//whether to change the size of the nodes for a 3D effect or not
@@ -113,17 +128,19 @@
                 antialias: true,
                 bgColor: 'lightgrey',//'lightskyblue',
                 nodeSize: node_size,//10,//0.016,//change to 10 if sizeAttenuation = false, otherwise the nodes are too small and not visible
-                edgeWidth: 0.005,//change to 1 if sizeAttenuation = false
+                edgeWidth: 0.005,//change to 1 if sizeAttenuation = false. Update 11/10/2016: This should be programmed. 
                 hover: function (node) {//what should happen when a user hovers over a node with the mouse
                     HandleNodeHovering(node);
                 }/*,
-                mousedown: function (node) {//what should happen when a user clicks on a node
+                mousedown: function (node) {//what should happen when a user clicks on a node. Disabled at the moment
                     HandleNodeClicking(node);
                 }*/
             });
         }
       
-
+        /** Defines what happens when a user hovers over a node (point)
+         * @param {Graph.node} node - a node from the graph that was hovered over
+        */
         function HandleNodeHovering(node) {
             if (previoslyhoveredNode != undefined)//if some node was hovered before, return its color
             { previoslyhoveredNode.setColorHex("#" + previosHoveredcolor); }
@@ -147,20 +164,21 @@
             
         }
 
+        /** Prepares the initial colors of the points based on their coordinates. Optional. 
+        * @param {list} coords - The three coordinates of the point 
+        */
         function PrepareColorZero(coords) {
             var red = Math.floor((coords[0] * coords[0] * 1643 % 256) + 1);
             var green = Math.floor((coords[1] * coords[1] * 328 % 256) + 1);
             var blue = Math.floor((coords[2] * coords[2] * 487 % 256) + 1);
             return "rgb(" + red + "," + green + "," + blue + ")";
         }
-
-       
-        function PrepareColor(level, parentId)// a unique color per parent and level
-        {
-            var y = parentId;
-            return "rgb(" + 111 * (level + 1) * (y + 1) % 256 + "," + 20 * (level + 1) * (y + 1) % 256 + "," + 50 * (level + 1) * (y + 1) % 256 + ")";
-        }
-
+              
+        /** Takes a point from data and makes a node of the graph out of it 
+         * @param {list} data - a list of points
+         * @param {string} key - the id of the point
+         * @param {string} colorpoint - the desired color of the point
+        */
         function PrepareNodeAndAddIt(data, key, colorPoint) {
             var point = data[key];
             var pointid = key;
@@ -178,20 +196,10 @@
             node.setColor(colorPoint);
         }
 
-
-        function LoadData() {
-            if (smallData == undefined) {
-                var fileName = dataFolder + "/" + smallDataFile;
-                fetchJSONFile(fileName, function (data) {
-                    smallData = data;
-                    LoadDataInGraph(smallData);
-                });
-            }
-            else {
-                LoadDataInGraph(smallData);
-            }
-        }
-
+        
+        /**Loads all data in the graph 
+         * @param {dictionary} data - the data as loaded from the json file
+        */
         function LoadDataInGraph(data) {
             RemoveAllNodes();
             var level = 0;
@@ -208,7 +216,10 @@
             }
         }
 
-
+        /**Adds a node from data into the graph
+         * @param {dictionary} data - the data as loaded from the json file
+         * @param {string} key - the ID of the node
+         */
         function AddNode(data, key) {
             var point = data[key];
             var coords = point.Coordinates;
@@ -217,6 +228,9 @@
         }
 
 
+        /**
+         * Removes all nodes from the graph. The graph is empty afterwards
+         */
         function RemoveAllNodes() {
             var numberOfNodes = graph.getNodes().length;
             for (var i = 0; i < numberOfNodes; i++) {
@@ -224,15 +238,11 @@
             }
         }
 
-        function RemoveLastNodes() {//when the user has asked to close an open node
-            var numberOfNodes = graph.getNodes().length;
-            for (var i = 0; i < numberOfNodes - previousNumberOfNodes[clicked]; i++) {
-                graph.removeLastNode();
-            }
-        }
-
-       
-        function Colorize(col, indexOfProperty)//colorizes the nodes that are already loaded in the graph. Means if you color while still loading data, the new data will not be colored
+        /** Colorizes the nodes in different shades of a certain color based on intensity of a property
+         * @param {Three.color} col - the color in which to colorize
+         * @param {indexOfProperty} - the index of the property based on which to colorize
+         */
+        function Colorize(col, indexOfProperty)//colorizes the nodes that are already loaded in the graph. 
         {
             // init max and min value of property accross nodes
             var max = graph._nodes[0]._propertiesValues[indexOfProperty];
@@ -262,7 +272,7 @@
                 blueNew = factor * col[1][2];
             }
 
-            //colorize the nodes with different shades of the color, according to the selecgted property intensity
+            //colorize the nodes with different shades of the color, according to the selected property intensity
             for (var i = 0; i < graph._nodes.length; i++) {
                 var node = graph._nodes[i];
                 var value = node._propertiesValues[indexOfProperty];
@@ -281,27 +291,32 @@
         }
 
        
-        
+        /** Redraws the graph in the same scene. The position of the camera will not change. */
         function redrawSameScene() {          
             if (size_attenuation) {
                 renderFrame.reDrawMeInSameScene();
             }
             else { renderFrame.reDrawMeInSameSceneWithoutSizeAttenuation();}
         }
-
+        /** Redraws the graph in the initial scene. The camera is re-positioned to look at all points */
             function redrawInitialScene() {                
                 if (size_attenuation) {
                     renderFrame.reDrawMe();
                 }
                 else { renderFrame.reDrawMeWithoutSizeAttenuation(); }
             }
-
+           /** Changes the color of a node
+            * @param {Graph.node} node - the node that changes color
+            * @param  {Three.color} color - the new color of the node*/ 
             function ChangeColor(node, color) {
                 var id = node.getId();
                 previousColor[id] = node.getColor();
                 node.setColor(color);
             }
 
+            /** Returns the color of a node to its previous color
+             * * @param {Graph.node} node - the node that changes color
+             */
             function ReturnPreviousColor(node) {
                 var id = node.getId();
                 var color = previousColor[id];
@@ -309,7 +324,8 @@
                     node.setColorHex("#" + color);
                 }
             }
-
+             /** Returns the color of all nodes to their previous colors             
+             */
             function ReturnAllColors() {
                 var nodes = graph.getNodes();
                 for (var i = 0; i < nodes.length; i++) {
