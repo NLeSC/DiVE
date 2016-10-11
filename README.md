@@ -24,7 +24,7 @@ If you would like to use Google Chrome or any other browser, you would have to
 
 ## Data description and functionality ##
 
-* Every point has 3 coordinates and a unique ID. For a best view, the absolute values of the coordinates should be smaller than 1. Thus, when using LargeVis with similarities (weights) as input, the similarities should be rescaled to be smaller than 1. 
+* Every point has 3 coordinates and a unique ID. (For a best view, the absolute values of the coordinates should be smaller than 1. When using LargeVis with similarities (weights) as input, this can be achieved by res-caling the similarities to be smaller than 1.) 
  
 * A point also has `Categories` and `Properties`:
  
