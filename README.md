@@ -52,7 +52,7 @@ As explained in section **Data description and functionality** .
 
 ## Data format ##
 
-- The data is in a JSON (JavaScript Object Notation)  format. (See data/smalldata.json for an example.)
+- The data is in a JSON (JavaScript Object Notation)  format. (See folder *data* for examples.)
 To obtain *data.js*, first a data structure
 
 		Dictionary<string, Point>
