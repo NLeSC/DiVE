@@ -1,7 +1,4 @@
- /**
- * Inits global data variables 
- */
- 
+
  /** Initiates the global variables
   */
  function InitGlobalDataVariables() {    
