@@ -87,6 +87,8 @@ This file is combined with a *fasta* - formatted file to obtain the input file o
 	>0|Rhodotorula glutinis|1|5|12688892|0|Rhodotorula glutinis|3|CBS 20|0.998|5|1|0|True|0||False|5|1|1.3333333335197E-06|True|1|518|0|-1|Rhodotorula||Sporidiobolales|Microbotryomycetes
 	gtgaatataggacgtccaacttaacttggagtccgaactctcactttctaaccctgtgcatctgttaattggactagtagctcttcggagtgaaccgccattcacttataaacacaaagtctatgaatgtatacaaatttataacaaaacaaaactttcaacaacggatctcttggctctcgcatcgatgaagaacgcagcgaaatgcgatacgtaatgtgaattgcagaattcagtgaatcatcgaatctttgaacgcaccttgcgctccttggtattccgaggagcatgcctgtttgagtgtcatgaaatcttcaacccacctctttcttagtgaatctggtggtgcttggtttctgagcgctgctctgcttcggcttagctcgttcgtaatgcattagcatccgcaaccgaacttcggattgacttggcgtaatagactattcgctgaggattctagtttactagagccgagttgggttaaaggaagctcctaatcctaaagtctattttttga
 
+The `>` characters denotes a new point data. The number after the second `|` character is the ID of the point. The rest of the strings are properties of the point, two properties being separated by a `|` character. 
+The second line of a point (in the example above the line starting with `aacaagg`) is ignored and not included in the properties. 
 
 ## Licence ##
 The software is released under the Creative Commons Attribution-NoDerivatives licence.
