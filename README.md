@@ -87,12 +87,12 @@ The output of [LargeVis](http://github.com/sonjageorgievska/LargeVis/) can be pr
 		
 		
 * `coordinatesFile`: the output file of LargeVis
-* `metaData`: file containing meta information about data. Format: `[id] [metadata]`.  Format of metadata:  `"first_line" "second_line" "third_line"` (number of lines is not limited)
+* `metaData`: file containing meta information about data. Format: `[id] [metadata]`.  Format of metadata:  `"first_line" "second_line" "third_line"` (number of lines is not limited). Example line of `metadata`: `35 "A dog" "Age:2" "Color brown"`.
 	
 * `baseDir`: base directory to store output file
 
 * `namesOfPropertiesFile`: A json file containing list of numerical properties names. Ex: `["Pressure", "Height", "Weight"]`. If file is omitted, its name should be `"No"`
-* `propertiesIntensitiesFile`: A file containing intensities of properties. File format: `[id] [intensityOfProperty1] [intensityOfProperty2]... [intensityOfPropertyN]`.  If file is omitted, its name should be `"No"`
+* `propertiesIntensitiesFile`: A file containing intensities of properties. File format: `[id] [intensityOfProperty1] [intensityOfProperty2]... [intensityOfPropertyN]`. Example line: `35 12.9 32.5 122.2` If file is omitted, its name should be `"No"`
 
 ## Licence ##
 The software is released under the Creative Commons Attribution-NoDerivatives licence.
