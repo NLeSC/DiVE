@@ -50,7 +50,7 @@ As explained in section "Data description and functionality" .
 
 ## Data format ##
 
-- The data is in a JSON (JavaScript Object Notation)  format. (See data/smalldata.json for an example.)
+- The data is in a JSON (JavaScript Object Notation)  format. (See folder *data* for  examples.)
 To obtain *data.js*, first a data structure
 
 		Dictionary<string, Point>
@@ -70,6 +70,23 @@ Here is an example of an entry of the serialized dictionary in a *data.json* fil
 
 		"3951":{"Coordinates":[0.99860800383893167,0.61276015046241838,0.450976426942296],
 			"Properties":["Prototheca cutis","Prototheca cutis", 46.2, "Prototheca", 34.78]}
+
+## From output of LargeVis to input of DiVE ##
+
+The output of LargeVis is a text file - every line has the id of the point, and 3 coordinates (real numbers). Only the first line is an exception: it contains the number of points and the dimension. Here is an example:
+
+		4271 3
+		0 -33.729916 17.692684 17.466749
+		1 -32.923210 17.249269 18.111458
+		2 -33.464798 18.028067 17.385750
+
+This file is combined with a *fasta* - formatted file to obtain the input file of DiVE. The *faste* file contains the properties of the points. Here is an example of two entries in a *fasta* file:
+		
+		>0|Rhodotorula glutinis|0|4|16098894|0|Rhodotorula glutinis|3|CBS 		20|0.998|5|0.998|0|True|0||False|5|0.998|1.3333333335197E-06|True|1|603|0|-1|Rhodotorula||Sporidiobolales|Microbotryomycetes
+		aacaaggtttccgtaggtgaacctgcggaaggatcattagtgaatataggccgtccaacttaacttggagtccgaactctcactttctaaccctgtgcatctgttaattggactagtagctcttcggagtgaaccgccattcacttataaacacaaagtctatgaatgtatacaaatttataacaaaacaaaactttcaacaacggatctcttggctctcgcatcgatgaagaacgcagcgaaatgcgatacgtaatgtgaattgcagaattcagtgaatcatcgaatctttgaacgcaccttgcgctccttggtattccgaggagcatgcctgtttgagtgtcatgaaatcttcaacccacctctttcttagtgaatctggtggtgcttggtttctgagcgctgctctgcttcggcttagctcgttcgtaatgcattagcatccgcaaccgaacttcggattgacttggcgtaatagactattcgctgaggattctagtttactagagccgagttgggttaaaggaagctcctaatcctaaagtctattttttgattagatctcaaatcaggtaggactacccgctgaacttaagcatataa
+	>0|Rhodotorula glutinis|1|5|12688892|0|Rhodotorula glutinis|3|CBS 20|0.998|5|1|0|True|0||False|5|1|1.3333333335197E-06|True|1|518|0|-1|Rhodotorula||Sporidiobolales|Microbotryomycetes
+	gtgaatataggacgtccaacttaacttggagtccgaactctcactttctaaccctgtgcatctgttaattggactagtagctcttcggagtgaaccgccattcacttataaacacaaagtctatgaatgtatacaaatttataacaaaacaaaactttcaacaacggatctcttggctctcgcatcgatgaagaacgcagcgaaatgcgatacgtaatgtgaattgcagaattcagtgaatcatcgaatctttgaacgcaccttgcgctccttggtattccgaggagcatgcctgtttgagtgtcatgaaatcttcaacccacctctttcttagtgaatctggtggtgcttggtttctgagcgctgctctgcttcggcttagctcgttcgtaatgcattagcatccgcaaccgaacttcggattgacttggcgtaatagactattcgctgaggattctagtttactagagccgagttgggttaaaggaagctcctaatcctaaagtctattttttga
+
 
 ## Licence ##
 The software is released under the Creative Commons Attribution-NoDerivatives licence.
