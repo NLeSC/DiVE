@@ -78,9 +78,9 @@ The output of LargeVis is a text file - every line has the id of the point, and 
 		4271 3
 		0 -33.729916 17.692684 17.466749
 		1 -32.923210 17.249269 18.111458
-		2 -33.464798 18.028067 17.385750
+		
 
-This file is combined with a *fasta* - formatted file to obtain the input file of DiVE. The *faste* file contains the properties of the points. Here is an example of two entries in a *fasta* file:
+This file is combined with a *fasta* - formatted file to obtain the input file of DiVE. The *fasta* file contains the properties of the points. Here is an example of a *fasta* file:
 		
 		>0|Rhodotorula glutinis|0|4|16098894|0|Rhodotorula glutinis|3|CBS 20|0.998|5|0.998|0|True|0||False|5|0.998|1.3333333335197E-06|True|1|603|0|-1|Rhodotorula||Sporidiobolales|Microbotryomycetes
 		aacaaggtttccgtaggtgaacctgcggaaggatcattagtgaatataggccgtccaacttaacttggagtccgaactctcactttctaaccctgtgcatctgttaattggactagtagctcttcggagtgaaccgccattcacttataaacacaaagtctatgaatgtatacaaatttataacaaaacaaaactttcaacaacggatctcttggctctcgcatcgatgaagaacgcagcgaaatgcgatacgtaatgtgaattgcagaattcagtgaatcatcgaatctttgaacgcaccttgcgctccttggtattccgaggagcatgcctgtttgagtgtcatgaaatcttcaacccacctctttcttagtgaatctggtggtgcttggtttctgagcgctgctctgcttcggcttagctcgttcgtaatgcattagcatccgcaaccgaacttcggattgacttggcgtaatagactattcgctgaggattctagtttactagagccgagttgggttaaaggaagctcctaatcctaaagtctattttttgattagatctcaaatcaggtaggactacccgctgaacttaagcatataa
@@ -89,6 +89,14 @@ This file is combined with a *fasta* - formatted file to obtain the input file o
 
 The `>` characters denotes a new point data. The number after the second `|` character is the ID of the point. The rest of the strings are properties of the point, two properties being separated by a `|` character. 
 The second line of a point (in the example above the line starting with `aacaagg`) is ignored and not included in the properties. 
+
+Combining the example output of LargeVis and the example *fasta* file would give the following data.json file that is input for DiVE:
+		
+		{"0":{"Coordinates":[-33.729916 17.692684 17.466749],
+			"Properties":["0", "Rhodotorula glutinis", "0", "4" , "16098894", "0
+			", "Rhodotorula glutinis", "3", "CBS", "20", "0.998", "5", "0.998", "0", "True", "0", "False", "5", "0.998" , "1.3333333335197E-06", "True", "1", "603", "0", "-1", "Rhodotorula", "", "Sporidiobolales", "Microbotryomycetes"]}, 
+			"1":{"Coordinates":[-32.923210 17.249269 18.111458],
+			"Properties":["0", "Rhodotorula glutinis", "1", "5", "12688892", "0", "Rhodotorula glutinis", "3", "CBS 20", "0.998", "5" , "1", "0", "True", "0", "False", "5", "1", "1.3333333335197E-06", "True","1","518", "0", "-1", "Rhodotorula", "", "Sporidiobolales", "Microbotryomycetes"]}}
 
 ## Licence ##
 The software is released under the Creative Commons Attribution-NoDerivatives licence.
