@@ -18,9 +18,12 @@ The simplest way is to have the Mozilla Firefox browser installed and to open *i
 If you would like to use Google Chrome or any other browser, you would have to
 
 1. Install *node* server from [http://nodejs.org](http://nodejs.org) 
-2. Go to the main folder of *DiVE* with your command line interpreter (where *index.htm*l is)
-3. type `node server.js` 
-4. open your browser and type `http://localhost:8082/index.html` 
+2. Install the node package manager [npm](https://www.npmjs.com/)
+3. Open your command line interpreter (CLI)
+4. Type 'npm install connect serve-static'
+5. Go to the main folder of *DiVE* in your CLI (where *index.htm*l is)
+6. Type `node server.js` 
+7. Open your browser and type `http://localhost:8082/index.html` 
 
 ## Data description and functionality ##
 
