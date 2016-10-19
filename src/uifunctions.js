@@ -7,7 +7,7 @@
  }
 
 
- /** Creates the combobox and populates it with properties names from the data 
+ /** Creates the combobox and populates it with properties names from the data. Defines what happens when a value is selected - the colorization 
   * @param {dictionary} data as loaded from the json file
   */
  function defineCombo(data) {
@@ -32,9 +32,21 @@
                  myCombo.add(option); // IE only
              }
          }
-     }     
+     }
+        
  }
  
+
+ function HandlePropertyChange(){
+     var myCombo = document.getElementById("combo");
+     
+     var selectedPropertyIndex = myCombo.options[myCombo.selectedIndex].value;
+     isPropertyCategorical = CheckIfPropertyIsCategorical(selectedPropertyIndex);
+    if (isPropertyCategorical){
+        ColorizeCategory(selectedPropertyIndex);
+    }
+ }
+
  /** Creates the color picker and attaches events to it. */
  function defineColorPicker2() {
      myColorpicker = new dhtmlXColorPicker(["inputcolor"]);
@@ -48,7 +60,7 @@
          var myCombo = document.getElementById("combo");
          var selectedPropertyIndex = myCombo.options[myCombo.selectedIndex].value;
 
-         Colorize(col, selectedPropertyIndex);
+         ColorizeCategoricalOrNumerical(col, selectedPropertyIndex);
          //$("#label2").text(color);
      });
 

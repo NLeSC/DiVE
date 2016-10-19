@@ -235,6 +235,52 @@
             }
         }
 
+        function ColorizeCategoricalOrNumerical(col, indexOfProperty)
+        {
+            isPropertyCategorical = CheckIfPropertyIsCategorical(indexOfProperty);
+            if (isPropertyCategorical){
+                ColorizeCategory(indexOfProperty);
+            }
+            else{
+                Colorize(col, indexOfProperty);
+            }
+
+        }
+
+        function CheckIfPropertyIsCategorical(indexOfProperty){
+            var isCategorical = false;
+            for (var i = 0; i < graph._nodes.length; i++) {
+                var value = graph._nodes[i]._propertiesValues[indexOfProperty];
+                var isNotANumber = isNaN(value);
+                if (isNotANumber){
+                    isCategorical = true;
+                    break;
+                }
+            }
+            return isCategorical;
+        }
+
+        function ColorizeCategory(indexOfProperty){
+            var colorsDict = [];
+            for (var i = 0; i < graph._nodes.length; i++) {
+                var node = graph._nodes[i];
+                var key = node._propertiesValues[indexOfProperty];
+                if (key in colorsDict) {
+                    var colorPoint = colorsDict[key];
+                    ChangeColor(node, colorPoint);
+                }
+                else{
+                    var red = Math.floor(Math.random() * 255)
+                    var green = Math.floor(Math.random() * 255)
+                    var blue = Math.floor(Math.random() * 255)
+                    var colorPoint =  "rgb(" + red + "," + green + "," + blue + ")";
+                    ChangeColor(node, colorPoint)
+                    colorsDict[key] = colorPoint;    
+                }
+            }                                   
+            redrawSameScene();
+        }
+
         /** Colorizes the nodes in different shades of a certain color based on intensity of a property
          * @param {Three.color} col - the color in which to colorize
          * @param {indexOfProperty} - the index of the property based on which to colorize
