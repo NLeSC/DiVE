@@ -49,7 +49,7 @@ If you would like to use Google Chrome or any other browser, you would have to
 * *Point size attenuation*: very useful when the user has zoomed-in enough. When this option is not selected, the points do not get bigger as the camera moves closer to them, so that they can be separated and inspected individually. 
 * *Show point info in popup* : when de-selected, the information about a point when hovering over it will be displayed at the top left corner of the screen rather than in a pop-up message
 
-### Coloring by intensity of property###
+### Coloring by value of property###
 
 As explained in section **Data description and functionality** .
 
@@ -76,7 +76,7 @@ Here is an example of an entry of the serialized dictionary in a *data.json* fil
 
 		"3951":{"Coordinates":[0.99860800383893167,0.61276015046241838,0.450976426942296],
 			"Categories":["Prototheca cutis","Prototheca cutis","Prototheca","",""],
-			"Properties":["0", "Rhodotorula glutinis", "1", "5", "12688892", "0.998", "5" , "True", "0", "False", "5", "1",  "True","1","518", "0", "-1", "Rhodotorula", "", "Sporidiobolales", "Microbotryomycetes"]}
+			"Properties":["0", "1", "5", "12688892", "0.998", "5" , "True", "0", "False", "5", "1",  "True","1","518", "0", "-1", "Rhodotorula", "", "Sporidiobolales", "Microbotryomycetes"]}
 
 Optionally, if data has properties, the dictionary should also contain an entry 
 
@@ -102,7 +102,7 @@ It can be processed into an input of the viewer by using the python script "Make
 * `baseDir`: base directory to store output file
 
 * `namesOfPropertiesFile`: A json file containing list of properties names. Ex: `["Height", "Weight", "Place of birth"]`. If file is omitted, its name should be `"No"`
-* `propertiesFile`: A file containing values properties. File format: `[id] [valueOfProperty1] [valueOfProperty2]... [valueOfPropertyN]`. If file is omitted, its name should be `"No"`
+* `propertiesFile`: A file containing values of the properties. File format: `[id] [valueOfProperty1] [valueOfProperty2]... [valueOfPropertyN]`. If file is omitted, its name should be `"No"`
 
 ## Licence ##
 The software is released under the Creative Commons Attribution-NoDerivatives licence.
