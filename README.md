@@ -28,7 +28,7 @@ If you would like to use Google Chrome or any other browser, you would have to
  
 * A point also has  “Properties”:
  
-  - “Properties” is a list of real numbers or strings, which can be empty. Each number represents the intensity of a respective property, and each string a certain information. The 		numbers are used in the Coloring section of the UI of the web-page. When the user selects a real-numbered property, and a color, every point is 	  colored with a shade of the selected color. The intensity of the color corresponds to the intensity of the selected 			property for the particular point. When the user selects a string-valued property, a mapping from strings to colors is performed and the points a coloured based on the value of the string. 
+  - `Properties` is a list of strings which can be empty. Each string which is a number represents the value of a respective numerical property. Each string which is not a number represents the value of a respective categorical property.  These values are used in the Coloring section of the UI of the web-page. When the user selects a property, if the property has categorical (non-numerical) values, each point is colored in a color representing the value of the categorical property. If the property is numerical, then after the user has selected a color, every point is colored with a shade of the selected color. The intensity of the color corresponds to the intensity of the selected property for the particular point.  
 
 ## User interaction ##
 ### Search ###
