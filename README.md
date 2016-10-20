@@ -33,7 +33,7 @@ If you would like to use Google Chrome or any other browser, you would have to
  
   - `Categories` is a list of strings associated with the point. This list is displayed when a user hovers over a point with the mouse or 	equivalent. The list can be empty.
   
-  - `Properties` is a list of real numbers, which can be empty. Each number represents the intensity of a respective property. These 		numbers are used in the Coloring section of the UI of the web-page. When the user selects a property, and a color, every point is 	  colored with a shade of the selected color. The intensity of the color corresponds to the intensity of the selected 			property for the particular point. 
+  - `Properties` is a list of strings which can be empty. Each string which is a number represents the value of a respective numerical property. Each string which is not a number represents the value of a respective categorical property.  These values are used in the Coloring section of the UI of the web-page. When the user selects a property, if the property has categorical (non-numerical) values, each point is colored in a color representing the value of the categorical property. If the property is numerical, then after the user has selected a color, every point is colored with a shade of the selected color. The intensity of the color corresponds to the intensity of the selected property for the particular point. 
 
 ## User interaction ##
 ### Search ###
@@ -41,13 +41,13 @@ If you would like to use Google Chrome or any other browser, you would have to
 
 * *Show only found nodes* will show only the nodes that result from the search.
   
-* The *Resume colors* button at the bottom return the colors of the points to the previous coloring scheme. 
+* The *Resume colors* button at the bottom returns the colors of the points to the previous coloring scheme. 
 
 ### Visualization options ###
 
 * *Centralize*  : will move data back to center of the screen
 * *Point size attenuation*: very useful when the user has zoomed-in enough. When this option is not selected, the points do not get bigger as the camera moves closer to them, so that they can be separated and inspected individually. 
-* *Show point info in popup* : when de-selected, the information about a point whne hovering over it will be displayed at the top left corner of the screen rather than in a pop-up message
+* *Show point info in popup* : when de-selected, the information about a point when hovering over it will be displayed at the top left corner of the screen rather than in a pop-up message
 
 ### Coloring by intensity of property###
 
@@ -76,16 +76,23 @@ Here is an example of an entry of the serialized dictionary in a *data.json* fil
 
 		"3951":{"Coordinates":[0.99860800383893167,0.61276015046241838,0.450976426942296],
 			"Categories":["Prototheca cutis","Prototheca cutis","Prototheca","",""],
-			"Properties":[9,4,4]}
+			"Properties":["0", "Rhodotorula glutinis", "1", "5", "12688892", "0.998", "5" , "True", "0", "False", "5", "1",  "True","1","518", "0", "-1", "Rhodotorula", "", "Sporidiobolales", "Microbotryomycetes"]}
 
-Optionally, if data has numerical properties, the dictionary should also contain an entry 
+Optionally, if data has properties, the dictionary should also contain an entry 
 
-		"NamesOfProperties":{"name1", "name2", "name3"}
+		"NamesOfProperties":{"name1", "name2", ..., "name_n"}
 
 ## From output of LargeVis to input of DiVE ##
-The output of [LargeVis](http://github.com/sonjageorgievska/LargeVis/) can be processed into an input of the viewer by using the python script "MakeVizDataWithProperMetaData.py" in the folder "prepareData". It is called with 
+
+The output of [LargeVis](http://github.com/sonjageorgievska/LargeVis/) is a text file - every line has the id of the point, and 3 coordinates (real numbers). Only the first line is an exception: it contains the number of points and the dimension. Here is an example:
+
+		4271 3
+		0 -33.729916 17.692684 17.466749
+		1 -32.923210 17.249269 18.111458
 		
-		python MakeVizDataWithProperMetaData.py -coord coordinatesFile -metadata metaDataFile -dir baseDir -np -namesOfPropertiesFile -pif -propertiesIntensitiesFile
+It can be processed into an input of the viewer by using the python script "MakeVizDataWithProperMetaData.py" in the folder "prepareData". It is called with 
+		
+		python MakeVizDataWithProperMetaData.py -coord coordinatesFile -metadata metaDataFile -dir baseDir -np -namesOfPropertiesFile -pif -propertiesFile
 		
 		
 		
@@ -94,8 +101,8 @@ The output of [LargeVis](http://github.com/sonjageorgievska/LargeVis/) can be pr
 	
 * `baseDir`: base directory to store output file
 
-* `namesOfPropertiesFile`: A json file containing list of numerical properties names. Ex: `["Pressure", "Height", "Weight"]`. If file is omitted, its name should be `"No"`
-* `propertiesIntensitiesFile`: A file containing intensities of properties. File format: `[id] [intensityOfProperty1] [intensityOfProperty2]... [intensityOfPropertyN]`. Example line: `35 12.9 32.5 122.2` If file is omitted, its name should be `"No"`
+* `namesOfPropertiesFile`: A json file containing list of properties names. Ex: `["Height", "Weight", "Place of birth"]`. If file is omitted, its name should be `"No"`
+* `propertiesFile`: A file containing values properties. File format: `[id] [valueOfProperty1] [valueOfProperty2]... [valueOfPropertyN]`. If file is omitted, its name should be `"No"`
 
 ## Licence ##
 The software is released under the Creative Commons Attribution-NoDerivatives licence.
