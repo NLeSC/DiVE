@@ -80,7 +80,7 @@ Here is an example of an entry of the serialized dictionary in a *data.json* fil
 
 Optionally, if data has properties, the dictionary should also contain an entry 
 
-		"NamesOfProperties":{"name1", "name2", ..., "name_n"}
+		"NamesOfProperties":["name1", "name2", ..., "name_n"]
 
 ## From output of LargeVis to input of DiVE ##
 
