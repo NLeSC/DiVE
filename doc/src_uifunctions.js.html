@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: src/uifunctions.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: src/uifunctions.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>//functions for defining UI components and handling their events
+
+ /** Defines what happens when the user has pressed the search button */
+ function searchSequence() {
+     var value = document.getElementById("search").value;
+     SearchAndColorizeByExpression(value);
+ }
+
+
+ /** Creates the combobox and populates it with properties names from the data 
+  * @param {dictionary} data as loaded from the json file
+  */
+ function defineCombo(data) {
+     var myCombo = document.getElementById("combo");
+     //remove all options
+     var length = myCombo.options.length;
+     for (i = 0; i &lt; length; i++) {
+         myCombo.options[i] = null;
+     }
+     var listOfProperties;         
+     listOfProperties = data["NamesOfProperties"];
+     if (listOfProperties != undefined) {
+         var len = listOfProperties.length;
+         listOfProperties = listOfProperties.slice(0, len);
+         for (var i = 0; i &lt; listOfProperties.length; i++) {
+             var option = document.createElement("option");
+             option.text = listOfProperties[i];
+             option.value = i;
+             try {
+                 myCombo.add(option, null); //Standard 
+             } catch (error) {
+                 myCombo.add(option); // IE only
+             }
+         }
+     }     
+ }
+ 
+ /** Creates the color picker and attaches events to it. */
+ function defineColorPicker2() {
+     myColorpicker = new dhtmlXColorPicker(["inputcolor"]);
+     myColorpicker.setCustomColors(true);
+     myColorpicker.setColor("#05ff50");
+     myColorpicker.setCustomColors(true);
+     myColorpicker.showMemory(true);
+
+     myColorpicker.attachEvent("onSelect", function (color, node) {
+         var col = myColorpicker.getSelectedColor();
+         var myCombo = document.getElementById("combo");
+         var selectedPropertyIndex = myCombo.options[myCombo.selectedIndex].value;
+
+         Colorize(col, selectedPropertyIndex);
+         //$("#label2").text(color);
+     });
+
+     myColorpicker.attachEvent("onCancel", function (node) { myColorpicker.hide() });
+ }
+
+
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Edge.html">Edge</a></li><li><a href="Graph.html">Graph</a></li><li><a href="Node.html">Node</a></li></ul><h3>Global</h3><ul><li><a href="global.html#AddNode">AddNode</a></li><li><a href="global.html#ApplyOperation">ApplyOperation</a></li><li><a href="global.html#ChangeColor">ChangeColor</a></li><li><a href="global.html#Colorize">Colorize</a></li><li><a href="global.html#Contains">Contains</a></li><li><a href="global.html#defineColorPicker2">defineColorPicker2</a></li><li><a href="global.html#defineCombo">defineCombo</a></li><li><a href="global.html#DefinePrioritiesOfOperators">DefinePrioritiesOfOperators</a></li><li><a href="global.html#EmptyStacks">EmptyStacks</a></li><li><a href="global.html#Evaluate">Evaluate</a></li><li><a href="global.html#HandleNodeHovering">HandleNodeHovering</a></li><li><a href="global.html#HandleShowFoundNodesChange">HandleShowFoundNodesChange</a></li><li><a href="global.html#HandleSizeAttenuationChange">HandleSizeAttenuationChange</a></li><li><a href="global.html#HasHigherPriority">HasHigherPriority</a></li><li><a href="global.html#InitDrawing">InitDrawing</a></li><li><a href="global.html#InitEventHandlers">InitEventHandlers</a></li><li><a href="global.html#InitGlobalDataVariables">InitGlobalDataVariables</a></li><li><a href="global.html#InitializeGraph">InitializeGraph</a></li><li><a href="global.html#Is_operator">Is_operator</a></li><li><a href="global.html#LoadAllNodes">LoadAllNodes</a></li><li><a href="global.html#LoadDataFromFile">LoadDataFromFile</a></li><li><a href="global.html#LoadDataInGraph">LoadDataInGraph</a></li><li><a href="global.html#LoadLocalDataSet">LoadLocalDataSet</a></li><li><a href="global.html#LoadOnlyFoundNodes">LoadOnlyFoundNodes</a></li><li><a href="global.html#PrepareColorZero">PrepareColorZero</a></li><li><a href="global.html#PrepareNodeAndAddIt">PrepareNodeAndAddIt</a></li><li><a href="global.html#redrawInitialScene">redrawInitialScene</a></li><li><a href="global.html#redrawSameScene">redrawSameScene</a></li><li><a href="global.html#RemoveAllNodes">RemoveAllNodes</a></li><li><a href="global.html#ReturnAllColors">ReturnAllColors</a></li><li><a href="global.html#ReturnPreviousColor">ReturnPreviousColor</a></li><li><a href="global.html#SearchAndColorizeByExpression">SearchAndColorizeByExpression</a></li><li><a href="global.html#searchSequence">searchSequence</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.2</a> on Tue Oct 11 2016 17:03:26 GMT+0200 (W. Europe Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

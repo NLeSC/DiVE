@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: src/mainfunctions.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: src/mainfunctions.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code> /**
+ * Inits global data variables 
+ */
+ 
+ /** Initiates the global variables
+  */
+ function InitGlobalDataVariables() {    
+            pointsSet = undefined;       
+            previousColor = [];
+            previoslyhoveredNode = undefined;                                
+            selectedPropertyIndex = undefined;//holds the index of the most recently selected numerical property (by the user)
+            previousColor = [];//used in resume colors            
+            searchExprWellDefined = undefined;
+            allNodes = [];
+            foundNodes = [];
+            
+        }
+
+        /**Is called when the user selects a file to upload */
+        function LoadLocalDataSet() {
+            var x = document.getElementById("dataFile");
+            var txt = "";
+            if ('files' in x) {
+                if (x.files.length == 0) {
+                    txt = "Select a file.";
+                } else {
+                    var file = x.files[0];
+                    LoadDataFromFile(file);
+                }
+            }                      
+        }
+
+        /** Loads data from file and makes initializations necessary to render data points
+             @param {file} file - The file selected by the user
+        */
+        function LoadDataFromFile(file) {
+            var reader = new FileReader();
+            reader.readAsText(file);
+            reader.onloadend = function (e) {
+                var contents = e.target.result;                
+                InitGlobalDataVariables();
+                var data = JSON.parse(contents);
+                defineCombo(data);
+                InitDrawing(data);
+                loadFirstTime = false;
+            }           
+        }
+        /** Initializes rendering frame and draws the graph in an initial scene
+         * @param {dictionary} data - The dictionary of points as loaded from the json file
+         */
+        function InitDrawing(data) {           
+            LoadDataInGraph(data);
+            if (loadFirstTime) {
+                renderFrame = graph.renderIn("frame");
+            }
+            redrawInitialScene();
+        }
+
+        /** Initializes the check boxes and the event handlers for the checkboxes */
+        function InitEventHandlers() {
+            sizeAtShow.checked = true;
+            show_popup.checked = true;
+            show_found_nodes.checked = false;           
+            sizeAtShow.onchange = function () {
+                HandleSizeAttenuationChange();
+            }
+            show_found_nodes.onchange = function () {
+                HandleShowFoundNodesChange();                
+            }
+        }
+        
+        /** What to do when the user clicks on the size attenuation box */
+        function HandleSizeAttenuationChange()
+        {
+            var sizeAtBool = sizeAtShow.checked;
+            if (sizeAtBool) {
+                size_attenuation = true;
+                node_size = 0.016;
+            }
+            else {
+                size_attenuation = false;
+                node_size = 10;
+            }
+            redrawSameScene();
+        }
+        /** What to do when the "show found nodes" box is changed */
+        function HandleShowFoundNodesChange()
+        {
+            if (show_found_nodes.checked) {
+                LoadOnlyFoundNodes();
+            }
+            else {
+                LoadAllNodes();
+            }
+            redrawSameScene();
+        }
+
+        /** Loads only the points that result from a search in the graph. At least 15 nodes are loaded, however. */
+        function LoadOnlyFoundNodes() {
+            RemoveAllNodes();
+            for (var i = 0; i &lt; foundNodes.length; i++) {
+                graph.addNode(foundNodes[i]);
+            }
+            var n = graph.getNodes().length;
+            //cause it does not work well for a small amount of nodes (problem with the graphics)
+            if (n &lt; 15)
+            {
+                for (var i = 0; i &lt; 15 - n; i++)
+                {
+                    graph.addNode(allNodes[i]);
+                }
+            }
+        }
+
+        /** Loads all points from the data file in the graph */
+        function LoadAllNodes() {
+            for (var i = 0; i &lt; allNodes.length; i++) {
+                graph.addNode(allNodes[i]);
+            }
+        }
+
+        /**Initializes the graph */
+        function InitializeGraph() {
+            return G.graph({
+                sizeAttenuation: size_attenuation,//whether to change the size of the nodes for a 3D effect or not
+                nodeImage: "imgs/disc.png",
+                nodeImageTransparent: true,
+                antialias: true,
+                bgColor: 'lightgrey',//'lightskyblue',
+                nodeSize: node_size,//10,//0.016,//change to 10 if sizeAttenuation = false, otherwise the nodes are too small and not visible
+                edgeWidth: 0.005,//change to 1 if sizeAttenuation = false. Update 11/10/2016: This should be programmed. 
+                hover: function (node) {//what should happen when a user hovers over a node with the mouse
+                    HandleNodeHovering(node);
+                }/*,
+                mousedown: function (node) {//what should happen when a user clicks on a node. Disabled at the moment
+                    HandleNodeClicking(node);
+                }*/
+            });
+        }
+      
+        /** Defines what happens when a user hovers over a node (point)
+         * @param {Graph.node} node - a node from the graph that was hovered over
+        */
+        function HandleNodeHovering(node) {
+            if (previoslyhoveredNode != undefined)//if some node was hovered before, return its color
+            { previoslyhoveredNode.setColorHex("#" + previosHoveredcolor); }
+            previosHoveredcolor = node.getColor();
+            previoslyhoveredNode = node;
+            node.setColor("white");//make hovered node white
+            redrawSameScene();
+            var categories = node._categoriesValues;
+            var text = node.getId(); //+ "&lt;br>" + props[0] + "&lt;br>" + props[2] + "&lt;br>" + props[4]            
+            //if (node._expandable) { text = "Click to open! &lt;br> " + text; }
+            if (show_popup.checked) {
+                $("#label").text("");
+                for (var i = 0; i &lt; categories.length; i++) { text += "&lt;br>" + categories[i]; }
+                myPop.attachHTML(text);
+                myPop.show(cursorX, cursorY, 0, 0); //params are: x, y, width, height. 3 and 5 are number of pixels relative to the node where the message should appear(you can play with these numbers)
+            }
+            else {
+                for (var i = 0; i &lt; categories.length; i++) { text += " ; " + categories[i]; }
+                $("#label").text("Point info:  " + text);
+            }
+            
+        }
+
+        /** Prepares the initial colors of the points based on their coordinates. Optional. 
+        * @param {list} coords - The three coordinates of the point 
+        */
+        function PrepareColorZero(coords) {
+            var red = Math.floor((coords[0] * coords[0] * 1643 % 256) + 1);
+            var green = Math.floor((coords[1] * coords[1] * 328 % 256) + 1);
+            var blue = Math.floor((coords[2] * coords[2] * 487 % 256) + 1);
+            return "rgb(" + red + "," + green + "," + blue + ")";
+        }
+              
+        /** Takes a point from data and makes a node of the graph out of it 
+         * @param {list} data - a list of points
+         * @param {string} key - the id of the point
+         * @param {string} colorpoint - the desired color of the point
+        */
+        function PrepareNodeAndAddIt(data, key, colorPoint) {
+            var point = data[key];
+            var pointid = key;
+            var coords = point.Coordinates;
+            var nodecategories = point.Categories;
+            var nodeProperties = point.Properties;
+            var node = G.node(coords, {
+                id: pointid,
+                categoriesValues: nodecategories,
+                propertiesValues: nodeProperties,
+                color: colorPoint,
+            });
+            node.addTo(graph);
+            var node = graph.getNode(key);
+            node.setColor(colorPoint);
+        }
+
+        
+        /**Loads all data in the graph 
+         * @param {dictionary} data - the data as loaded from the json file
+        */
+        function LoadDataInGraph(data) {
+            RemoveAllNodes();
+            var level = 0;
+            for (var key in data) {
+                if (key != "NamesOfProperties") {
+                    AddNode(data, key);
+                }
+
+            }
+            var nodes = graph.getNodes();
+            for (var i = 0 ; i &lt; nodes.length; i++)
+            {
+                allNodes.push(nodes[i]);
+            }
+        }
+
+        /**Adds a node from data into the graph
+         * @param {dictionary} data - the data as loaded from the json file
+         * @param {string} key - the ID of the node
+         */
+        function AddNode(data, key) {
+            var point = data[key];
+            var coords = point.Coordinates;
+            var colorNode = PrepareColorZero(coords);
+            PrepareNodeAndAddIt(data, key, colorNode);
+        }
+
+
+        /**
+         * Removes all nodes from the graph. The graph is empty afterwards
+         */
+        function RemoveAllNodes() {
+            var numberOfNodes = graph.getNodes().length;
+            for (var i = 0; i &lt; numberOfNodes; i++) {
+                graph.removeLastNode();
+            }
+        }
+
+        /** Colorizes the nodes in different shades of a certain color based on intensity of a property
+         * @param {Three.color} col - the color in which to colorize
+         * @param {indexOfProperty} - the index of the property based on which to colorize
+         */
+        function Colorize(col, indexOfProperty)//colorizes the nodes that are already loaded in the graph. 
+        {
+            // init max and min value of property accross nodes
+            var max = graph._nodes[0]._propertiesValues[indexOfProperty];
+            var min = max;
+
+            for (var i = 0; i &lt; graph._nodes.length; i++) {
+                var value = graph._nodes[i]._propertiesValues[indexOfProperty];
+                if (value > max) { max = value; }
+                if (value &lt; min) { min = value; }
+            }
+
+            var range = max - min;
+
+            //find the max intensity for red or blue or green
+            var maxColor = col[1][0];
+            if (col[1][1] > maxColor) { maxColor = col[1][1]; }
+            if (col[1][2] > maxColor) { maxColor = col[1][2]; }
+
+            //adjust the RGB components
+            var redNew = col[1][0];
+            var greenNew = col[1][1];
+
+            if (maxColor > 0) {
+                var factor = 255 / maxColor;
+                redNew = factor * col[1][0];
+                greenNew = factor * col[1][1];
+                blueNew = factor * col[1][2];
+            }
+
+            //colorize the nodes with different shades of the color, according to the selected property intensity
+            for (var i = 0; i &lt; graph._nodes.length; i++) {
+                var node = graph._nodes[i];
+                var value = node._propertiesValues[indexOfProperty];
+                var red = col[1][0];
+                var green = col[1][1];
+                var blue = col[1][2];
+                if (range > 0) {
+                    red = Math.floor(redNew * (value - min) / range);
+                    green = Math.floor(greenNew * (value - min) / range);
+                    blue = Math.floor(blueNew * (value - min) / range);
+                }
+                var color = "rgb(" + red + "," + green + "," + blue + ")";
+                ChangeColor(node, color);
+            }
+            redrawSameScene();
+        }
+
+       
+        /** Redraws the graph in the same scene. The position of the camera will not change. */
+        function redrawSameScene() {          
+            if (size_attenuation) {
+                renderFrame.reDrawMeInSameScene();
+            }
+            else { renderFrame.reDrawMeInSameSceneWithoutSizeAttenuation();}
+        }
+        /** Redraws the graph in the initial scene. The camera is re-positioned to look at all points */
+            function redrawInitialScene() {                
+                if (size_attenuation) {
+                    renderFrame.reDrawMe();
+                }
+                else { renderFrame.reDrawMeWithoutSizeAttenuation(); }
+            }
+           /** Changes the color of a node
+            * @param {Graph.node} node - the node that changes color
+            * @param  {Three.color} color - the new color of the node*/ 
+            function ChangeColor(node, color) {
+                var id = node.getId();
+                previousColor[id] = node.getColor();
+                node.setColor(color);
+            }
+
+            /** Returns the color of a node to its previous color
+             * * @param {Graph.node} node - the node that changes color
+             */
+            function ReturnPreviousColor(node) {
+                var id = node.getId();
+                var color = previousColor[id];
+                if (color != undefined) {
+                    node.setColorHex("#" + color);
+                }
+            }
+             /** Returns the color of all nodes to their previous colors             
+             */
+            function ReturnAllColors() {
+                var nodes = graph.getNodes();
+                for (var i = 0; i &lt; nodes.length; i++) {
+                    ReturnPreviousColor(nodes[i]);
+                }
+                redrawSameScene();
+            } 
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Edge.html">Edge</a></li><li><a href="Graph.html">Graph</a></li><li><a href="Node.html">Node</a></li></ul><h3>Global</h3><ul><li><a href="global.html#AddNode">AddNode</a></li><li><a href="global.html#ApplyOperation">ApplyOperation</a></li><li><a href="global.html#ChangeColor">ChangeColor</a></li><li><a href="global.html#Colorize">Colorize</a></li><li><a href="global.html#Contains">Contains</a></li><li><a href="global.html#defineColorPicker2">defineColorPicker2</a></li><li><a href="global.html#defineCombo">defineCombo</a></li><li><a href="global.html#DefinePrioritiesOfOperators">DefinePrioritiesOfOperators</a></li><li><a href="global.html#EmptyStacks">EmptyStacks</a></li><li><a href="global.html#Evaluate">Evaluate</a></li><li><a href="global.html#HandleNodeHovering">HandleNodeHovering</a></li><li><a href="global.html#HandleShowFoundNodesChange">HandleShowFoundNodesChange</a></li><li><a href="global.html#HandleSizeAttenuationChange">HandleSizeAttenuationChange</a></li><li><a href="global.html#HasHigherPriority">HasHigherPriority</a></li><li><a href="global.html#InitDrawing">InitDrawing</a></li><li><a href="global.html#InitEventHandlers">InitEventHandlers</a></li><li><a href="global.html#InitGlobalDataVariables">InitGlobalDataVariables</a></li><li><a href="global.html#InitializeGraph">InitializeGraph</a></li><li><a href="global.html#Is_operator">Is_operator</a></li><li><a href="global.html#LoadAllNodes">LoadAllNodes</a></li><li><a href="global.html#LoadDataFromFile">LoadDataFromFile</a></li><li><a href="global.html#LoadDataInGraph">LoadDataInGraph</a></li><li><a href="global.html#LoadLocalDataSet">LoadLocalDataSet</a></li><li><a href="global.html#LoadOnlyFoundNodes">LoadOnlyFoundNodes</a></li><li><a href="global.html#PrepareColorZero">PrepareColorZero</a></li><li><a href="global.html#PrepareNodeAndAddIt">PrepareNodeAndAddIt</a></li><li><a href="global.html#redrawInitialScene">redrawInitialScene</a></li><li><a href="global.html#redrawSameScene">redrawSameScene</a></li><li><a href="global.html#RemoveAllNodes">RemoveAllNodes</a></li><li><a href="global.html#ReturnAllColors">ReturnAllColors</a></li><li><a href="global.html#ReturnPreviousColor">ReturnPreviousColor</a></li><li><a href="global.html#SearchAndColorizeByExpression">SearchAndColorizeByExpression</a></li><li><a href="global.html#searchSequence">searchSequence</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.2</a> on Tue Oct 11 2016 17:03:26 GMT+0200 (W. Europe Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

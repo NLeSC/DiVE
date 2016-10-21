@@ -1,4 +1,8 @@
-function SearchAndColorizeByExpression(expression)//searches the nodes that are already loaded in the graph. Means if you color while still loading data, the new data will not be colored
+/**Searches the nodes that are already loaded in the graph and colorizes in red those whose metadata or id satisfies the expression
+ * @param {string} expression - a boolean expression of regular expression. Ex: xx AND Y OR NOT zz. xx, yy, and zz are regular expressions. 
+ * The presedence of the boolean operators is defined in DefinePrioritiesOfOperators().
+ */
+function SearchAndColorizeByExpression(expression)//searches the nodes that are already loaded in the graph. 
 {
     $("#labelsearch").text("")
             foundNodes = [];
@@ -27,6 +31,10 @@ function SearchAndColorizeByExpression(expression)//searches the nodes that are 
 
         }
 
+        /** Evaluates if a the metadata of a node (id + categories) contains the regular expression word
+         * @param {Graph.node} node - the node that is being evaluated
+         * @param {string} word - a regular expression  
+         */
         function Contains(node, word)
         {
             var found = false;
@@ -46,7 +54,12 @@ function SearchAndColorizeByExpression(expression)//searches the nodes that are 
             return found;
         }
 
-        function Evaluate(node, expression) {//implements the shunting yard algorithm            
+        /** Evaluates  if the metadata (id + categories) of a node satisfies the expression. Not case sensitive. Implements the 'shunting yard' algorithm 
+         * @param {Graph.node} node - the node that is evaluated
+         * @param {string} expression - the expression under which the node is evaluated. A boolean expression of regular expression. Ex: xx AND Y OR NOT zz. xx, yy, and zz are regular expressions. 
+ * The presedence of the boolean operators is defined in DefinePrioritiesOfOperators().
+        */        
+        function Evaluate(node, expression) {          
             var words = expression.split(" ");
             var operandsStack = [];
             var operatorsStack = [];
@@ -68,6 +81,7 @@ function SearchAndColorizeByExpression(expression)//searches the nodes that are 
             return finalValue;
         }
         
+        /** Evaluates if the string word is in the list [AND, OR, NOT] */
         function Is_operator(word) {
             if (["AND", "NOT", "OR"].indexOf(word) > -1) {
                 return true;
@@ -75,6 +89,10 @@ function SearchAndColorizeByExpression(expression)//searches the nodes that are 
             else return false; 
         }
        
+        /** Evaluates if an operator has a higher priority than the top of the operatorsStack
+         * @param {list} operatorsStack - the stack of operators as defined in the shunting yard algorithm by Dijkstra
+         * @param {string} operator - one of NOT, AND, and OR.
+          */
         function HasHigherPriority(operatorsStack, operator) {
             len = operatorsStack.length;
             if (len == 0) { return false; }
@@ -85,6 +103,8 @@ function SearchAndColorizeByExpression(expression)//searches the nodes that are 
             }
         }
 
+        /** The core of the shunting yard algorithm. Better not to modify.          
+        */
         function ApplyOperation(operatorsStack, operandsStack) {
             var operator = operatorsStack.pop();
             switch (operator)
@@ -121,6 +141,7 @@ function SearchAndColorizeByExpression(expression)//searches the nodes that are 
             }            
         }
 
+        /** Defines the priorities of the operators NOT, AND, OR. The higher the number, the higher the priority. */
         function DefinePrioritiesOfOperators() {
             priority = {};
             priority["NOT"] = 3;
@@ -129,7 +150,7 @@ function SearchAndColorizeByExpression(expression)//searches the nodes that are 
             return priority;
         }
         
-
+        /** Finishes the shunting yard algorithm. Better not to modify. */
         function EmptyStacks(operatorsStack, operandsStack) {
 
             while (operatorsStack.length > 0) {
@@ -143,5 +164,5 @@ function SearchAndColorizeByExpression(expression)//searches the nodes that are 
                 return false;
             }            
         }
-
+        
         function empty_notification() { $("#label_search2").text(" "); }

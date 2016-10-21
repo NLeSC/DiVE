@@ -28,6 +28,15 @@ parser.add_argument(
    dest = 'baseDir',
    help = 'Base directory to store output files')
 
+parser.add_argument(
+   '-np',
+   dest = 'namesOfPropertiesFile',
+   help = 'A json file containing list of numerical properties names. Ex: ["Pressure", "Height", "Weight"]')
+
+parser.add_argument(
+   '-pif',
+   dest = 'propertiesIntensitiesFile',
+   help = 'A file containing intensities of properties. File format: [id] [intensityOfProperty1] [intensityOfProperty2]... [intensityOfPropertyN]')
 
 args = parser.parse_args()
 #endregion
@@ -157,6 +166,6 @@ def Workflow(coordinatesFile, metaDataFile, namesOfPropertiesFile, propertiesInt
          
 #region Main
 
-Workflow(args.coordinatesFile, args.metaDataFile, "NamesOfProperties.json","No", args.baseDir)
+Workflow(args.coordinatesFile, args.metaDataFile, args.namesOfPropertiesFile, args.propertiesIntensitiesFile, args.baseDir)
 
 #endregion
