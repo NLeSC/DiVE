@@ -99,10 +99,11 @@
     <fieldset class="fieldset-auto-width" style="font: 15px Arial">
         <legend style=" font: 15px Arial">Visualization options</legend>
         
-        <button style=" font: 14px Arial" onclick="redrawInitialScene()" name="button">Centralize</button>
+        <button style=" font: 14px Arial" onclick="redrawInitialScene(false)" name="buttonCentralize">Centralize</button>
+        <button style=" font: 14px Arial" onclick="redrawInitialScene(true)" name="buttonSeeAllData">See all data</button>
         <p> </p>
         <input type="checkbox" name="sizeattenuation" id="sizeattenuation" />
-        <label style=" font: 15px Arial"> Point size attenuation </label>
+        <label style=" font: 15px Arial"> Scale point size </label>
         <text style=" font: 12px Arial">
            <br> Uncheck to zoom-in into a dense region
         </text>
@@ -120,10 +121,13 @@
     <div id="labelproperty2" style=" font: 15px Arial">Hover over a point to see its information. Right-click to rotate, right-click again to stop a rotation.</div>
     <div>
         <fieldset class="fieldset-auto-width" style="font: 15px Arial">
-            <legend style=" font: 15px Arial">Coloring by intensity of property</legend>
+            <legend style=" font: 15px Arial">Coloring by property</legend>
             <p> Select a property: </p>
             <select name="combo" id="combo" onchange="HandlePropertyChange()"></select>
-            <p> Click inside the field to select a color: </p>
+            <p>
+                Click inside the field to select a color
+                <br> <text style=" font: 12px Arial"> Only for numerical properties
+            </p>
             <input type="text" id="inputcolor" colorbox="true">
             <p>
                 <button style=" font: 14px Arial" onclick="ReturnAllColors()" name="button">Resume colors</button>
