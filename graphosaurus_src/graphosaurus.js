@@ -18367,116 +18367,158 @@ THREE.BufferGeometry.prototype = {
 
 
 
-	computeBoundingSphere: function () {
+	//computeBoundingSphere: function () {
 
 
         
 
-		var box = new THREE.Box3();
+	//	var box = new THREE.Box3();
 
-		var vector = new THREE.Vector3();
+	//	var vector = new THREE.Vector3();
 
 
 
-		return function () {
+	//	return function () {
 
 
 
-			if ( this.boundingSphere === null ) {
+	//		if ( this.boundingSphere === null ) {
 
 
 
-				this.boundingSphere = new THREE.Sphere();
+	//			this.boundingSphere = new THREE.Sphere();
 
 
 
-			}
+	//		}
 
 
 
-			var positions = this.attributes.position.array;
+	//		var positions = this.attributes.position.array;
 
 
 
-			if ( positions ) {
+	//		if ( positions ) {
 
 
 
-				box.makeEmpty();
+	//			box.makeEmpty();
 
 
 
-				var center = this.boundingSphere.center;
+	//			var center = this.boundingSphere.center;
 
 
 
-				for ( var i = 0, il = positions.length; i < il; i += 3 ) {
+	//			for ( var i = 0, il = positions.length; i < il; i += 3 ) {
 
 
 
-					vector.set( positions[ i ], positions[ i + 1 ], positions[ i + 2 ] );
+	//				vector.set( positions[ i ], positions[ i + 1 ], positions[ i + 2 ] );
 
-					box.expandByPoint( vector );
+	//				box.expandByPoint( vector );
 
 
 
-				}
+	//			}
 
 
 
-				box.center( center );
+	//			box.center( center );
 
 
 
-				// hoping to find a boundingSphere with a radius smaller than the
+	//			// hoping to find a boundingSphere with a radius smaller than the
 
-				// boundingSphere of the boundingBox:  sqrt(3) smaller in the best case
+	//			// boundingSphere of the boundingBox:  sqrt(3) smaller in the best case
 
 
 
-				var maxRadiusSq = 0;
+	//			var maxRadiusSq = 0;
 
 
 
-				for ( var i = 0, il = positions.length; i < il; i += 3 ) {
+	//			for ( var i = 0, il = positions.length; i < il; i += 3 ) {
 
 
 
-					vector.set( positions[ i ], positions[ i + 1 ], positions[ i + 2 ] );
+	//				vector.set( positions[ i ], positions[ i + 1 ], positions[ i + 2 ] );
 
-					maxRadiusSq = Math.max( maxRadiusSq, center.distanceToSquared( vector ) );
+	//				maxRadiusSq = Math.max( maxRadiusSq, center.distanceToSquared( vector ) );
 
 
 
-				}
+	//			}
 
 
 
-				this.boundingSphere.radius = Math.sqrt( maxRadiusSq );
+	//			this.boundingSphere.radius = Math.sqrt( maxRadiusSq );
 
 
 
-				if ( isNaN( this.boundingSphere.radius ) ) {
+	//			if ( isNaN( this.boundingSphere.radius ) ) {
 
-				    this.boundingSphere.radius = 1.5;
+	//			    this.boundingSphere.radius = 1.5;
 
-				    THREE.error('THREE.BufferGeometry.computeBoundingSphere(): Computed radius is NaN. The "position" attribute is likely to have NaN values. Radius2 is' + maxRadiusSq);
+	//			    THREE.error('THREE.BufferGeometry.computeBoundingSphere(): Computed radius is NaN. The "position" attribute is likely to have NaN values. Radius2 is' + maxRadiusSq);
 
 
 
-				}
+	//			}
 
 
 
-			}
+	//		}
 
 
 
-		}
-
-
-
+	//	}
+
+
+
+	//}(),
+
+
+
+	computeBoundingSphere: function () {
+	    //var box = new THREE.Box3();
+	    var vector = new THREE.Vector3();
+	    return function () {
+	        if (this.boundingSphere === null) {
+	            this.boundingSphere = new THREE.Sphere();
+	        }
+	        var positions = this.attributes.position.array;
+	        if (positions) {
+	            //box.makeEmpty();
+	            //var center = this.boundingSphere.center;
+	            var centerOfGravity = new THREE.Vector3();
+	            var count = 0;
+	            for (var i = 0, il = positions.length; i < il; i += 3) {
+	                vector.set(positions[i], positions[i + 1], positions[i + 2]);
+	                //box.expandByPoint(vector);
+	                centerOfGravity.add(vector);
+	                count += 1; 
+	            }
+	            centerOfGravity.divideScalar(count);
+	            this.boundingSphere.center = centerOfGravity;
+	            //this.boundingSphere.center = center;
+	            //box.center(center);
+	            // hoping to find a boundingSphere with a radius smaller than the
+	            // boundingSphere of the boundingBox:  sqrt(3) smaller in the best case
+	            var maxRadiusSq = 0;
+	            for (var i = 0, il = positions.length; i < il; i += 3) {
+	                vector.set(positions[i], positions[i + 1], positions[i + 2]);
+	                maxRadiusSq = Math.max(maxRadiusSq, centerOfGravity.distanceToSquared(vector));
+	            }
+	            this.boundingSphere.radius = Math.sqrt(maxRadiusSq);
+	            if (isNaN(this.boundingSphere.radius)) {
+	                this.boundingSphere.radius = 1.5;
+	                THREE.error('THREE.BufferGeometry.computeBoundingSphere(): Computed radius is NaN. The "position" attribute is likely to have NaN values. Radius2 is' + maxRadiusSq);
+	            }
+	        }
+	    }
 	}(),
+
 
 
 
@@ -71674,22 +71716,22 @@ module.exports = (function () {
     };
 
     //added by sonja
-    Frame.prototype.reDrawMe = function () {
+    Frame.prototype.reDrawMe = function (seeAllData) {
        
 	    this._initNodes(this.graph.getNodes());	    
         this._initEdges(this.graph.getEdges());
-        this.positionCamera();
+        this.positionCamera(seeAllData);
         this.forceRerender();
  
         //this._animateAgain();
 	};
 
     //added by sonja
-    Frame.prototype.reDrawMeWithoutSizeAttenuation = function () {
+    Frame.prototype.reDrawMeWithoutSizeAttenuation = function (seeAllData) {
 
         this._initNodesWithoutSizeAttenuation(this.graph.getNodes());
         this._initEdges(this.graph.getEdges());
-        this.positionCamera();
+        this.positionCamera(seeAllData);
         this.forceRerender();
 
         //this._animateAgain();
@@ -71731,13 +71773,26 @@ module.exports = (function () {
 
     };
 
-    Frame.prototype.positionCamera = function () {
+    Frame.prototype.positionCamera = function (seeAllData) {
         // Calculate optimal camera position
         this.points.computeBoundingSphere();
         var sphere = this.points.boundingSphere;
+        var optimalDistance = sphere.radius;
+        if (seeAllData) {
+            optimalDistance = (
+               sphere.radius * 1.5 / Math.tan(this.graph._fov / 2));
+            this.camera.position.x = sphere.center.x + sphere.radius;
+            this.camera.position.y = sphere.center.y + sphere.radius;
+            this.camera.position.z = sphere.center.z + sphere.radius;
+        }
+        else {
+            this.camera.position.x = sphere.center.x + sphere.radius;
+            this.camera.position.y = sphere.center.y;
+            this.camera.position.z = sphere.center.z;
+        }
+        //var optimalDistance = (
+            //sphere.radius * 1 / Math.tan(this.graph._fov / 2));
 
-        var optimalDistance = (
-            sphere.radius * 1 / Math.tan(this.graph._fov / 2));
         ////original
         //var optimalDistance = (
         //    sphere.radius * 1.5 / Math.tan(this.graph._fov / 2));

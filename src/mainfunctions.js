@@ -50,13 +50,13 @@
             if (loadFirstTime) {
                 renderFrame = graph.renderIn("frame");
             }
-            redrawInitialScene();
+            redrawInitialScene(false);
         }
 
         /** Initializes the check boxes and the event handlers for the checkboxes */
         function InitEventHandlers() {
             sizeAtShow.checked = true;
-            show_popup.checked = true;
+            show_popup.checked = false;
             show_found_nodes.checked = false;           
             sizeAtShow.onchange = function () {
                 HandleSizeAttenuationChange();
@@ -342,11 +342,11 @@
             else { renderFrame.reDrawMeInSameSceneWithoutSizeAttenuation();}
         }
         /** Redraws the graph in the initial scene. The camera is re-positioned to look at all points */
-            function redrawInitialScene() {                
+        function redrawInitialScene(seeAllData) {
                 if (size_attenuation) {
-                    renderFrame.reDrawMe();
+                    renderFrame.reDrawMe(seeAllData);
                 }
-                else { renderFrame.reDrawMeWithoutSizeAttenuation(); }
+                else { renderFrame.reDrawMeWithoutSizeAttenuation(seeAllData); }
             }
            /** Changes the color of a node
             * @param {Graph.node} node - the node that changes color
