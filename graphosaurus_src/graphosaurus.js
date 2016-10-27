@@ -107,10 +107,11 @@ function Trackball( object, domElement ) {
 
 	this.screen = { left: 0, top: 0, width: 0, height: 0 };
 
-	this.rotateSpeed = 0.01;
+	//this.rotateSpeed = 0.01;
+	this.rotateSpeed = (old_d == undefined) ? 0.01 : Math.abs(old_d)/10.0;
 	this.zoomSpeed = 1.2;
-	this.panSpeed = 0.15;
-
+	//this.panSpeed = 0.15;
+	this.panSpeed =  (old_d ==undefined) ? 0.1 : Math.abs(old_d);
 	this.noRotate = false;
 	this.noZoom = true;
 	this.noPan = false;
@@ -606,7 +607,7 @@ function Trackball( object, domElement ) {
 
         
 		//_zoomStart.y += delta * 0.01;
-		 
+		
         //changed by sonja
 		var d = ((typeof event.wheelDelta != "undefined") ? (-event.wheelDelta) : event.detail);
 	    //d = -0.01 * ((d > 0) ? 1 : -1);//the old one
@@ -634,6 +635,8 @@ function Trackball( object, domElement ) {
 		    }
 		}
 		old_d = d;
+		_this.panSpeed = Math.abs(old_d);
+		_this.rotateSpeed = Math.abs(old_d / 10);
         //new calculations end here
 		var factor = d;
 		mX = ((event.clientX - frameStartsAt) / (window.innerWidth - frameStartsAt)) * 2 - 1;
