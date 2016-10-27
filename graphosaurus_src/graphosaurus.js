@@ -609,7 +609,32 @@ function Trackball( object, domElement ) {
 		 
         //changed by sonja
 		var d = ((typeof event.wheelDelta != "undefined") ? (-event.wheelDelta) : event.detail);
-		d = -0.010 * ((d > 0) ? 1 : -1);
+	    //d = -0.01 * ((d > 0) ? 1 : -1);//the old one
+        //new calculations start here
+		d = -0.1 * start_zoomin_factor * ((d > 0) ? 1 : -1);
+		if (old_d == undefined) {		    
+		}
+		else {
+		    if (old_d * d > 0)//if wheel direction did not change
+		    {
+		        d = old_d;
+		        if (Math.abs(d) > 0.01) {
+		            if (d > 0) { //if zooming-in
+		                d = old_d * 0.95;
+		                //d = old_d -0.005
+		            }
+		            else {//if zooming-out
+		                d = old_d * (1/0.95);
+		                //d = old_d - 0.005
+		            }
+		        }
+		    }
+		    else {//if wheel direction changed
+		        d = -old_d;
+		    }
+		}
+		old_d = d;
+        //new calculations end here
 		var factor = d;
 		mX = ((event.clientX - frameStartsAt) / (window.innerWidth - frameStartsAt)) * 2 - 1;
 		mY = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -71999,73 +72024,73 @@ module.exports = (function () {
 
   
 
-    Frame.prototype._initMouseEvents_orig = function (elem) {
-        var self = this;
-        var createMouseHandler = function (callback) {
-            var raycaster = new THREE.Raycaster();
+    //Frame.prototype._initMouseEvents_orig = function (elem) {
+    //    var self = this;
+    //    var createMouseHandler = function (callback) {
+    //        var raycaster = new THREE.Raycaster();
 
-            return function (evt) {
-                evt.preventDefault();
+    //        return function (evt) {
+    //            evt.preventDefault();
 
-                var mouseX = ((evt.clientX - frameStartsAt) / (window.innerWidth - frameStartsAt)) * 2 - 1;
-                var mouseY = 1 - (evt.clientY / window.innerHeight) * 2;
+    //            var mouseX = ((evt.clientX - frameStartsAt) / (window.innerWidth - frameStartsAt)) * 2 - 1;
+    //            var mouseY = 1 - (evt.clientY / window.innerHeight) * 2;
 
                 
 
-                // Calculate mouse position
-                var mousePosition = new THREE.Vector3(mouseX, mouseY, 0.5);
-                //var mousePosition = new THREE.Vector3(mouseX, mouseY, self.camera.near);
-                var radiusPosition = mousePosition.clone();
-                mousePosition.unproject(self.camera);
+    //            // Calculate mouse position
+    //            var mousePosition = new THREE.Vector3(mouseX, mouseY, 0.5);
+    //            //var mousePosition = new THREE.Vector3(mouseX, mouseY, self.camera.near);
+    //            var radiusPosition = mousePosition.clone();
+    //            mousePosition.unproject(self.camera);
 
-                // Calculate threshold
-                var clickRadiusPx = 3;  // 5px originally, changed by sonja
+    //            // Calculate threshold
+    //            var clickRadiusPx = 3;  // 5px originally, changed by sonja
 
-                var radiusX = ((evt.clientX - frameStartsAt + clickRadiusPx) / (window.innerWidth - frameStartsAt)) * 2 - 1;
-                radiusPosition.setX(radiusX);
+    //            var radiusX = ((evt.clientX - frameStartsAt + clickRadiusPx) / (window.innerWidth - frameStartsAt)) * 2 - 1;
+    //            radiusPosition.setX(radiusX);
                              
 
-                radiusPosition.unproject(self.camera);
+    //            radiusPosition.unproject(self.camera);
 
-                var clickRadius = radiusPosition.distanceTo(mousePosition);
-                //from sonja: this is the code responsible for finding which node was clicked or hovered over
+    //            var clickRadius = radiusPosition.distanceTo(mousePosition);
+    //            //from sonja: this is the code responsible for finding which node was clicked or hovered over
 
-                //var threshold = (
-                //    self.camera.far * clickRadius / self.camera.near);
+    //            //var threshold = (
+    //            //    self.camera.far * clickRadius / self.camera.near);
 
-                var threshold = clickRadius;
+    //            var threshold = clickRadius;
 
-                raycaster.params.PointCloud.threshold = threshold;
+    //            raycaster.params.PointCloud.threshold = threshold;
                 
-                // Determine intersects
-                var mouseDirection = (
-                    mousePosition.sub(self.camera.position)).normalize();
-                raycaster.set(self.camera.position, mouseDirection);
+    //            // Determine intersects
+    //            var mouseDirection = (
+    //                mousePosition.sub(self.camera.position)).normalize();
+    //            raycaster.set(self.camera.position, mouseDirection);
 
-                var intersects = raycaster.intersectObject(self.pointCloud, true);
-                if (intersects.length) {                    
-                    var firstIndex = intersects[0].index;
-                    //var nodeIndex = self.pointCloud.geometry.attributes.id.array[firstIndex];                     
-                    callback(self.graph._nodes[firstIndex]);                    
-                }
-            };
-        };
+    //            var intersects = raycaster.intersectObject(self.pointCloud, true);
+    //            if (intersects.length) {                    
+    //                var firstIndex = intersects[0].index;
+    //                //var nodeIndex = self.pointCloud.geometry.attributes.id.array[firstIndex];                     
+    //                callback(self.graph._nodes[firstIndex]);                    
+    //            }
+    //        };
+    //    };
 
-        if (this.graph._hover) {
-            elem.addEventListener(
-                'mousemove', createMouseHandler(this.graph._hover), false);
-        }
+    //    if (this.graph._hover) {
+    //        elem.addEventListener(
+    //            'mousemove', createMouseHandler(this.graph._hover), false);
+    //    }
 
-        if (this.graph._click) {
-            elem.addEventListener(
-                'click', createMouseHandler(this.graph._click), false);
-        }
-        if (this.graph._mousedown) {
-            elem.addEventListener(
-                'mousedown', createMouseHandler(this.graph._mousedown), false);
-        }        
+    //    if (this.graph._click) {
+    //        elem.addEventListener(
+    //            'click', createMouseHandler(this.graph._click), false);
+    //    }
+    //    if (this.graph._mousedown) {
+    //        elem.addEventListener(
+    //            'mousedown', createMouseHandler(this.graph._mousedown), false);
+    //    }        
 
-    };
+    //};
 
     Frame.prototype._initMouseEvents = function (elem) {
         var self = this;

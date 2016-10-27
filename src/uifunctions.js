@@ -13,10 +13,12 @@
  function defineCombo(data) {
      var myCombo = document.getElementById("combo");
      //remove all options
-     var length = myCombo.options.length;
-     for (i = 0; i < length; i++) {
-         myCombo.options[i] = null;
+     
+     var i;
+     for (i = myCombo.options.length - 1 ; i >= 0 ; i--) {
+         myCombo.remove(i);
      }
+
      var listOfProperties;         
      listOfProperties = data["NamesOfProperties"];
      if (listOfProperties != undefined) {

@@ -20,6 +20,8 @@
         var allNodes = [];//keeps all nodes, to be able to switch easily between "show only found nodes" and "show all nodes"
         var foundNodes=[]; //keeps the nodes that were found in the last search
         var pointsSet;
+        var old_d = undefined;// used in determining the mouse zoom speed 
+        var start_zoomin_factor = 1;
         //################# global variables definitions end here
 
         //################# global code starts here

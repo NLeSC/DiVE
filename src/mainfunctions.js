@@ -343,6 +343,9 @@
         }
         /** Redraws the graph in the initial scene. The camera is re-positioned to look at all points */
         function redrawInitialScene(seeAllData) {
+            old_d = undefined;//zooming-in speed will be reset
+            if (seeAllData) { start_zoomin_factor = 2; }
+            else { start_zoomin_factor = 1;}
                 if (size_attenuation) {
                     renderFrame.reDrawMe(seeAllData);
                 }
