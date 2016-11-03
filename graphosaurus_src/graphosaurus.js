@@ -108,12 +108,12 @@ function Trackball( object, domElement ) {
 	this.screen = { left: 0, top: 0, width: 0, height: 0 };
 
 	//this.rotateSpeed = 0.01;
-	this.rotateSpeed = (old_d == undefined) ? 0.01 : Math.abs(old_d)/10.0;
-	this.zoomSpeed = 1.2;
+	this.rotateSpeed = (old_d == undefined) ? 0.01 : Math.abs(old_d)/10.0;// by sonja
+	this.zoomSpeed = 1.2;//not used  -  by sonja
 	//this.panSpeed = 0.15;
-	this.panSpeed =  (old_d ==undefined) ? 0.1 : Math.abs(old_d);
+	this.panSpeed = (old_d == undefined) ? 0.1 : Math.abs(old_d); // by sonja
 	this.noRotate = false;
-	this.noZoom = true;
+	this.noZoom = true; // by sonja
 	this.noPan = false;
 	this.noRoll = false;
 
@@ -243,20 +243,15 @@ function Trackball( object, domElement ) {
 
 			}
 
-		  
-            
-		    //pointsSet.computeBoundingSphere();
-		    //var sphere = pointsSet.boundingSphere;				
-		    // _this.target = sphere.center.clone();// from sonja: you can add this code to move data to center before rotation
-
+		         
 		    pointsSet.computeBoundingSphere();
 		    var sphere = pointsSet.boundingSphere;
 		    var center = sphere.center.clone();
 		   
-
+		    // by sonja
 		    var vector = center.sub(_this.target);
-		    _this.target.addVectors(_this.target, vector.setLength(0.002));//this moves the target gradually to the center of the bounding sphere while rotating
-		 
+		    _this.target.addVectors(_this.target, vector.setLength(0.002));//this moves the target gradually to the center of the bounding sphere while rotating 
+		    // end by sonja
 
 		    
 		   
@@ -583,7 +578,7 @@ function Trackball( object, domElement ) {
 	}
 
 	    
-	function mousewheel( event ) {
+	function mousewheel( event ) { // by sonja
 
 	   
 	  
@@ -650,7 +645,7 @@ function Trackball( object, domElement ) {
 		_this.dispatchEvent( startEvent );
 	    _this.dispatchEvent( endEvent );
 
-       
+       //end by sonja
 
 	}
 	
@@ -15493,7 +15488,7 @@ THREE.EventDispatcher.prototype = {
 	//
 
 
-
+    //changed by sonja
 	THREE.Raycaster.prototype = {
 
 
@@ -15640,7 +15635,7 @@ THREE.EventDispatcher.prototype = {
 
 
 	};
-
+    //end change by sonja
 
 
 }( THREE ) );
@@ -18507,7 +18502,7 @@ THREE.BufferGeometry.prototype = {
 	//}(),
 
 
-
+    //by sonja
 	computeBoundingSphere: function () {
 	    //var box = new THREE.Box3();
 	    var vector = new THREE.Vector3();
@@ -18546,7 +18541,7 @@ THREE.BufferGeometry.prototype = {
 	        }
 	    }
 	}(),
-
+    //end by sonja
 
 
 
@@ -22269,7 +22264,6 @@ THREE.OrthographicCamera.prototype.updateProjectionMatrix = function () {
 
 
 };
-
 
 
 THREE.OrthographicCamera.prototype.clone = function () {
@@ -30768,7 +30762,7 @@ THREE.PointCloud.prototype = Object.create( THREE.Object3D.prototype );
 
 THREE.PointCloud.prototype.constructor = THREE.PointCloud;
 
-
+//maybe changed by sonja, don't remember. 
 THREE.PointCloud.prototype.raycast = (function () {
 
 
@@ -31021,7 +31015,7 @@ THREE.PointCloud.prototype.raycast = (function () {
 
 }());
 
-
+// maybe commented by sonja
 
 //THREE.PointCloud.prototype.raycast = ( function () {
 
@@ -31330,7 +31324,7 @@ THREE.Points = function ( geometry, material ) {
 
 THREE.Points.prototype = Object.create( THREE.Object3D.prototype );
 THREE.Points.prototype.constructor = THREE.Points;
-
+//by sonja?
 THREE.Points.prototype.raycast = ( function () {
 
 	var inverseMatrix = new THREE.Matrix4();
@@ -71538,7 +71532,7 @@ if (typeof exports !== 'undefined') {
   this['THREE'] = THREE;
 
 }
-
+    //maybe changed by sonja
 
 },{}],5:[function(require,module,exports){
 module.exports = (function () {
@@ -71646,7 +71640,7 @@ module.exports = (function () {
 
     return Edge;
 }());
-
+//maybe changed by sonja
 },{"three":4}],6:[function(require,module,exports){
 module.exports = (function () {
     "use strict";
@@ -71731,6 +71725,7 @@ module.exports = (function () {
         this.renderer.render(this.scene, this.camera);
     };
 
+    //changed by sonja
     Frame.prototype.drawMe = function () {
         this._initScene();
         this._initRenderer(this.width, this.height, this.elem);
@@ -71801,6 +71796,7 @@ module.exports = (function () {
 
     };
 
+    //changed by sonja
     Frame.prototype.positionCamera = function (seeAllData) {
         // Calculate optimal camera position
         this.points.computeBoundingSphere();
@@ -71832,6 +71828,7 @@ module.exports = (function () {
         this.controls.target = sphere.center.clone();
     };
 
+    // changed by sonja
     Frame.prototype._initNodes = function (nodes) {
         var self = this;
         
@@ -71897,6 +71894,7 @@ module.exports = (function () {
 
     };
     
+    //added by sonja
     Frame.prototype._initNodesWithoutSizeAttenuation = function (nodes) {
         var self = this;
 
@@ -72095,6 +72093,7 @@ module.exports = (function () {
 
     //};
 
+    //changed by sonja
     Frame.prototype._initMouseEvents = function (elem) {
         var self = this;
         var createMouseHandler = function (callback) {
@@ -72131,6 +72130,8 @@ module.exports = (function () {
         }
 
     };
+
+    //changed by sonja
     Frame.prototype._updateCameraBounds = (function () {
         var prevCameraPos;
         return function () {
@@ -72169,6 +72170,7 @@ module.exports = (function () {
         }());
     };
 
+    //changed by sonja
     Frame.prototype._animateAgain = function () {
         var self = this,
             sorter = new BufferGeometrySorter(5);
@@ -72247,7 +72249,8 @@ module.exports = (function () {
 
         return this;
     };
-
+    
+    //changed by sonja
     Graph.prototype.addNode = function (node) {//changed by sonja, was buggy (was adding a node even if it existed)
         var id = node.getId();
 
@@ -72261,6 +72264,7 @@ module.exports = (function () {
         return this;
     };
     
+    //maybe shanged by sonja
     Graph.prototype.removeLastNode = function () {
 
         var mynodes = this.getNodes();
@@ -72276,6 +72280,7 @@ module.exports = (function () {
         return this;
     };
     
+    //changed by sonja
     Graph.prototype.removeLastEdge = function () {
 
         var myEdges = this.getEdges();
@@ -72397,6 +72402,8 @@ module.exports = (function () {
         this._initProps(props);
     };
 
+    // changed by sonja
+
     /**
      * Initialize Node properties
      * @private
@@ -72495,7 +72502,7 @@ module.exports = (function () {
     Node.prototype.getColor = function () {
         return this._color.getHexString();
     };
-
+    //added by sonja
     Node.prototype.getColor1 = function () {
         return this._color;
     };
@@ -72510,12 +72517,12 @@ module.exports = (function () {
         graph.addNode(this);
         return this;
     };
-
+    //added by sonja
     Node.prototype.setOpen = function (isOpen) {
         this._isItOpen = isOpen;
         return this;
     };
-
+    //added by sonja
     Node.prototype.getOpen = function () {        
         return this._isItOpen;
     };
