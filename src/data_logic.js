@@ -13,19 +13,7 @@
             
         }
 
-        /**Is called when the user selects a file to upload */
-        function LoadLocalDataSet() {
-            var x = document.getElementById("dataFile");
-            var txt = "";
-            if ('files' in x) {
-                if (x.files.length == 0) {
-                    txt = "Select a file.";
-                } else {
-                    var file = x.files[0];
-                    LoadDataFromFile(file);
-                }
-            }                      
-        }
+        
 
         /** Loads data from file and makes initializations necessary to render data points
              @param {file} file - The file selected by the user
@@ -48,49 +36,12 @@
         function InitDrawing(data) {           
             LoadDataInGraph(data);
             if (loadFirstTime) {
-                renderFrame = graph.renderIn("frame");
+                DefineRenderFrame();
             }
             redrawInitialScene(false);
         }
-
-        /** Initializes the check boxes and the event handlers for the checkboxes */
-        function InitEventHandlers() {
-            sizeAtShow.checked = true;
-            show_popup.checked = false;
-            show_found_nodes.checked = false;           
-            sizeAtShow.onchange = function () {
-                HandleSizeAttenuationChange();
-            }
-            show_found_nodes.onchange = function () {
-                HandleShowFoundNodesChange();                
-            }
-        }
-        
-        /** What to do when the user clicks on the size attenuation box */
-        function HandleSizeAttenuationChange()
-        {
-            var sizeAtBool = sizeAtShow.checked;
-            if (sizeAtBool) {
-                size_attenuation = true;
-                node_size = 0.016;
-            }
-            else {
-                size_attenuation = false;
-                node_size = 10;
-            }
-            redrawSameScene();
-        }
-        /** What to do when the "show found nodes" box is changed */
-        function HandleShowFoundNodesChange()
-        {
-            if (show_found_nodes.checked) {
-                LoadOnlyFoundNodes();
-            }
-            else {
-                LoadAllNodes();
-            }
-            redrawSameScene();
-        }
+       
+       
 
         /** Loads only the points that result from a search in the graph. At least 15 nodes are loaded, however. */
         function LoadOnlyFoundNodes() {
@@ -181,6 +132,10 @@
             var pointid = key;
             var coords = point.Coordinates;
             var nodecategories = point.Categories;
+            if (point.Categories != undefined && point.Categories != [])
+                { nodecategories = point.Categories; }
+            else
+                { nodecategories = point.Properties; }
             var nodeProperties = point.Properties;
             var node = G.node(coords, {
                 id: pointid,
@@ -334,23 +289,7 @@
         }
 
        
-        /** Redraws the graph in the same scene. The position of the camera will not change. */
-        function redrawSameScene() {          
-            if (size_attenuation) {
-                renderFrame.reDrawMeInSameScene();
-            }
-            else { renderFrame.reDrawMeInSameSceneWithoutSizeAttenuation();}
-        }
-        /** Redraws the graph in the initial scene. The camera is re-positioned to look at all points */
-        function redrawInitialScene(seeAllData) {
-            old_d = undefined;//zooming-in speed will be reset
-            if (seeAllData) { start_zoomin_factor = 2; }
-            else { start_zoomin_factor = 1;}
-                if (size_attenuation) {
-                    renderFrame.reDrawMe(seeAllData);
-                }
-                else { renderFrame.reDrawMeWithoutSizeAttenuation(seeAllData); }
-            }
+       
            /** Changes the color of a node
             * @param {Graph.node} node - the node that changes color
             * @param  {Three.color} color - the new color of the node*/ 

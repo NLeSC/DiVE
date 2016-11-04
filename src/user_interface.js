@@ -7,6 +7,63 @@
  }
 
 
+ /**Is called when the user selects a file to upload */
+ function LoadLocalDataSet() {
+     var x = document.getElementById("dataFile");
+     var txt = "";
+     if ('files' in x) {
+         if (x.files.length == 0) {
+             txt = "Select a file.";
+         } else {
+             var file = x.files[0];
+             LoadDataFromFile(file);
+         }
+     }
+ }
+
+
+ /** Initializes the check boxes and the event handlers for the checkboxes */
+ function InitEventHandlers() {
+     sizeAtShow.checked = true;
+     show_popup.checked = false;
+     show_found_nodes.checked = false;
+     sizeAtShow.onchange = function () {
+         HandleSizeAttenuationChange();
+     }
+     show_found_nodes.onchange = function () {
+         HandleShowFoundNodesChange();
+     }
+ }
+
+
+     
+        /** What to do when the user clicks on the scale size box */
+        function HandleSizeAttenuationChange()
+        {
+            var sizeAtBool = sizeAtShow.checked;
+            if (sizeAtBool) {
+                size_attenuation = true;
+                node_size = 0.016;
+            }
+            else {
+                size_attenuation = false;
+                node_size = 10;
+            }
+            redrawSameScene();
+        }
+        /** What to do when the "show found nodes" box is changed */
+        function HandleShowFoundNodesChange()
+        {
+            if (show_found_nodes.checked) {
+                LoadOnlyFoundNodes();
+            }
+            else {
+                LoadAllNodes();
+            }
+            redrawSameScene();
+        }
+
+
  /** Creates the combobox and populates it with properties names from the data. Defines what happens when a value is selected - the colorization 
   * @param {dictionary} data as loaded from the json file
   */
