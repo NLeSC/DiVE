@@ -605,34 +605,34 @@ function Trackball( object, domElement ) {
 		
         //changed by sonja
 		var d = ((typeof event.wheelDelta != "undefined") ? (-event.wheelDelta) : event.detail);
-	    //d = -0.01 * ((d > 0) ? 1 : -1);//the old one
-        //new calculations start here
-		d = -0.1 * start_zoomin_factor * ((d > 0) ? 1 : -1);
-		if (old_d == undefined) {		    
-		}
-		else {
-		    if (old_d * d > 0)//if wheel direction did not change
-		    {
-		        d = old_d;
-		        if (Math.abs(d) > 0.01) {
-		            if (d > 0) { //if zooming-in
-		                d = old_d * 0.95;
-		                //d = old_d -0.005
-		            }
-		            else {//if zooming-out
-		                d = old_d * (1/0.95);
-		                //d = old_d - 0.005
-		            }
-		        }
-		    }
-		    else {//if wheel direction changed
-		        d = -old_d;
-		    }
-		}
-		old_d = d;
-		_this.panSpeed = Math.abs(old_d);
-		_this.rotateSpeed = Math.abs(old_d / 10);
-        //new calculations end here
+	    d = -0.01 * ((d > 0) ? 1 : -1);//the old one
+        ////new calculations start here
+		//d = -0.1 * start_zoomin_factor * ((d > 0) ? 1 : -1);
+		//if (old_d == undefined) {		    
+		//}
+		//else {
+		//    if (old_d * d > 0)//if wheel direction did not change
+		//    {
+		//        d = old_d;
+		//        if (Math.abs(d) > 0.01) {
+		//            if (d > 0) { //if zooming-in
+		//                d = old_d * 0.95;
+		//                //d = old_d -0.005
+		//            }
+		//            else {//if zooming-out
+		//                d = old_d * (1/0.95);
+		//                //d = old_d - 0.005
+		//            }
+		//        }
+		//    }
+		//    else {//if wheel direction changed
+		//        d = -old_d;
+		//    }
+		//}
+		//old_d = d;
+		//_this.panSpeed = Math.abs(old_d);
+		//_this.rotateSpeed = Math.abs(old_d / 10);
+        ////new calculations end here
 		var factor = d;
 		mX = ((event.clientX - frameStartsAt) / (window.innerWidth - frameStartsAt)) * 2 - 1;
 		mY = -(event.clientY / window.innerHeight) * 2 + 1;
