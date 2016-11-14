@@ -99,8 +99,8 @@
     <fieldset class="fieldset-auto-width" style="font: 15px Arial">
         <legend style=" font: 15px Arial">Visualization options</legend>
         
-        <button style=" font: 14px Arial" onclick="redrawInitialScene(false)" name="buttonCentralize">Centralize</button>
-        <button style=" font: 14px Arial" onclick="redrawInitialScene(true)" name="buttonSeeAllData">See all data</button>
+        <button style=" font: 14px Arial" onclick="redrawInitialScene(false)" name="buttonCentralize">Show all data</button>
+       <!-- <button style=" font: 14px Arial" onclick="redrawInitialScene(true)" name="buttonSeeAllData">See all data</button>-->
         <p> </p>
         <input type="checkbox" name="sizeattenuation" id="sizeattenuation" />
         <label style=" font: 15px Arial"> Scale point size </label>
@@ -118,7 +118,7 @@
     <div id="label" style=" font: 12px Arial ; color: darkblue"></div>
     <div id="labelsearch" style=" font: 12px Arial ; color: darkblue"></div>
     <div id="sliderObj" min="0" step="1" value="0" vertical="false" size="245"></div>
-    <div id="labelproperty2" style=" font: 15px Arial">Hover over a point to see its information. Right-click to rotate, right-click again to stop a rotation.</div>
+    <div id="labelproperty2" style=" font: 15px Arial">Hover over a point to see its information. Click to rotate, click again to stop a rotation. Right-click to shift.  </div>
     <div>
         <fieldset class="fieldset-auto-width" style="font: 15px Arial">
             <legend style=" font: 15px Arial">Coloring by property</legend>
@@ -134,17 +134,19 @@
             </p>
         </fieldset>
     </div>
-     <link rel="stylesheet" type="text/css" href="src/dhtmlxcolorpicker.css">
-    <script src="src/dhtmlxcolorpicker.js"></script>
-    <link rel="stylesheet" type="text/css" href="src/dhtmlxpopup.css">
-    <script src="src/dhtmlxpopup.js"></script>
-    <script src="graphosaurus_src/graphosaurus.js"></script>
-    <script src="src/search.js"></script>
-    <script src="src/user_interface.js"></script>
+     <link rel="stylesheet" type="text/css" href="dhtmlx/dhtmlxcolorpicker.css">
+    <script src="dhtmlx/dhtmlxcolorpicker.js"></script>
+    <link rel="stylesheet" type="text/css" href="dhtmlx/dhtmlxpopup.css">
+    <script src="dhtmlx/dhtmlxpopup.js"></script>
+    <script src="dist/graphosaurus.js"></script>
+    <script src="scripts_DiVE/search.js"></script>
+    <script src="scripts_DiVE/user_interface.js"></script>
     <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
-    <script src="src/data_logic.js"></script>
-    <script src="src/main.js"></script>
-    <script src="src/drawing.js"></script>
+    <script src="scripts_DiVE/data_logic.js"></script>
+    <script src="scripts_DiVE/drawing.js"></script>
+    <script src="data_default/pentax_pce_log.js"></script>
+    <script src="scripts_DiVE/main.js"></script>
+
 
 </body>
 </html>

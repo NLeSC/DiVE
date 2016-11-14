@@ -8,14 +8,14 @@ Please cite the software if you are using it in your scientific publication:
  
 DiVE is an interactive 3D web viewer of up to million points on one screen that represent data. It is meant to provide interaction for viewing high-dimensional data that has been previously [embedded](https://en.wikipedia.org/wiki/Nonlinear_dimensionality_reduction) in 3D. For embedding (non-linear dimensionality reduction, or manifold learning) we recommend [LargeVis](http://github.com/sonjageorgievska/LargeVis/) (a new algorithm by Microsoft Research, ) or [tSNE](https://github.com/lvdmaaten/bhtsne) .       
 
-For an online demo click  [here](http://sonjageorgievska.github.io/DiVE/ "online demo"). Or open index.html in Mozzila Firefox to run a demo on your local computer. You need to select data from your local computer to display. Example data is in the folder *data*.   
+For an online demo click  [here](http://sonjageorgievska.github.io/DiVE/ "online demo").   
 
 
-##Installation##
+##Installation - for users ##
 
-The simplest way is to have the Mozilla Firefox browser installed and to open *index.html* with it.   
+The simplest way is to download the code and open *index.html* with your browser. Try it by uploading datasets from the *data* folder. The application can work completely offline.    
 
-If you would like to use Google Chrome or any other browser, you would have to
+To use it with a local http server:
 
 1. Open your command line interpreter (CLI)
 2. Clone this repository
@@ -24,6 +24,15 @@ If you would like to use Google Chrome or any other browser, you would have to
 5. Type `npm install connect serve-static`
 6. Type `node server.js` 
 7. Open your browser and type `http://localhost:8082/index.html` 
+
+## Build - for developers ##
+
+1. Clone this repository
+1. Install [node](http://nodejs.org/), [npm](https://www.npmjs.org/), and [grunt-cli](https://www.npmjs.org/package/grunt-cli)
+1. Run `npm install` to install all the build requirements
+1. Run `grunt` to build. The resulting compiled JavaScript will be in `dist/` and the docs will be in `doc/`
+
+
 
 ## Data description and functionality ##
 
@@ -91,7 +100,7 @@ The output of [LargeVis](http://github.com/sonjageorgievska/LargeVis/) is a text
 		0 -33.729916 17.692684 17.466749
 		1 -32.923210 17.249269 18.111458
 		
-It can be processed into an input of the viewer by using the python script "MakeVizDataWithProperMetaData.py" in the folder "prepareData". It is called with 
+It can be processed into an input of the viewer by using the python script "MakeVizDataWithProperMetaData.py" in the folder "scripts_prepareData". It is called with 
 		
 		python MakeVizDataWithProperMetaData.py -coord coordinatesFile -metadata metaDataFile -dir baseDir -np -namesOfPropertiesFile -pif -propertiesFile
 		
