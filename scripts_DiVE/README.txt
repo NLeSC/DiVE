@@ -1,0 +1,1 @@
+These scripts define the logic and UI of DiVE. Ideally they should be put in a class that can be built by grunt, together with the sripts from src_graphosaurus.
