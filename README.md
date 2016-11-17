@@ -8,7 +8,7 @@ Please cite the software if you are using it in your scientific publication:
  
 DiVE is an interactive 3D web viewer of up to million points on one screen that represent data. It is meant to provide interaction for viewing high-dimensional data that has been previously [embedded](https://en.wikipedia.org/wiki/Nonlinear_dimensionality_reduction) in 3D. For embedding (non-linear dimensionality reduction, or manifold learning) we recommend [LargeVis](http://github.com/sonjageorgievska/LargeVis/) (a new algorithm by Microsoft Research, ) or [tSNE](https://github.com/lvdmaaten/bhtsne) .       
 
-For an online demo click  [here](http://sonjageorgievska.github.io/DiVE/ "online demo").   
+For an online demo click  [here](http://NLeSC.github.io/DiVE/ "online demo").   
 
 
 ##Installation - for users ##
