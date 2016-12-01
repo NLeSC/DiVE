@@ -104,7 +104,7 @@ module.exports = (function () {
         controls.panSpeed = 0.1;
         controls.noZoom = true;
         controls.frameStartsAt = this.frameStartsAt;
-        controls.mousewheel = function (event) {
+        controls.mousewheel = function (event) {//zooms in to mouse position, like in gmaps
             var _this = controls;
             if (_this.enabled === false) { return; }
             event.preventDefault();
@@ -261,7 +261,7 @@ module.exports = (function () {
         var self = this;
         var createMouseHandler = function (callback) {
             var raycaster = new THREE.Raycaster();
-            raycaster.params.PointCloud.threshold = 0.001;//was 1, changed by sonja
+                raycaster.params.PointCloud.threshold = 0.001;//was 1, changed by sonja
             raycaster.precision = 0.0000000001;
             raycaster.linePrecision = 1;
             var mouse = new THREE.Vector2();
@@ -315,7 +315,7 @@ module.exports = (function () {
                 this.camera.updateProjectionMatrix();
             }
             else {
-                this.camera.near = 0.0001;//flexible
+                this.camera.near = 0.0000001;//flexible
                 this.camera.far = boundingSphere.radius * 2;
                 this.camera.updateProjectionMatrix();
             }
