@@ -38,15 +38,13 @@ To use it with a local http server:
 
 * Every point has 3 coordinates and a unique ID. (For a best view, the absolute values of the coordinates should be smaller than 1. When using LargeVis with similarities (weights) as input, this can be achieved by re-scaling the similarities to be smaller than 1.) 
  
-* A point also has `Categories` and `Properties`:
- 
-  - `Categories` is a list of strings associated with the point. This list is displayed when a user hovers over a point with the mouse or 	equivalent. The list can be empty.
-  
+* A point also has `Properties`:
+   
   - `Properties` is a list of strings which can be empty. Each string which is a number represents the value of a respective numerical property. Each string which is not a number represents the value of a respective categorical property.  These values are used in the Coloring section of the UI of the web-page. When the user selects a property, if the property has categorical (non-numerical) values, each point is colored in a color representing the value of the categorical property. If the property is numerical, then after the user has selected a color, every point is colored with a shade of the selected color. The intensity of the color corresponds to the intensity of the selected property for the particular point. 
 
 ## User interaction ##
 ### Search ###
-* A user can search for all points that contain a certain substring in their ids, names or categories, by using the *Search* section. Then all points that are a match become red, and the rest become grey. One can search also for boolean expressions of regular expressions. An example of a boolean expression is `xx AND yy OR NOT zz`, where xx, yy, and zz are regular expressions and NOT binds more than AND, which binds more than OR. In this case all points that contain in their metadata the regular espressions xx and yy, or that do not contain zz, will be coloured in red. 
+* A user can search for all points that contain a certain substring in their ids, names or properties, by using the *Search* section. Then all points that are a match become red, and the rest become grey. One can search also for boolean expressions of regular expressions. An example of a boolean expression is `xx AND yy OR NOT zz`, where xx, yy, and zz are regular expressions and NOT binds more than AND, which binds more than OR. In this case all points that contain in their metadata the regular espressions xx and yy, or that do not contain zz, will be coloured in red. 
 
 * *Show only found nodes* will show only the nodes that result from the search.
   
@@ -75,17 +73,15 @@ is created in any programming language, where the keys are the id’s of the poi
 		public class Point
 		    {
 		        public List<double> Coordinates;
-		        public List<object> Categories;
 		        public List<double> Properties;
 		    }
 
-`Coordinates, Categories` and `Properties` are as discussed in the previous section.
+`Coordinates` and `Properties` are as discussed in the previous section.
 
 Next, the dictionary is serialized using JavaScriptSerializer and written in *data.json* (name is flexible). 
 Here is an example of an entry of the serialized dictionary in a *data.json* file:
 
-		"3951":{"Coordinates":[0.99860800383893167,0.61276015046241838,0.450976426942296],
-			"Categories":["Prototheca cutis","Prototheca cutis","Prototheca","",""],
+		"3951":{"Coordinates":[0.99860800383893167,0.61276015046241838,0.450976426942296],			
 			"Properties":["0", "1", "5", "12688892", "0.998", "5" , "True", "0", "False", "5", "1",  "True","1","518", "0", "-1", "Rhodotorula", "", "Sporidiobolales", "Microbotryomycetes"]}
 
 Optionally, if data has properties, the dictionary should also contain an entry 
@@ -102,7 +98,7 @@ The output of [LargeVis](http://github.com/sonjageorgievska/LargeVis/) is a text
 		
 It can be processed into an input of the viewer by using the python script "MakeVizDataWithProperMetaData.py" in the folder "scripts_prepareData". It is called with 
 		
-		python MakeVizDataWithProperMetaData.py -coord coordinatesFile -metadata metaDataFile -dir baseDir -np -namesOfPropertiesFile -pif -propertiesFile
+		python MakeVizDataWithProperMetaData.py -coord coordinatesFile -metadata metaDataFile -dir baseDir -np -namesOfPropertiesFile 
 		
 		
 		
@@ -112,7 +108,7 @@ It can be processed into an input of the viewer by using the python script "Make
 * `baseDir`: base directory to store output file
 
 * `namesOfPropertiesFile`: A json file containing list of properties names. Ex: `["Height", "Weight", "Place of birth"]`. If file is omitted, its name should be `"No"`
-* `propertiesFile`: A file containing values of the properties. File format: `[id] [valueOfProperty1] [valueOfProperty2]... [valueOfPropertyN]`. If file is omitted, its name should be `"No"`
+
 
 ## Licence ##
 The software is released under the Creative Commons Attribution-NoDerivatives licence.
