@@ -6,10 +6,26 @@
             position: absolute;
             top: 0;
             bottom: 0;
-            left: 285;
+            left: 0;            
             right: 0;
             z-index: 0;
+            overflow:auto;
+           
         }
+
+        #panel{
+			position: absolute;
+			left: 0;
+			top: 0;
+			/*height: 1024px;*/
+            bottom: 0;
+			width: 285px;
+			right: 0;
+			z-index: 100;
+		    overflow:auto;
+            background-color:white;
+			border-bottom: 1px solid #dedede;
+		}
 
         #sliderObj {
             position: absolute;
@@ -70,82 +86,91 @@
 </head>
 
 <body>
-    <h1 style=" font: 20px Arial ; color: darkblue">3D data visualization</h1>
+    <div id="panel" class="collapsed">
+        <h1 style=" font: 20px Arial ; color: darkblue">3D data visualization</h1>
 
-    <p> </p>
-    <p> </p>
-    <p> </p>
-    <!--UI components-->
-    <fieldset class="fieldset-auto-width" style="font: 15px Arial">
-        <legend style=" font: 15px Arial">Upload local data file </legend>
-        <input type="file" id="dataFile" multiple size="50" onchange="LoadLocalDataSet()">
-    </fieldset>
-    <p> </p> <p> </p>
-    <fieldset class="fieldset-auto-width" style="font: 15px Arial">
-        <legend style=" font: 15px Arial">Search by id, name, category, etc... </legend>
-        
-        <input type="text" name="search" id="search" class="textbox" onclick="empty_notification()" />
-        <button style=" font: 14px Arial" onclick="searchSequence()" name="button">Search</button>
-        <br>
-        <label style=" font: 12px Arial; color: darkred" id="label_search2"></label>
-        <br> <text style=" font: 12px Arial" >Example: x OR y AND NOT z <br> x, y and z are regular expressions. <br>
-         NOT has the highest priority, OR the lowest. </text>  
         <p> </p>
-        <input type="checkbox" name="show_found_nodes" id="show_found_nodes" />
-        <label style=" font: 15px Arial"> Show only found nodes</label>
-        <br> <text style=" font: 12px Arial">For perspective, it shows at least 15 nodes <br>
-</fieldset>
-    <p> </p> <p> </p>
-    <fieldset class="fieldset-auto-width" style="font: 15px Arial">
-        <legend style=" font: 15px Arial">Visualization options</legend>
-        
-        <button style=" font: 14px Arial" onclick="redrawInitialScene(false)" name="buttonCentralize">Show all data</button>
-       <!-- <button style=" font: 14px Arial" onclick="redrawInitialScene(true)" name="buttonSeeAllData">See all data</button>-->
         <p> </p>
-        <input type="checkbox" name="sizeattenuation" id="sizeattenuation" />
-        <label style=" font: 15px Arial"> Scale point size </label>
-        <text style=" font: 12px Arial">
-           <br> Uncheck to zoom-in into a dense region
-        </text>
         <p> </p>
-        <input type="checkbox" name="show_popup" id="show_popup" />
-        <label style=" font: 15px Arial"> Show point info in popup </label>
-        
-      
-    </fieldset>
-    <p> </p>
-    <div id="frame"></div>
-    <div id="label" style=" font: 12px Arial ; color: darkblue"></div>
-    <div id="labelsearch" style=" font: 12px Arial ; color: darkblue"></div>
-    <div id="sliderObj" min="0" step="1" value="0" vertical="false" size="245"></div>
-    <div id="labelproperty2" style=" font: 15px Arial">Hover over a point to see its information. Click and drag to rotate, click again to stop a rotation. Right-click to shift.  </div>
-    <div>
+        <!--UI components-->
         <fieldset class="fieldset-auto-width" style="font: 15px Arial">
-            <legend style=" font: 15px Arial">Coloring by property</legend>
-            <p> Select a property: </p>
-            <select name="combo" id="combo" onchange="HandlePropertyChange()"></select>
-            <p>
-                Click inside the field to select a color
-                <br> <text style=" font: 12px Arial"> Only for numerical properties
-            </p>
-            <input type="text" id="inputcolor" colorbox="true">
-            <p>
-                <button style=" font: 14px Arial" onclick="ReturnAllColors()" name="button">Resume colors</button>
-            </p>
+            <legend style=" font: 15px Arial">Upload local data file </legend>
+            <input type="file" id="dataFile" multiple size="50" onchange="LoadLocalDataSet()">
         </fieldset>
+        <p> </p> <p> </p>
+        <fieldset class="fieldset-auto-width" style="font: 15px Arial">
+            <legend style=" font: 15px Arial">Search by id, name, category, etc... </legend>
+
+            <input type="text" name="search" id="search" class="textbox" onclick="empty_notification()" />
+            <button style=" font: 14px Arial" onclick="searchSequence()" name="button">Search</button>
+            <br>
+            <label style=" font: 12px Arial; color: darkred" id="label_search2"></label>
+            <br> <text style=" font: 12px Arial">
+                Example: x OR y AND NOT z <br> x, y and z are regular expressions. <br>
+                NOT has the highest priority, OR the lowest.
+            </text>
+            <p> </p>
+            <input type="checkbox" name="show_found_nodes" id="show_found_nodes" />
+            <label style=" font: 15px Arial"> Show only found nodes</label>
+            <br> <text style=" font: 12px Arial">For perspective, it shows at least 15 nodes <br>
+        </fieldset>
+        <p> </p> <p> </p>
+        <fieldset class="fieldset-auto-width" style="font: 15px Arial">
+            <legend style=" font: 15px Arial">Visualization options</legend>
+
+            <button style=" font: 14px Arial" onclick="redrawInitialScene(false)" name="buttonCentralize">Show all data</button>
+            <!-- <button style=" font: 14px Arial" onclick="redrawInitialScene(true)" name="buttonSeeAllData">See all data</button>-->
+            <p> </p>
+            <input type="checkbox" name="sizeattenuation" id="sizeattenuation" />
+            <label style=" font: 15px Arial"> Scale point size </label>
+            <text style=" font: 12px Arial">
+                <br> Uncheck to zoom-in into a dense region
+            </text>
+            <p> </p>
+            <input type="checkbox" name="show_popup" id="show_popup" />
+            <label style=" font: 15px Arial"> Show point info in popup </label>
+
+
+        </fieldset>
+
+        <p> </p>
+
+        
+        <div id="labelsearch" style=" font: 12px Arial ; color: darkblue"></div>
+       
+       
+        <div>
+            <fieldset class="fieldset-auto-width" style="font: 15px Arial">
+                <legend style=" font: 15px Arial">Coloring by property</legend>
+                <p> Select a property: </p>
+                <select name="combo" id="combo" onchange="HandlePropertyChange()"></select>
+                <p>
+                    Click inside the field to select a color
+                    <br> <text style=" font: 12px Arial"> Only for numerical properties
+                </p>
+                <input type="text" id="inputcolor" colorbox="true">
+                <p>
+                    <button style=" font: 14px Arial" onclick="ReturnAllColors()" name="button">Resume colors</button>
+                </p>
+            </fieldset>
+        </div>
     </div>
-     <link rel="stylesheet" type="text/css" href="dhtmlx/dhtmlxcolorpicker.css">
-    <script src="dhtmlx/dhtmlxcolorpicker.js"></script>
-    <link rel="stylesheet" type="text/css" href="dhtmlx/dhtmlxpopup.css">
-    <script src="dhtmlx/dhtmlxpopup.js"></script>
-    <script src="dist/graphosaurus.js"></script>
-    <script src="scripts_DiVE/search.js"></script>
-    <script src="scripts_DiVE/user_interface.js"></script>
-    <script src="jquery/jquery-2.1.3.min.js"></script>
-    <script src="scripts_DiVE/data_logic.js"></script>
-    <script src="scripts_DiVE/drawing.js"></script>
-    <script src="data_default/pentax_pce_log.js"></script>
-    <script src="scripts_DiVE/main.js"></script>
+    <div id="labelproperty2" style=" font: 15px Arial">Hover over a point to see its information. Click and drag to rotate, click again to stop a rotation. Right-click to shift.  </div>
+    <div id="label" style=" font: 12px Arial ; color: darkblue"></div>
+    <div id="sliderObj" min="0" step="1" value="0" vertical="false" size="245"></div>
+    <div id="frame"></div>
+        <link rel="stylesheet" type="text/css" href="dhtmlx/dhtmlxcolorpicker.css">
+        <script src="dhtmlx/dhtmlxcolorpicker.js"></script>
+        <link rel="stylesheet" type="text/css" href="dhtmlx/dhtmlxpopup.css">
+        <script src="dhtmlx/dhtmlxpopup.js"></script>
+        <script src="dist/graphosaurus.js"></script>
+        <script src="scripts_DiVE/search.js"></script>
+        <script src="scripts_DiVE/user_interface.js"></script>
+        <script src="jquery/jquery-2.1.3.min.js"></script>
+        <script src="scripts_DiVE/data_logic.js"></script>
+        <script src="scripts_DiVE/drawing.js"></script>
+        <script src="data_default/pentax_pce_log.js"></script>
+        <script src="scripts_DiVE/main.js"></script>
 
 
 </body>
