@@ -1,4 +1,4 @@
-﻿import fileinput #for reading large files
+import fileinput #for reading large files
 import json
 import random
 import numpy as np
@@ -31,12 +31,13 @@ parser.add_argument(
 parser.add_argument(
    '-np',
    dest = 'namesOfPropertiesFile',
-   help = 'A json file containing list of numerical properties names. Ex: ["Pressure", "Height", "Weight"]')
+   help = 'A json file containing list of  properties names. Ex ["Name", "DBSCAN label", "K-means label"]')
 
 parser.add_argument(
-   '-pif',
-   dest = 'propertiesIntensitiesFile',
-   help = 'A file containing intensities of properties. File format: [id] [intensityOfProperty1] [intensityOfProperty2]... [intensityOfPropertyN]')
+   '-json',
+   dest = 'jsonFileName',
+   help = 'Name of the output json file')
+
 
 args = parser.parse_args()
 #endregion
@@ -58,26 +59,19 @@ def ReadMetaDataFile(metaDataFile):
         return metaDataDict
 
 
-def ReadPropertiesIntensitiesFile(propertiesIntensitiesFile):
-    """File format: [id] [intensityOfProperty1] [intensityOfProperty2]... [intensityOfPropertyN]"""      
-    intensitiesDict = dict()
-    for line in fileinput.input([propertiesIntensitiesFile]):
-        if line != "\n":   
-            items = line.split()
-            id = items[0]     
-            items.pop(0)                             
-            intensitiesDict[id] = items
-    return intensitiesDict
-
 def ReadCoordinates(file):     
     fixed = dict()
     maxabs = 0
     for line in fileinput.input([file]):
         if line != "\n":   
             items = line.split()
-            if len(items)==4:# to skip the first line 
-                maxabs = max(abs(float(items[1])), max(abs(float(items[2])), abs(float(items[3]))), maxabs)
-                fixed[items[0]] = [float(items[1]), float(items[2]), float(items[3])]
+            if len(items) > 2:# to skip the first line 
+                if (len(items) ==3): #if dimension == 2
+                    maxabs = max(abs(float(items[1])), abs(float(items[2])), maxabs)
+                    fixed[items[0]] = [ 0.1, float(items[1]), float(items[2])] # add artificial x-dimension. must be non-zero
+                else:
+                    maxabs = max(abs(float(items[1])), max(abs(float(items[2])), abs(float(items[3]))), maxabs)
+                    fixed[items[0]] = [float(items[1]), float(items[2]), float(items[3])]
     for key in fixed.keys():
         lis = fixed[key]
         fixed[key] = [lis[0]/maxabs, lis[1]/maxabs, lis[2]/maxabs]
@@ -87,20 +81,18 @@ def ReadCoordinates(file):
 
           
 
-
-
 #region Write output
 
 
-def CreateSmallDataJSONFile(allPoints, startingFolder):
+def CreateSmallDataJSONFile(allPoints, startingFolder,  jsonfilename):
     string = json.dumps(allPoints)
-    file = open(os.path.join(startingFolder, "smalldata.json"), "w")
+    file = open(os.path.join(startingFolder, jsonfilename), "w")
     file.write(string)
     file.close()
    
 
 
-def CreatePointsDictionary(fixedCoordinates,  metaDataDict, intensitiesOfPropertiesDict, namesOfPropertiesFile):
+def CreatePointsDictionary(fixedCoordinates,  metaDataDict,  namesOfPropertiesFile):
     pointsDict = dict()
     if namesOfPropertiesFile != "No":
         with open(namesOfPropertiesFile) as json_data:
@@ -108,17 +100,12 @@ def CreatePointsDictionary(fixedCoordinates,  metaDataDict, intensitiesOfPropert
         pointsDict["NamesOfProperties"] = list
     for key in fixedCoordinates.keys():
         point = dict()
-
         point["Coordinates"] = fixedCoordinates[key]
         if (metaDataDict != "no" ):
             if key in metaDataDict:
-                point["Categories"] = metaDataDict[key]
+                point["Properties"] = metaDataDict[key]
             else:
-                point["Categories"] = []
-        else: 
-            point["Categories"] = []
-        if (intensitiesOfPropertiesDict != "no"):                
-            point["Properties"] = intensitiesOfPropertiesDict[key]
+                point["Properties"] = []
         else: 
             point["Properties"] = []
         pointsDict[key] = point
@@ -142,30 +129,36 @@ def ConvertCoordinatesToList(fixedCoordinate):
     for key in fixedCoordinate:
         fixedCoordinate[key] = list(fixedCoordinate[key])
                        
-def Workflow(coordinatesFile, metaDataFile, namesOfPropertiesFile, propertiesIntensitiesFile, baseDir):      
-    print(str(datetime.now()) + ": Removing old data...")
-    dirname1 =  os.path.join(baseDir, "data")
-    RemoveDirTreeIfExists(dirname1)
+def Workflow(coordinatesFile, metaDataFile, namesOfPropertiesFile = "No", baseDir = os.getcwd(), jsonfilename = "data.json"):      
+    """Produces the input for DiVE. 
+       coordinatesFile is the output of LargeVis
+       metaDataFile contains info about the photos
+       namesOfPropeties file contains a list of names of properties. Ex ["Name", "DBSCAN label", "K-means label"]
+       baseDir - where to write output
+       jsonfilename - the name of the output file
+    """
+    dirname1 = baseDir;
     print(str(datetime.now()) + ": Reading input files...")
     if metaDataFile != "No":
         metaDataDict = ReadMetaDataFile(metaDataFile)
     else: 
-        metaDataDict = "no"
-    if propertiesIntensitiesFile != "No":
-        intensitiesDict = ReadPropertiesIntensitiesFile(propertiesIntensitiesFile)
-    else:
-        intensitiesDict = "no"           
+        metaDataDict = "no"          
     fixedCoordinate = ReadCoordinates(coordinatesFile)
     ConvertCoordinatesToList(fixedCoordinate)   
-    pointsDict = CreatePointsDictionary(fixedCoordinate, metaDataDict, intensitiesDict, namesOfPropertiesFile)        
+    pointsDict = CreatePointsDictionary(fixedCoordinate, metaDataDict,  namesOfPropertiesFile)        
     print(str(datetime.now()) + ": Start writing output...")         
     CreateDirIfDoesNotExist(dirname1)
-    CreateSmallDataJSONFile(pointsDict, dirname1)
+    CreateSmallDataJSONFile(pointsDict, dirname1, jsonfilename)
     print(str(datetime.now()) + ": Finished writing output.")
 #endregion
          
 #region Main
 
-Workflow(args.coordinatesFile, args.metaDataFile, args.namesOfPropertiesFile, args.propertiesIntensitiesFile, args.baseDir)
 
+if __name__ == "__main__":
+    Workflow(args.coordinatesFile, args.metaDataFile, args.namesOfPropertiesFile,  args.baseDir, args.jsonfilename)
+#Workflow("coordinates_pentax_pce_nolog.txt", "filelist_praktica.txt", "No",  os.getcwd())
 #endregion
+
+
+
