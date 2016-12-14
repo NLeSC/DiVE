@@ -156,7 +156,7 @@ def Workflow(coordinatesFile, metaDataFile, namesOfPropertiesFile = "No", baseDi
 
 
 if __name__ == "__main__":
-    Workflow(args.coordinatesFile, args.metaDataFile, args.namesOfPropertiesFile,  args.baseDir, args.jsonfilename)
+    Workflow(args.coordinatesFile, args.metaDataFile, args.namesOfPropertiesFile,  args.baseDir, args.jsonFileName)
 #Workflow("coordinates_pentax_pce_nolog.txt", "filelist_praktica.txt", "No",  os.getcwd())
 #endregion
 
