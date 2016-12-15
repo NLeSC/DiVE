@@ -215,27 +215,34 @@
             return isCategorical;
         }
 
-        function ColorizeCategory(indexOfProperty){
-            var colorsDict = [];
+        function ColorizeCategory(indexOfProperty) {
+            colorsDict = [];
+            entriesColor = [];
+            //labelsForColorsDict = [];
             for (var i = 0; i < graph._nodes.length; i++) {
                 var node = graph._nodes[i];
                 var key = node._propertiesValues[indexOfProperty];
+                if (key == "") { key = "No entry" }
                 if (key in colorsDict) {
                     var colorPoint = colorsDict[key];
                     ChangeColor(node, colorPoint);
+                    entriesColor[key] += 1;
                 }
-                else{
-                    var red = Math.floor(Math.random() * 255);
-                    var green = Math.floor(Math.random() * 255);
-                    var blue = Math.floor(Math.random() * 255);
-                    var colorPoint =  "rgb(" + red + "," + green + "," + blue + ")";
-                    ChangeColor(node, colorPoint);
-                    colorsDict[key] = colorPoint;    
+                else {
+                    var red = Math.floor(Math.random() * 255)
+                    var green = Math.floor(Math.random() * 255)
+                    var blue = Math.floor(Math.random() * 255)
+                    var colorPoint = "rgb(" + red + "," + green + "," + blue + ")";
+                    ChangeColor(node, colorPoint)
+                    colorsDict[key] = colorPoint;
+                    entriesColor[key] = 1;
+                    //labelsForColorsDict[node.getColor()] = key;
                 }
-            }                                   
+            }
+
+            CreateColorMap();
             redrawSameScene();
         }
-
         /** Colorizes the nodes in different shades of a certain color based on intensity of a property
          * @param {Three.color} col - the color in which to colorize
          * @param {indexOfProperty} - the index of the property based on which to colorize
@@ -317,4 +324,55 @@
                     ReturnPreviousColor(nodes[i]);
                 }
                 redrawSameScene();
-            } 
+            }
+
+            function RemoveColorMap() {
+                if (colorsChildrenIds != undefined) {
+                    for (var key in colorsChildrenIds) {
+                        var idd = colorsChildrenIds[key];
+                        var ch = document.getElementById(idd);
+                        document.body.removeChild(ch);
+                    }
+                    colorsChildrenIds = undefined;
+                }
+            }
+
+            function CreateColorMap() {
+                if (show_color_map.checked) {
+                    RemoveColorMap();
+                    if (entriesColor !== undefined) {
+                        var dict = entriesColor;
+                        // Create items array
+                        var items = Object.keys(dict).map(function (key) {
+                            return [key, dict[key]];
+                        });
+
+                        // Sort the array based on the second element
+                        items.sort(function (first, second) {
+                            return second[1] - first[1];
+                        });
+                        //items.reverse();
+                        items = items.slice(0, 41);
+                        //if (Object.keys(colorsDict).length < 40) {
+                        var count = 70;
+                        colorsChildrenIds = [];
+                        //for (var propertyValue in colorsDict) {
+                        for (var i = 0; i < items.length; i++) {
+                            var propertyValue = items[i][0];
+                            var text2 = document.createElement('div');
+                            text2.id = colorsDict[propertyValue];
+                            text2.style.position = 'absolute';
+                            //text2.style.zIndex = 1;    // if you still don't see the label, try uncommenting this
+                            //text2.style.width = 100;
+                            text2.style.height = 100;
+                            text2.innerHTML = propertyValue + ":" + items[i][1];
+                            text2.style.color = colorsDict[propertyValue];
+                            text2.style.top = count + 'px';
+                            text2.style.left = 305 + 'px';
+                            document.body.appendChild(text2);
+                            colorsChildrenIds.push(text2.id);
+                            count += 20;
+                        }
+                    }
+                }
+            }
