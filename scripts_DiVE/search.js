@@ -4,6 +4,9 @@
  */
 function SearchAndColorizeByExpression(expression)//searches the nodes that are already loaded in the graph. 
 {
+    RemoveColorMap();
+    entriesColor = undefined;
+    colorsDict = undefined;
     $("#labelsearch").text("")
             foundNodes = [];
             searchExprWellDefined = true;
