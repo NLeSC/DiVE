@@ -90,9 +90,6 @@ Optionally, if data has properties, the dictionary should also contain an entry
 
 		"NamesOfProperties":["name1", "name2", ..., "name_n"]
 
-Optionally, if data has properties, the dictionary should also contain an entry 
-
-		"NamesOfProperties":["name1", "name2", ..., "name_n"]
 
 Optionally, if images are associated to the nodes, the node image can be displayed in a pop-up when hovering over the node. 
 If the datafile starts with `namedataset_` then the folder with images should be `images_namedataset` in folder `data`. 
