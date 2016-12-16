@@ -22,6 +22,7 @@
         var labelsForColorsDict = undefined;
         var colorsChildrenIds = undefined;
         var entriesColor = undefined;
+        var dataset = "pentax";
         //################# global variables definitions end here
 
         //################# global code starts here

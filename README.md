@@ -42,6 +42,8 @@ To use it with a local http server:
    
   - `Properties` is a list of strings which can be empty. Each string which is a number represents the value of a respective numerical property. Each string which is not a number represents the value of a respective categorical property.  These values are used in the Coloring section of the UI of the web-page. When the user selects a property, if the property has categorical (non-numerical) values, each point is colored in a color representing the value of the categorical property. If the property is numerical, then after the user has selected a color, every point is colored with a shade of the selected color. The intensity of the color corresponds to the intensity of the selected property for the particular point. 
 
+* A node can also have an image associated to it, see the Data format section for more info.
+
 ## User interaction ##
 ### Search ###
 * A user can search for all points that contain a certain substring in their ids, names or properties, by using the *Search* section. Then all points that are a match become red, and the rest become grey. One can search also for boolean expressions of regular expressions. An example of a boolean expression is `xx AND yy OR NOT zz`, where xx, yy, and zz are regular expressions and NOT binds more than AND, which binds more than OR. In this case all points that contain in their metadata the regular espressions xx and yy, or that do not contain zz, will be coloured in red. 
@@ -87,6 +89,13 @@ Here is an example of an entry of the serialized dictionary in a *data.json* fil
 Optionally, if data has properties, the dictionary should also contain an entry 
 
 		"NamesOfProperties":["name1", "name2", ..., "name_n"]
+
+
+Optionally, if images are associated to the nodes, the node image can be displayed in a pop-up when hovering over the node. 
+If the datafile starts with `namedataset_` then the folder with images should be `images_namedataset` in folder `data`. 
+(see examples in folder `data`, sorry for their size). The name of an image should be `nodeId.jpg`.
+
+If your images have  a `.png` extension then the `fingerprints_namedataset` folder is an option, although it is currently made for the Sherlock purposes.
 
 ## From output of LargeVis to input of DiVE ##
 
