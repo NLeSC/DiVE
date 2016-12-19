@@ -550,28 +550,32 @@ function Trackball( object, domElement ) {
 
 	}
 
-	function mousewheel( event ) {
+	function mousewheel(event) { // by sonja
 
-		if ( _this.enabled === false ) return;
 
-		event.preventDefault();
-		event.stopPropagation();
 
-		var delta = 0;
+	    if (_this.enabled === false) return;
 
-		if ( event.wheelDelta ) { // WebKit / Opera / Explorer 9
+	    event.preventDefault();
+	    event.stopPropagation();
 
-			delta = event.wheelDelta / 40;
 
-		} else if ( event.detail ) { // Firefox
+	    var d = ((typeof event.wheelDelta != "undefined") ? (-event.wheelDelta) : event.detail);
+	    d = -0.01 * ((d > 0) ? 1 : -1);//the old one
 
-			delta = - event.detail / 3;
+	    var factor = d;
+	    mX = ((event.clientX - frameStartsAt) / (window.innerWidth - frameStartsAt)) * 2 - 1;
+	    mY = -(event.clientY / window.innerHeight) * 2 + 1;
+	    var vector = new THREE.Vector3(mX, mY, 0.5);
+	    vector.unproject(_this.object);
+	    vector.sub(_this.object.position);
 
-		}
+	    _this.object.position.addVectors(_this.object.position, vector.setLength(factor));
+	    _this.target.addVectors(_this.target, vector.setLength(factor));
+	    _this.dispatchEvent(startEvent);
+	    _this.dispatchEvent(endEvent);
 
-		_zoomStart.y += delta * 0.01;
-		_this.dispatchEvent( startEvent );
-		_this.dispatchEvent( endEvent );
+	    //end by sonja
 
 	}
 
@@ -8007,133 +8011,250 @@ THREE.EventDispatcher.prototype = {
 
 // File:src/core/Raycaster.js
 
-/**
- * @author mrdoob / http://mrdoob.com/
- * @author bhouston / http://exocortex.com/
- * @author stephomi / http://stephaneginier.com/
- */
+(function (THREE) {
 
-( function ( THREE ) {
 
-	THREE.Raycaster = function ( origin, direction, near, far ) {
 
-		this.ray = new THREE.Ray( origin, direction );
-		// direction is assumed to be normalized (for accurate distance calculations)
+    THREE.Raycaster = function (origin, direction, near, far) {
 
-		this.near = near || 0;
-		this.far = far || Infinity;
 
-		this.params = {
-			Sprite: {},
-			Mesh: {},
-			PointCloud: { threshold: 1 },
-			LOD: {},
-			Line: {}
-		};
 
-	};
+        this.ray = new THREE.Ray(origin, direction);
 
-	var descSort = function ( a, b ) {
+        // direction is assumed to be normalized (for accurate distance calculations)
 
-		return a.distance - b.distance;
 
-	};
 
-	var intersectObject = function ( object, raycaster, intersects, recursive ) {
+        this.near = near || 0;
 
-		object.raycast( raycaster, intersects );
+        this.far = far || Infinity;
 
-		if ( recursive === true ) {
 
-			var children = object.children;
 
-			for ( var i = 0, l = children.length; i < l; i ++ ) {
+        this.params = {
 
-				intersectObject( children[ i ], raycaster, intersects, true );
+            Sprite: {},
 
-			}
+            Mesh: {},
 
-		}
+            PointCloud: { threshold: 0.001 },//was 1, changed by sonja
 
-	};
+            LOD: {},
 
-	//
+            Line: {}
 
-	THREE.Raycaster.prototype = {
+        };
 
-		constructor: THREE.Raycaster,
 
-		precision: 0.0001,
-		linePrecision: 1,
 
-		set: function ( origin, direction ) {
+    };
 
-			// direction is assumed to be normalized (for accurate distance calculations)
 
-			this.ray.set( origin, direction );
 
-		},
+    var descSort = function (a, b) {
 
-		setFromCamera: function ( coords, camera ) {
 
-			// camera is assumed _not_ to be a child of a transformed object
 
-			if ( camera instanceof THREE.PerspectiveCamera ) {
+        return a.distance - b.distance;
 
-				this.ray.origin.copy( camera.position );
-				this.ray.direction.set( coords.x, coords.y, 0.5 ).unproject( camera ).sub( camera.position ).normalize();
 
-			} else if ( camera instanceof THREE.OrthographicCamera ) {
 
-				this.ray.origin.set( coords.x, coords.y, - 1 ).unproject( camera );
-				this.ray.direction.set( 0, 0, - 1 ).transformDirection( camera.matrixWorld );
+    };
 
-			} else {
 
-				THREE.error( 'THREE.Raycaster: Unsupported camera type.' );
 
-			}
+    var intersectObject = function (object, raycaster, intersects, recursive) {
 
-		},
 
-		intersectObject: function ( object, recursive ) {
 
-			var intersects = [];
+        object.raycast(raycaster, intersects);
 
-			intersectObject( object, this, intersects, recursive );
 
-			intersects.sort( descSort );
 
-			return intersects;
+        if (recursive === true) {
 
-		},
 
-		intersectObjects: function ( objects, recursive ) {
 
-			var intersects = [];
+            var children = object.children;
 
-			if ( objects instanceof Array === false ) {
 
-				THREE.warn( 'THREE.Raycaster.intersectObjects: objects is not an Array.' );
-				return intersects;
 
-			}
+            for (var i = 0, l = children.length; i < l; i++) {
 
-			for ( var i = 0, l = objects.length; i < l; i ++ ) {
 
-				intersectObject( objects[ i ], this, intersects, recursive );
 
-			}
+                intersectObject(children[i], raycaster, intersects, true);
 
-			intersects.sort( descSort );
 
-			return intersects;
 
-		}
+            }
 
-	};
 
-}( THREE ) );
+
+        }
+
+
+
+    };
+
+
+
+    //
+
+
+    //changed by sonja
+    THREE.Raycaster.prototype = {
+
+
+
+        constructor: THREE.Raycaster,
+
+
+
+        //precision: 0.00001,
+        precision: 0.0000000001,//by sonja
+        linePrecision: 1,
+
+        // linePrecision: 0.0001,
+
+        set: function (origin, direction) {
+
+
+
+            // direction is assumed to be normalized (for accurate distance calculations)
+
+
+
+            this.ray.set(origin, direction);
+
+
+
+        },
+
+
+
+        setFromCamera: function (coords, camera) {
+
+
+
+            // camera is assumed _not_ to be a child of a transformed object
+
+
+
+            if (camera instanceof THREE.PerspectiveCamera) {
+
+
+                this.near = camera.near; //added by sonja
+                this.far = camera.far;//added by sonja
+                this.ray.origin.copy(camera.position);
+
+                this.ray.direction.set(coords.x, coords.y, 0.5).unproject(camera).sub(camera.position).normalize();
+
+
+
+            } else if (camera instanceof THREE.OrthographicCamera) {
+
+
+
+                this.ray.origin.set(coords.x, coords.y, -1).unproject(camera);
+
+                this.ray.direction.set(0, 0, -1).transformDirection(camera.matrixWorld);
+
+
+
+            } else {
+
+
+
+                THREE.error('THREE.Raycaster: Unsupported camera type.');
+
+
+
+            }
+
+
+
+        },
+
+
+
+        intersectObject: function (object, recursive) {
+
+
+
+            var intersects = [];
+
+
+
+            intersectObject(object, this, intersects, recursive);
+
+
+
+            intersects.sort(descSort);
+
+
+
+            return intersects;
+
+
+
+        },
+
+
+
+        intersectObjects: function (objects, recursive) {
+
+
+
+            var intersects = [];
+
+
+
+            if (objects instanceof Array === false) {
+
+
+
+                THREE.warn('THREE.Raycaster.intersectObjects: objects is not an Array.');
+
+                return intersects;
+
+
+
+            }
+
+
+
+            for (var i = 0, l = objects.length; i < l; i++) {
+
+
+
+                intersectObject(objects[i], this, intersects, recursive);
+
+
+
+            }
+
+
+
+            intersects.sort(descSort);
+
+
+
+            return intersects;
+
+
+
+        }
+
+
+
+    };
+    //end change by sonja
+
+
+}(THREE));
+
+
 
 // File:src/core/Object3D.js
 
@@ -15713,16 +15834,25 @@ THREE.PointCloud.prototype.raycast = ( function () {
 
 				var distance = raycaster.ray.origin.distanceTo( intersectPoint );
 
-				intersects.push( {
+				intersects.push({
 
-					distance: distance,
-					distanceToRay: rayPointDistance,
-					point: intersectPoint.clone(),
-					index: index,
-					face: null,
-					object: object
 
-				} );
+
+				    distance: Math.sqrt(rayPointDistance),//distance,
+
+				    distanceToRay: Math.sqrt(rayPointDistance),
+
+				    point: intersectPoint.clone(),
+
+				    index: index,
+
+				    face: null,
+
+				    object: object
+
+
+
+				});
 
 			}
 
@@ -36065,32 +36195,32 @@ module.exports = (function () {
         controls.panSpeed = 0.1;
         controls.noZoom = true;
         controls.frameStartsAt = this.frameStartsAt;
-        controls.mousewheel = function (event) {//zooms in to mouse position, like in gmaps
-            var _this = controls;
-            if (_this.enabled === false) { return; }
-            event.preventDefault();
-            event.stopPropagation();
+        //controls.mousewheel = function (event) {//zooms in to mouse position, like in gmaps
+        //    var _this = controls;
+        //    if (_this.enabled === false) { return; }
+        //    event.preventDefault();
+        //    event.stopPropagation();
             
-            //by sonja
-            var delta = ((typeof event.wheelDelta !== "undefined") ? (-event.wheelDelta) : event.detail);
-            var d = delta;
-            d = -0.01 * ((d > 0) ? 1 : -1);//the old one
-            var factor = d;
-            var mX = ((event.clientX - controls.frameStartsAt) / (window.innerWidth - controls.frameStartsAt)) * 2 - 1;
-            var mY = -(event.clientY / window.innerHeight) * 2 + 1;
-            var vector = new THREE.Vector3(mX, mY, 0.5);
-            vector.unproject(controls.object);
-            vector.sub(controls.object.position);
-            controls.object.position.addVectors(controls.object.position, vector.setLength(factor));
-            controls.target.addVectors(controls.target, vector.setLength(factor));
-            controls.dispatchEvent(controls.startEvent);
-            controls.dispatchEvent(controls.endEvent);
+        //    //by sonja
+        //    var delta = ((typeof event.wheelDelta !== "undefined") ? (-event.wheelDelta) : event.detail);
+        //    var d = delta;
+        //    d = -0.01 * ((d > 0) ? 1 : -1);//the old one
+        //    var factor = d;
+        //    var mX = ((event.clientX - controls.frameStartsAt) / (window.innerWidth - controls.frameStartsAt)) * 2 - 1;
+        //    var mY = -(event.clientY / window.innerHeight) * 2 + 1;
+        //    var vector = new THREE.Vector3(mX, mY, 0.5);
+        //    vector.unproject(controls.object);
+        //    vector.sub(controls.object.position);
+        //    controls.object.position.addVectors(controls.object.position, vector.setLength(factor));
+        //    controls.target.addVectors(controls.target, vector.setLength(factor));
+        //    controls.dispatchEvent(controls.startEvent);
+        //    controls.dispatchEvent(controls.endEvent);
 
-            //end by sonja
+        //    //end by sonja
 
-        };
-        elem.addEventListener('mousewheel', controls.mousewheel, false);
-        elem.addEventListener('DOMMouseScroll', controls.mousewheel, false); // firefox
+        //};
+        //elem.addEventListener('mousewheel', controls.mousewheel, false);
+        //elem.addEventListener('DOMMouseScroll', controls.mousewheel, false); // firefox
         controls.addEventListener('change', function () {
             self.forceRerender();
         });
@@ -36147,171 +36277,6 @@ module.exports = (function () {
         this.points.addAttribute('color', colors);
         this.points.addAttribute('id', ids);    
         this.scene.remove(this.pointCloud);
-        //
-        THREE.PointCloud = function (geometry, material) {
-
-            THREE.Object3D.call(this);
-
-            this.type = 'PointCloud';
-
-            this.geometry = geometry !== undefined ? geometry : new THREE.Geometry();
-            this.material = material !== undefined ? material : new THREE.PointCloudMaterial({ color: Math.random() * 0xffffff });
-
-        };
-
-        THREE.PointCloud.prototype = Object.create(THREE.Object3D.prototype);
-        THREE.PointCloud.prototype.constructor = THREE.PointCloud;
-
-        THREE.PointCloud.prototype.raycast = (function () {
-
-            var inverseMatrix = new THREE.Matrix4();
-            var ray = new THREE.Ray();
-
-            return function (raycaster, intersects) {
-
-                var object = this;
-                var geometry = object.geometry;
-                var threshold = raycaster.params.PointCloud.threshold;
-
-                inverseMatrix.getInverse(this.matrixWorld);
-                ray.copy(raycaster.ray).applyMatrix4(inverseMatrix);
-
-                if (geometry.boundingBox !== null) {
-
-                    if (ray.isIntersectionBox(geometry.boundingBox) === false) {
-
-                        return;
-
-                    }
-
-                }
-
-                var localThreshold = threshold / ((this.scale.x + this.scale.y + this.scale.z) / 3);
-                var position = new THREE.Vector3();
-
-                var testPoint = function (point, index) {
-
-                    var rayPointDistance = ray.distanceToPoint(point);
-
-                    if (rayPointDistance < localThreshold) {
-
-                        var intersectPoint = ray.closestPointToPoint(point);
-                        intersectPoint.applyMatrix4(object.matrixWorld);
-
-                        //var distance = raycaster.ray.origin.distanceTo(intersectPoint);
-
-                        intersects.push({
-
-
-
-                            distance: Math.sqrt(rayPointDistance),//distance,
-
-                            distanceToRay: Math.sqrt(rayPointDistance),
-
-                            point: intersectPoint.clone(),
-
-                            index: index,
-
-                            face: null,
-
-                            object: object
-
-
-
-                        });
-
-                    }
-
-                };
-
-                if (geometry instanceof THREE.BufferGeometry) {
-
-                    var attributes = geometry.attributes;
-                    var positions = attributes.position.array;
-
-                    if (attributes.index !== undefined) {
-
-                        var indices = attributes.index.array;
-                        var offsets = geometry.offsets;
-
-                        if (offsets.length === 0) {
-
-                            var offset = {
-                                start: 0,
-                                count: indices.length,
-                                index: 0
-                            };
-
-                            offsets = [offset];
-
-                        }
-
-                        for (var oi = 0, ol = offsets.length; oi < ol; ++oi) {
-
-                            var start = offsets[oi].start;
-                            var count = offsets[oi].count;
-                            var index = offsets[oi].index;
-
-                            for (var i = start, il = start + count; i < il; i++) {
-
-                                var a = index + indices[i];
-
-                                position.fromArray(positions, a * 3);
-
-                                testPoint(position, a);
-
-                            }
-
-                        }
-
-                    } else {
-
-                        var pointCount = positions.length / 3;
-
-                        for (var ii = 0; ii < pointCount; ii++) {
-
-                            position.set(
-                                positions[3 * ii],
-                                positions[3 * ii + 1],
-                                positions[3 * ii + 2]
-                            );
-
-                            testPoint(position, ii);
-
-                        }
-
-                    }
-
-                } else {
-
-                    var vertices = this.geometry.vertices;
-
-                    for (var ij = 0; ij < vertices.length; ij++) {
-
-                        testPoint(vertices[ij], ij);
-
-                    }
-
-                }
-
-            };
-
-        }());
-
-        THREE.PointCloud.prototype.clone = function (object) {
-
-            if (object === undefined) { object = new THREE.PointCloud(this.geometry, this.material); }
-
-            THREE.Object3D.prototype.clone.call(this, object);
-
-            return object;
-
-        };
-
-        //
-
-
-
         this.pointCloud = new THREE.PointCloud(this.points, material);
 
         if (this.graph._nodeImageTransparent === true) {
@@ -36387,16 +36352,16 @@ module.exports = (function () {
         var self = this;
         var createMouseHandler = function (callback) {
             var raycaster = new THREE.Raycaster();
-            raycaster.params.PointCloud.threshold = 0.001;//was 1, changed by sonja
-            raycaster.precision = 0.0000000001;
-            raycaster.linePrecision = 1;        
+            //raycaster.params.PointCloud.threshold = 0.001;//was 1, changed by sonja
+            //raycaster.precision = 0.0000000001;
+            //raycaster.linePrecision = 1;
+            //raycaster.near = self.camera.near; //added by sonja
+            //raycaster.far = self.camera.far;//added by sonja
             var mouse = new THREE.Vector2();
             return function (evt) {
                 evt.preventDefault();
                 mouse.x = ((evt.clientX - frameStartsAt) / (window.innerWidth - frameStartsAt)) * 2 - 1;
-                mouse.y = 1 - (evt.clientY / window.innerHeight) * 2;
-                raycaster.near = self.camera.near; //added by sonja
-                raycaster.far = self.camera.far;//added by sonja
+                mouse.y = 1 - (evt.clientY / window.innerHeight) * 2;               
                 raycaster.setFromCamera(mouse, self.camera);
                 var intersects = raycaster.intersectObject(self.pointCloud, true);
                 if (intersects.length) {
