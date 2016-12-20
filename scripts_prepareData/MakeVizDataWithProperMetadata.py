@@ -1,4 +1,4 @@
-import fileinput #for reading large files
+﻿import fileinput #for reading large files
 import json
 import random
 import numpy as np
@@ -80,7 +80,6 @@ def ReadCoordinates(file):
 #endregion 
 
           
-
 #region Write output
 
 
@@ -88,9 +87,7 @@ def CreateSmallDataJSONFile(allPoints, startingFolder,  jsonfilename):
     string = json.dumps(allPoints)
     file = open(os.path.join(startingFolder, jsonfilename), "w")
     file.write(string)
-    file.close()
-   
-
+    file.close()  
 
 def CreatePointsDictionary(fixedCoordinates,  metaDataDict,  namesOfPropertiesFile):
     pointsDict = dict()
@@ -129,7 +126,7 @@ def ConvertCoordinatesToList(fixedCoordinate):
     for key in fixedCoordinate:
         fixedCoordinate[key] = list(fixedCoordinate[key])
                        
-def Workflow(coordinatesFile, metaDataFile, namesOfPropertiesFile = "No", baseDir = os.getcwd(), jsonfilename = "data.json"):      
+def Workflow(coordinatesFile, metaDataFile, namesOfPropertiesFile, baseDir = os.getcwd(), jsonfilename = "data.json"):      
     """Produces the input for DiVE. 
        coordinatesFile is the output of LargeVis
        metaDataFile contains info about the photos
@@ -154,11 +151,8 @@ def Workflow(coordinatesFile, metaDataFile, namesOfPropertiesFile = "No", baseDi
          
 #region Main
 
-
+#Workflow(args.coordinatesFile, args.metaDataFile, args.namesOfPropertiesFile,  args.baseDir, args.jsonfilename)
 if __name__ == "__main__":
     Workflow(args.coordinatesFile, args.metaDataFile, args.namesOfPropertiesFile,  args.baseDir, args.jsonFileName)
-#Workflow("coordinates_pentax_pce_nolog.txt", "filelist_praktica.txt", "No",  os.getcwd())
+#Workflow("coordinates_2d_praktica_pce_txt", "filelist_praktica.txt", "No",  os.getcwd())
 #endregion
-
-
-
