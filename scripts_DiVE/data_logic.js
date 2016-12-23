@@ -175,10 +175,12 @@
         */
         function LoadDataInGraph(data) {
             RemoveAllNodes();
+            var maxCoordinate = FindMaxCoordinate(data);
+
             var level = 0;
             for (var key in data) {
                 if (key != "NamesOfProperties") {
-                    AddNode(data, key);
+                    AddNode(data, key,  maxCoordinate);
                 }
 
             }
@@ -188,14 +190,35 @@
                 allNodes.push(nodes[i]);
             }
         }
+        
+        function FindMaxCoordinate(data) {
+            var maxCoordinate = 0;
+            for (var key in data) {
+                if (key != "NamesOfProperties") {
+                    var point = data[key];
+                    var coords = point.Coordinates;
+                    for (var i = 0; i < coords.length; i++) {
+                        if (Math.abs(coords[i]) > maxCoordinate) {
+                            maxCoordinate = Math.abs(coords[i]);
+                        }
+                    }
+                }
+            }
+            return maxCoordinate;
+        }
+
 
         /**Adds a node from data into the graph
          * @param {dictionary} data - the data as loaded from the json file
          * @param {string} key - the ID of the node
          */
-        function AddNode(data, key) {
+        function AddNode(data, key, maxCoordinate) {
             var point = data[key];
             var coords = point.Coordinates;
+            for (var i = 0; i < coords.length; i++)
+            {
+                coords[i] /= maxCoordinate;
+            }
             var colorNode = PrepareColorZero(coords);
             PrepareNodeAndAddIt(data, key, colorNode);
         }
