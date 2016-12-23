@@ -182,6 +182,40 @@ module.exports = (function () {
             ids.setX(i, i);
         }
         this.points = new THREE.BufferGeometry();
+        this.points.computeBoundingSphere = function () {
+            var vector = new THREE.Vector3();
+            return function () {
+                if (this.boundingSphere === null) {
+                    this.boundingSphere = new THREE.Sphere();
+                }
+                var positions = this.attributes.position.array;
+                if (positions) {
+                    var centerOfGravity = new THREE.Vector3();
+                    var count = 0;
+                    for (var i = 0, il = positions.length; i < il; i += 3) {
+                        vector.set(positions[i], positions[i + 1], positions[i + 2]);
+                        centerOfGravity.add(vector);
+                        count += 1;
+                    }
+                    centerOfGravity.divideScalar(count);
+                    this.boundingSphere.center = centerOfGravity;
+                    var maxRadiusSq = 0;
+                    for (var ii = 0, ili = positions.length; ii < ili; ii += 3) {
+                        vector.set(positions[ii], positions[ii + 1], positions[ii + 2]);
+                        maxRadiusSq = Math.max(maxRadiusSq, centerOfGravity.distanceToSquared(vector));
+                    }
+                    this.boundingSphere.radius = Math.sqrt(maxRadiusSq);
+                    if (isNaN(this.boundingSphere.radius)) {
+                        this.boundingSphere.radius = 1.5;
+                        THREE.error('THREE.BufferGeometry.computeBoundingSphere(): Computed radius is NaN. The "position" attribute is likely to have NaN values. Radius2 is' + maxRadiusSq);
+                    }
+                }
+            };
+        }();
+        //end by sonja
+
+
+
         this.points.addAttribute('position', positions);
         this.points.addAttribute('color', colors);
         this.points.addAttribute('id', ids);    
