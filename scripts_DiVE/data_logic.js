@@ -1,6 +1,6 @@
  /** Initiates the global variables
   */
- function InitGlobalDataVariables() {    
+function InitGlobalDataVariables() {           
             pointsSet = undefined;       
             previousColor = [];
             previoslyhoveredNode = undefined;                                
@@ -9,7 +9,9 @@
             searchExprWellDefined = undefined;
             allNodes = [];
             foundNodes = [];
-            
+            labelsForColorsDict = undefined;
+            colorsChildrenIds = undefined;
+            entriesColor = undefined;            
         }
 
         
@@ -18,24 +20,26 @@
       @param {file} file - The file selected by the user
  */
  function LoadDataFromFile(file) {
-     var reader = new FileReader();
-     reader.readAsText(file);
-     dataFileName = file.name;
-     dataset = dataFileName.split("_");
-     dataset = dataset[0];
-     reader.onloadend = function (e) {
-         var contents = e.target.result;
-         InitGlobalDataVariables();
-         var data = JSON.parse(contents);
-         defineCombo(data);
-         InitDrawing(data);
-         loadFirstTime = false;
+        var reader = new FileReader();
+        reader.readAsText(file);
+         dataFileName = file.name;
+         dataset = dataFileName.split("_");
+         dataset = dataset[0];
+         reader.onloadend = function (e) {
+             RemoveColorMap();
+             var contents = e.target.result;
+             InitGlobalDataVariables();
+             var data = JSON.parse(contents);
+             defineCombo(data);
+             InitDrawing(data);
+             loadFirstTime = false;
      }
  }
         /** Initializes rendering frame and draws the graph in an initial scene
          * @param {dictionary} data - The dictionary of points as loaded from the json file
          */
-        function InitDrawing(data) {           
+ function  InitDrawing(data) {
+           
             LoadDataInGraph(data);
             if (loadFirstTime) {
                 DefineRenderFrame(frameStartsAt);
