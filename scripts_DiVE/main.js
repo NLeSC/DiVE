@@ -19,9 +19,9 @@
         var searchExprWellDefined;//holds whether the search expression entered by the user is well defined
         var allNodes = [];//keeps all nodes, to be able to switch easily between "show only found nodes" and "show all nodes"
         var foundNodes=[]; //keeps the nodes that were found in the last search
-        var labelsForColorsDict = undefined;
-        var colorsChildrenIds = undefined;
-        var entriesColor = undefined;
+        var labelsForColorsDict;
+        var colorsChildrenIds;
+        var entriesColor;
         var dataset = "pentax";
         //################# global variables definitions end here
 

@@ -1,8 +1,8 @@
 module.exports = (function () {
     "use strict";	
     var THREE = require("three"),
-       TrackballControls = require("three.trackball"),
-       BufferGeometrySorter = require("three-buffergeometry-sort");
+       TrackballControls = require("three.trackball");
+       //BufferGeometrySorter = require("three-buffergeometry-sort");
    
     var Frame = function (elem, graph, frameStartsAt) {
         this.frameStartsAt = frameStartsAt;
@@ -21,11 +21,11 @@ module.exports = (function () {
         this._initScene();
         this._initRenderer(width, height, elem);
         this._initNodes(graph.getNodes(), graph.sizeAttenuation, graph.nodeSize);
-        this._normalizeNodes();
+        //this._normalizeNodes();
         this._initEdges(graph.getEdges());
         this._initCamera(aspectRatio);
         this._initControls(elem);
-        this.positionCamera();
+        this.positionCamera(true);
         this._initMouseEvents(elem, this.frameStartsAt);//changed by sonja
         this._animate();
     };
@@ -67,28 +67,14 @@ module.exports = (function () {
         this.renderer.render(this.scene, this.camera);
     };
 
-    //changed by sonja
-    Frame.prototype.drawMe = function () {
-        this._initScene();
-        this._initRenderer(this.width, this.height, this.elem);
-        this._initNodes(this.graph.getNodes(), this.graph.sizeAttenuation, this.graph.nodeSize);
-        //this._normalizeNodes();
-        this._initEdges(this.graph.getEdges());
-        this._initCamera(this.aspectRatio);
-        this.positionCamera();
-        this.forceRerender();
-    };
-
     //added by sonja
-    Frame.prototype.reDrawMe = function (sameScene, _sizeAttenuation, node_size) {
-        //var nodeSize = _sizeAttenuation === true ? 0.16 : 10;
+    Frame.prototype.reDrawMe = function (sameScene, _sizeAttenuation, node_size, zoom_in) {      
         this._initNodes(this.graph.getNodes(), _sizeAttenuation, node_size);
         this._initEdges(this.graph.getEdges());
         if (!sameScene) {
-            this.positionCamera();
+            this.positionCamera(zoom_in);
         }
         this.forceRerender();
-        //this._animateAgain();
     };
 
    
@@ -138,12 +124,18 @@ module.exports = (function () {
     };
 
     //changed by sonja
-    Frame.prototype.positionCamera = function () {
+    Frame.prototype.positionCamera = function (zoom_in) {
         // Calculate optimal camera position
         this.points.computeBoundingSphere();
         var sphere = this.points.boundingSphere;
-        var optimalDistance = (
-            sphere.radius * 1.5 / Math.tan(this.graph._fov / 2));
+        var factor;
+        if (zoom_in) {
+            factor = 1.1 * Math.tan(this.graph._fov / 2);
+        }
+        else {
+            factor = 1.5;
+        }
+        var optimalDistance = (sphere.radius * factor / Math.tan(this.graph._fov / 2));
         this.camera.position.x = sphere.center.x + optimalDistance;
         this.camera.position.y = sphere.center.y;
         this.camera.position.z = sphere.center.z;
@@ -183,6 +175,7 @@ module.exports = (function () {
         }
         this.points = new THREE.BufferGeometry();
         this.points.computeBoundingSphere = function () {
+            var max_x = -1;
             var vector = new THREE.Vector3();
             return function () {
                 if (this.boundingSphere === null) {
@@ -196,6 +189,7 @@ module.exports = (function () {
                         vector.set(positions[i], positions[i + 1], positions[i + 2]);
                         centerOfGravity.add(vector);
                         count += 1;
+                        if (positions[i] > max_x) { max_x = positions[i];}
                     }
                     centerOfGravity.divideScalar(count);
                     this.boundingSphere.center = centerOfGravity;
@@ -205,6 +199,7 @@ module.exports = (function () {
                         maxRadiusSq = Math.max(maxRadiusSq, centerOfGravity.distanceToSquared(vector));
                     }
                     this.boundingSphere.radius = Math.sqrt(maxRadiusSq);
+                    this.boundingSphere.max_x_radius = Math.abs(max_x - centerOfGravity.x);
                     if (isNaN(this.boundingSphere.radius)) {
                         this.boundingSphere.radius = 1.5;
                         THREE.error('THREE.BufferGeometry.computeBoundingSphere(): Computed radius is NaN. The "position" attribute is likely to have NaN values. Radius2 is' + maxRadiusSq);
@@ -534,18 +529,7 @@ module.exports = (function () {
         }());
     };
 
-    //changed by sonja
-    Frame.prototype._animateAgain = function () {
-        var self = this,
-            sorter = new BufferGeometrySorter(5);
-        // Update near/far camera range
-        (function animate() {
-            //self._updateCameraBounds();
-            sorter.sort(self.points.attributes, self.controls.object.position);
-            window.requestAnimationFrame(animate);
-            self.controls.update();
-        }());
-    };
+    
 
     return Frame;
 }());
