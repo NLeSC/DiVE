@@ -44,7 +44,7 @@ function InitGlobalDataVariables() {
             if (loadFirstTime) {
                 DefineRenderFrame(frameStartsAt);
             }
-            redrawInitialScene(true);
+            redrawInitialScene(false);
         }
        
        

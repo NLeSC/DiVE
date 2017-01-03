@@ -36023,13 +36023,19 @@ module.exports = (function () {
         this.points.computeBoundingSphere();
         var sphere = this.points.boundingSphere;
         var factor;
+        var optimalDistance;
+        var radians = this.graph._fov * Math.PI / 180;
         if (zoom_in) {
-            factor = 1.1 * Math.tan(this.graph._fov / 2);
+            factor = 1.1;// * Math.tan(this.graph._fov / 2);
+            optimalDistance = Math.max(sphere.max_y_radius * factor / Math.tan(radians / 2), sphere.max_z_radius * factor / Math.tan(radians / 2), sphere.max_x_radius * factor);
         }
         else {
             factor = 1.5;
+            optimalDistance = (sphere.radius * factor / Math.tan(this.graph._fov / 2));
         }
-        var optimalDistance = (sphere.radius * factor / Math.tan(this.graph._fov / 2));
+        
+        //var optimalDistance = Math.max(sphere.max_y_radius * factor / Math.tan(radians / 2), sphere.max_z_radius * factor / Math.tan(radians / 2), sphere.max_x_radius * factor);
+        //var optimalDistance = (sphere.max_y_radius * factor / Math.tan(this.graph._fov / 2));
         this.camera.position.x = sphere.center.x + optimalDistance;
         this.camera.position.y = sphere.center.y;
         this.camera.position.z = sphere.center.z;
@@ -36070,6 +36076,8 @@ module.exports = (function () {
         this.points = new THREE.BufferGeometry();
         this.points.computeBoundingSphere = function () {
             var max_x = -1;
+            var max_z = -1;
+            var max_y = -1;
             var vector = new THREE.Vector3();
             return function () {
                 if (this.boundingSphere === null) {
@@ -36083,7 +36091,9 @@ module.exports = (function () {
                         vector.set(positions[i], positions[i + 1], positions[i + 2]);
                         centerOfGravity.add(vector);
                         count += 1;
-                        if (positions[i] > max_x) { max_x = positions[i];}
+                        if (positions[i] > max_x) { max_x = positions[i]; }
+                        if (positions[i + 1] > max_y) { max_y = positions[i + 1]; }
+                        if (positions[i + 2] > max_z) { max_z = positions[i + 2]; }
                     }
                     centerOfGravity.divideScalar(count);
                     this.boundingSphere.center = centerOfGravity;
@@ -36094,6 +36104,8 @@ module.exports = (function () {
                     }
                     this.boundingSphere.radius = Math.sqrt(maxRadiusSq);
                     this.boundingSphere.max_x_radius = Math.abs(max_x - centerOfGravity.x);
+                    this.boundingSphere.max_y_radius = Math.abs(max_y - centerOfGravity.y);
+                    this.boundingSphere.max_z_radius = Math.abs(max_z - centerOfGravity.z);
                     if (isNaN(this.boundingSphere.radius)) {
                         this.boundingSphere.radius = 1.5;
                         THREE.error('THREE.BufferGeometry.computeBoundingSphere(): Computed radius is NaN. The "position" attribute is likely to have NaN values. Radius2 is' + maxRadiusSq);
