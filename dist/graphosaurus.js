@@ -35980,8 +35980,8 @@ module.exports = (function () {
         controls.startEvent = { type: 'start' };
         controls.endEvent = { type: 'end' };
         controls.points = this.points;
-        controls.rotateSpeed = 0.03;
-        controls.panSpeed = 0.1;
+        controls.rotateSpeed = this.camera.near;//0.03;
+        controls.panSpeed = this.camera.near;//0.1;
         controls.noZoom = true;
         controls.frameStartsAt = this.frameStartsAt;
         controls.mousewheel = function (event) {//zooms in to mouse position, like in gmaps
@@ -35994,6 +35994,7 @@ module.exports = (function () {
             var delta = ((typeof event.wheelDelta !== "undefined") ? (-event.wheelDelta) : event.detail);
             var d = delta;
             d = -0.01 * ((d > 0) ? 1 : -1);//the old one
+            // = -this.camera.near * ((d > 0) ? 1 : -1);
             var factor = d;
             var mX = ((event.clientX - controls.frameStartsAt) / (window.innerWidth - controls.frameStartsAt)) * 2 - 1;
             var mY = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -36026,11 +36027,11 @@ module.exports = (function () {
         var optimalDistance;
         var radians = this.graph._fov * Math.PI / 180;
         if (zoom_in) {
-            factor = 1.1;// * Math.tan(this.graph._fov / 2);
+            factor = 0.8;// * Math.tan(this.graph._fov / 2);
             optimalDistance = Math.max(sphere.max_y_radius * factor / Math.tan(radians / 2), sphere.max_z_radius * factor / Math.tan(radians / 2), sphere.max_x_radius * factor);
         }
         else {
-            factor = 1.5;
+            factor = 1.3;
             optimalDistance = (sphere.radius * factor / Math.tan(this.graph._fov / 2));
         }
         

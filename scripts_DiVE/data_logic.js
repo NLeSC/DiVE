@@ -289,7 +289,13 @@ function InitGlobalDataVariables() {
                     //entriesColor[key] += 1;
                 }
                 else {
-                    var colorPoint = colors[count];
+                    var colorPoint;
+                    if (key == "No entry")
+                    { colorPoint = "grey" }
+                    else
+                    {
+                         colorPoint = colors[count];
+                    }
                     count++; 
                     ChangeColor(node, colorPoint)
                     colorsDict[key] = colorPoint;
