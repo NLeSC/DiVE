@@ -277,7 +277,7 @@ function InitGlobalDataVariables() {
                 }
             }
             var numberOfColors = Object.keys(entriesColor).length;
-            var colors = generateRandomColors(numberOfColors);
+            var colors = getColors(numberOfColors);
             var count = 0;
             for (var i = 0; i < graph._nodes.length; i++) {
                 var node = graph._nodes[i];
