@@ -4,9 +4,9 @@ function redrawSameScene() {
     renderFrame.reDrawMe(sameScene, size_attenuation, node_size);    
 }
 /** Redraws the graph in the initial scene. The camera is re-positioned to look at all points */
-function redrawInitialScene() {
+function redrawInitialScene(zoom_in) {
     var sameScene = false;
-    renderFrame.reDrawMe(sameScene, size_attenuation, node_size);
+    renderFrame.reDrawMe(sameScene, size_attenuation, node_size, zoom_in);
 }
 
 /** Defines render frame with the graph */
