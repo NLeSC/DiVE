@@ -17,73 +17,6 @@ module.exports = (function () {
 }());
 
 },{}],2:[function(require,module,exports){
-module.exports = (function () {
-    "use strict";
-    
-    var THREE = require("three");
-    
-    var BufferGeometrySorter = function (frameSkip) {
-        this.frameSkip = frameSkip || 0;
-    };
-
-    BufferGeometrySorter.prototype.sort = (function () {
-        var distances = [],
-            tmpPos = new THREE.Vector3(0, 0, 0),
-            currFrame = 0;  // This will result in the first frame getting sorted
-
-        return function (bufferGeomAttributes, cameraPosition) {
-            if (currFrame > 0) {
-                if (currFrame > this.frameSkip) {
-                    // Render next frame
-                    currFrame = 0;
-                } else {
-                    currFrame += 1;
-                }
-                return;
-            }
-            currFrame += 1;
-
-            var attributes = bufferGeomAttributes,
-                numPoints = attributes.position.length / 3;
-
-            for (var i = 0; i < numPoints; ++i) {
-                tmpPos.set(
-                    attributes.position.array[i * 3],
-                    attributes.position.array[i * 3 + 1],
-                    attributes.position.array[i * 3 + 2]
-                );
-                distances[i] = [
-                    cameraPosition.distanceTo(tmpPos), i];
-            }
-            distances.sort(function(a, b) {
-                return b[0] - a[0];
-            });
-
-            for (var val in attributes) {
-                if (!attributes.hasOwnProperty(val)) { continue; }
-
-                var itemSize = attributes[val].itemSize;
-                var newArray = new Float32Array(itemSize * numPoints);
-
-                for (i = 0; i < numPoints; ++i){
-                    var index = distances[i][1];
-                    for (var j = 0; j < itemSize; ++j) {
-                        var srcIndex = index * itemSize + j;
-                        var dstIndex = i * itemSize + j;
-                        newArray[dstIndex] = attributes[val].array[srcIndex];
-                    }
-                }
-
-                attributes[val].array = newArray;
-                attributes[val].needsUpdate = true;
-            }
-        };
-    }());
-
-    return BufferGeometrySorter;
-}());
-
-},{"three":4}],3:[function(require,module,exports){
 /**
  * @author Eberhard Graether / http://egraether.com/
  * @author Mark Lundin / http://mark-lundin.com
@@ -702,7 +635,7 @@ function preventEvent( event ) { event.preventDefault(); }
 
 Trackball.prototype = Object.create(THREE.EventDispatcher.prototype);
 
-},{"three":4}],4:[function(require,module,exports){
+},{"three":3}],3:[function(require,module,exports){
 var self = self || {};// File:src/Three.js
 
 /**
@@ -35850,7 +35783,7 @@ if (typeof exports !== 'undefined') {
   this['THREE'] = THREE;
 }
 
-},{}],5:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 module.exports = (function () {
     "use strict";
 
@@ -35958,12 +35891,12 @@ module.exports = (function () {
     return Edge;
 }());
 
-},{"three":4}],6:[function(require,module,exports){
+},{"three":3}],5:[function(require,module,exports){
 module.exports = (function () {
     "use strict";	
     var THREE = require("three"),
-       TrackballControls = require("three.trackball"),
-       BufferGeometrySorter = require("three-buffergeometry-sort");
+       TrackballControls = require("three.trackball");
+       //BufferGeometrySorter = require("three-buffergeometry-sort");
    
     var Frame = function (elem, graph, frameStartsAt) {
         this.frameStartsAt = frameStartsAt;
@@ -35982,11 +35915,11 @@ module.exports = (function () {
         this._initScene();
         this._initRenderer(width, height, elem);
         this._initNodes(graph.getNodes(), graph.sizeAttenuation, graph.nodeSize);
-        this._normalizeNodes();
+        //this._normalizeNodes();
         this._initEdges(graph.getEdges());
         this._initCamera(aspectRatio);
         this._initControls(elem);
-        this.positionCamera();
+        this.positionCamera(true);
         this._initMouseEvents(elem, this.frameStartsAt);//changed by sonja
         this._animate();
     };
@@ -36028,28 +35961,14 @@ module.exports = (function () {
         this.renderer.render(this.scene, this.camera);
     };
 
-    //changed by sonja
-    Frame.prototype.drawMe = function () {
-        this._initScene();
-        this._initRenderer(this.width, this.height, this.elem);
-        this._initNodes(this.graph.getNodes(), this.graph.sizeAttenuation, this.graph.nodeSize);
-        //this._normalizeNodes();
-        this._initEdges(this.graph.getEdges());
-        this._initCamera(this.aspectRatio);
-        this.positionCamera();
-        this.forceRerender();
-    };
-
     //added by sonja
-    Frame.prototype.reDrawMe = function (sameScene, _sizeAttenuation, node_size) {
-        //var nodeSize = _sizeAttenuation === true ? 0.16 : 10;
+    Frame.prototype.reDrawMe = function (sameScene, _sizeAttenuation, node_size, zoom_in) {      
         this._initNodes(this.graph.getNodes(), _sizeAttenuation, node_size);
         this._initEdges(this.graph.getEdges());
         if (!sameScene) {
-            this.positionCamera();
+            this.positionCamera(zoom_in);
         }
         this.forceRerender();
-        //this._animateAgain();
     };
 
    
@@ -36061,8 +35980,8 @@ module.exports = (function () {
         controls.startEvent = { type: 'start' };
         controls.endEvent = { type: 'end' };
         controls.points = this.points;
-        controls.rotateSpeed = 0.03;
-        controls.panSpeed = 0.1;
+        controls.rotateSpeed = this.camera.near;//0.03;
+        controls.panSpeed = this.camera.near;//0.1;
         controls.noZoom = true;
         controls.frameStartsAt = this.frameStartsAt;
         controls.mousewheel = function (event) {//zooms in to mouse position, like in gmaps
@@ -36075,6 +35994,7 @@ module.exports = (function () {
             var delta = ((typeof event.wheelDelta !== "undefined") ? (-event.wheelDelta) : event.detail);
             var d = delta;
             d = -0.01 * ((d > 0) ? 1 : -1);//the old one
+            // = -this.camera.near * ((d > 0) ? 1 : -1);
             var factor = d;
             var mX = ((event.clientX - controls.frameStartsAt) / (window.innerWidth - controls.frameStartsAt)) * 2 - 1;
             var mY = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -36099,12 +36019,24 @@ module.exports = (function () {
     };
 
     //changed by sonja
-    Frame.prototype.positionCamera = function () {
+    Frame.prototype.positionCamera = function (zoom_in) {
         // Calculate optimal camera position
         this.points.computeBoundingSphere();
         var sphere = this.points.boundingSphere;
-        var optimalDistance = (
-            sphere.radius * 1.5 / Math.tan(this.graph._fov / 2));
+        var factor;
+        var optimalDistance;
+        var radians = this.graph._fov * Math.PI / 180;
+        if (zoom_in) {
+            factor = 0.8;// * Math.tan(this.graph._fov / 2);
+            optimalDistance = Math.max(sphere.max_y_radius * factor / Math.tan(radians / 2), sphere.max_z_radius * factor / Math.tan(radians / 2), sphere.max_x_radius * factor);
+        }
+        else {
+            factor = 1.3;
+            optimalDistance = (sphere.radius * factor / Math.tan(this.graph._fov / 2));
+        }
+        
+        //var optimalDistance = Math.max(sphere.max_y_radius * factor / Math.tan(radians / 2), sphere.max_z_radius * factor / Math.tan(radians / 2), sphere.max_x_radius * factor);
+        //var optimalDistance = (sphere.max_y_radius * factor / Math.tan(this.graph._fov / 2));
         this.camera.position.x = sphere.center.x + optimalDistance;
         this.camera.position.y = sphere.center.y;
         this.camera.position.z = sphere.center.z;
@@ -36144,6 +36076,9 @@ module.exports = (function () {
         }
         this.points = new THREE.BufferGeometry();
         this.points.computeBoundingSphere = function () {
+            var max_x = -1;
+            var max_z = -1;
+            var max_y = -1;
             var vector = new THREE.Vector3();
             return function () {
                 if (this.boundingSphere === null) {
@@ -36157,6 +36092,9 @@ module.exports = (function () {
                         vector.set(positions[i], positions[i + 1], positions[i + 2]);
                         centerOfGravity.add(vector);
                         count += 1;
+                        if (positions[i] > max_x) { max_x = positions[i]; }
+                        if (positions[i + 1] > max_y) { max_y = positions[i + 1]; }
+                        if (positions[i + 2] > max_z) { max_z = positions[i + 2]; }
                     }
                     centerOfGravity.divideScalar(count);
                     this.boundingSphere.center = centerOfGravity;
@@ -36166,6 +36104,9 @@ module.exports = (function () {
                         maxRadiusSq = Math.max(maxRadiusSq, centerOfGravity.distanceToSquared(vector));
                     }
                     this.boundingSphere.radius = Math.sqrt(maxRadiusSq);
+                    this.boundingSphere.max_x_radius = Math.abs(max_x - centerOfGravity.x);
+                    this.boundingSphere.max_y_radius = Math.abs(max_y - centerOfGravity.y);
+                    this.boundingSphere.max_z_radius = Math.abs(max_z - centerOfGravity.z);
                     if (isNaN(this.boundingSphere.radius)) {
                         this.boundingSphere.radius = 1.5;
                         THREE.error('THREE.BufferGeometry.computeBoundingSphere(): Computed radius is NaN. The "position" attribute is likely to have NaN values. Radius2 is' + maxRadiusSq);
@@ -36495,23 +36436,12 @@ module.exports = (function () {
         }());
     };
 
-    //changed by sonja
-    Frame.prototype._animateAgain = function () {
-        var self = this,
-            sorter = new BufferGeometrySorter(5);
-        // Update near/far camera range
-        (function animate() {
-            //self._updateCameraBounds();
-            sorter.sort(self.points.attributes, self.controls.object.position);
-            window.requestAnimationFrame(animate);
-            self.controls.update();
-        }());
-    };
+    
 
     return Frame;
 }());
 
-},{"three":4,"three-buffergeometry-sort":2,"three.trackball":3}],7:[function(require,module,exports){
+},{"three":3,"three.trackball":2}],6:[function(require,module,exports){
 module.exports = (function () {
     "use strict";
 
@@ -36680,7 +36610,7 @@ module.exports = (function () {
     return Graph;
 }());
 
-},{"./frame.js":6}],8:[function(require,module,exports){
+},{"./frame.js":5}],7:[function(require,module,exports){
 (function () {
     "use strict";
 
@@ -36705,7 +36635,7 @@ module.exports = (function () {
     };
 }());
 
-},{"./edge":5,"./frame":6,"./graph":7,"./node":9,"nonew":1}],9:[function(require,module,exports){
+},{"./edge":4,"./frame":5,"./graph":6,"./node":8,"nonew":1}],8:[function(require,module,exports){
 module.exports = (function () {
     "use strict";
 
@@ -36854,4 +36784,4 @@ module.exports = (function () {
     return Node;
 }());
 
-},{"three":4}]},{},[5,6,7,8,9]);
+},{"three":3}]},{},[4,5,6,7,8]);

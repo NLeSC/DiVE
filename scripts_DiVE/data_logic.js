@@ -277,7 +277,7 @@ function InitGlobalDataVariables() {
                 }
             }
             var numberOfColors = Object.keys(entriesColor).length;
-            var colors = generateRandomColors(numberOfColors);
+            var colors = getColors(numberOfColors);
             var count = 0;
             for (var i = 0; i < graph._nodes.length; i++) {
                 var node = graph._nodes[i];
@@ -289,7 +289,13 @@ function InitGlobalDataVariables() {
                     //entriesColor[key] += 1;
                 }
                 else {
-                    var colorPoint = colors[count];
+                    var colorPoint;
+                    if (key == "No entry")
+                    { colorPoint = "grey" }
+                    else
+                    {
+                         colorPoint = colors[count];
+                    }
                     count++; 
                     ChangeColor(node, colorPoint)
                     colorsDict[key] = colorPoint;
