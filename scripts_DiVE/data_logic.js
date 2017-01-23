@@ -155,6 +155,10 @@ function InitGlobalDataVariables() {
             var point = data[key];
             var pointid = key;
             var coords = point.Coordinates;
+            if (coords.length == 2)
+            {
+                coords.unshift(0.1);
+            }
             var nodecategories = point.Categories;
             if (point.Categories != undefined && point.Categories != [])
                 { nodecategories = point.Categories; }
