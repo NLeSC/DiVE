@@ -105,35 +105,35 @@ function InitGlobalDataVariables() {
             var categories = node._categoriesValues;
             var text = node.getId(); //+ "<br>" + props[0] + "<br>" + props[2] + "<br>" + props[4]            
             //if (node._expandable) { text = "Click to open! <br> " + text; }
-            if (show_popup.checked) {
-               
-                
+            var showInPopup = $('input[name="whatInPopup"]:checked').val();
+            if (showInPopup == "image") {
+                //$("#label").text("");
+                //for (var i = 0; i < categories.length; i++) { text += "<br>" + categories[i]; }
+                //$("#label").text("");
+                var id = text;
+                var baseID = id;
+                baseID = baseID.substr(0, baseID.lastIndexOf('.'));
+                var imagesFolder = "data/images_" + dataset;
+                var fingerprintsFolder = "data/fingerprints_" + dataset;
+                image_text = "<img src=\"" + imagesFolder + "/" + baseID + ".jpg" + "\" alt=\"Image cannot be loaded\" style=\"width:304px;height:228px;\">";
+                fingerprint_text = "<img src=\"" + fingerprintsFolder + "/" + baseID + ".png" + "\" alt=\"Image not found\" style=\"width:304px;height:228px;\">";
+                //text = text + "<br>" + image_text + "<br>" + fingerprint_text;
+                text = text + "<br>" + fingerprint_text;
+                myPop.attachHTML(text);
+                myPop.show(cursorX, cursorY, 0, 0); //params are: x, y, width, height. 3 and 5 are number of pixels relative to the node where the message should appear(you can play with these numbers)
+            }
+            else {
+                if (showInPopup == "text") {
                     $("#label").text("");
-                    //for (var i = 0; i < categories.length; i++) { text += "<br>" + categories[i]; }
-                    //$("#label").text("");
-                    var id = text;
-                    var baseID = id;
-                    baseID = baseID.substr(0, baseID.lastIndexOf('.'));
-                    var imagesFolder = "data/images_" + dataset;
-                    var fingerprintsFolder = "data/fingerprints_" + dataset;
-                    image_text = "<img src=\"" + imagesFolder + "/" + baseID + ".jpg" + "\" alt=\"Image cannot be loaded\" style=\"width:304px;height:228px;\">";
-                    fingerprint_text = "<img src=\"" + fingerprintsFolder + "/" + baseID + ".png" + "\" alt=\"Fingerprint cannot be loaded\" style=\"width:304px;height:228px;\">";
-                    text = text + "<br>" + image_text + "<br>" + fingerprint_text;
+                    for (var i = 0; i < categories.length; i++) { text += "<br>" + categories[i]; }
                     myPop.attachHTML(text);
                     myPop.show(cursorX, cursorY, 0, 0); //params are: x, y, width, height. 3 and 5 are number of pixels relative to the node where the message should appear(you can play with these numbers)
                 }
-                //else {
-                //    $("#label").text("");
-                //    for (var i = 0; i < categories.length; i++) { text += "<br>" + categories[i]; }
-                //    myPop.attachHTML(text);
-                //    myPop.show(cursorX, cursorY, 0, 0); //params are: x, y, width, height. 3 and 5 are number of pixels relative to the node where the message should appear(you can play with these numbers)
-                //}
-            //}
-            else {
+            }
+            if (showInPopup !== "text") {
                 for (var i = 0; i < categories.length; i++) { text += " ; " + categories[i]; }
                 $("#label").text("Point info:  " + text);
             }
-            
         }
 
         /** Prepares the initial colors of the points based on their coordinates. Optional. 
