@@ -45,7 +45,7 @@ function HandleShowColorMapChange() {
  /** Initializes the check boxes and the event handlers for the checkboxes */
  function InitEventHandlers() {
      sizeAtShow.checked = true;
-     show_popup.checked = false;
+     //show_popup.checked = false;
      show_found_nodes.checked = false;
      sizeAtShow.onchange = function () {
          HandleSizeAttenuationChange();

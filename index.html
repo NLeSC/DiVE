@@ -1,4 +1,5 @@
-﻿<html>
+﻿dive
+<html>
 <head>
     <title>3D data visualization</title>
     <style>
@@ -131,8 +132,13 @@
             <input type="number" name="nodesize" id="nodesize" min="1" max="200" value="10" />
             <button onclick="ChangeNodeSize()">Change</button>-->
             <p> </p>
-            <input type="checkbox" name="show_popup" id="show_popup" />
-            <label style=" font: 15px Arial"> Show image in popup </label>
+            <!--<input type="checkbox" name="show_popup" id="show_popup" />-->
+            <label style=" font: 15px Arial"> Show in popup </label>
+            <form>
+                <input type="radio" name="whatInPopup" value="image" checked> Image
+                <input type="radio" name="whatInPopup" value="text"> Text
+                <input type="radio" name="whatInPopup" value="nopopup"> No popup
+            </form>
 
         </fieldset>
         <p> </p>
@@ -145,7 +151,7 @@
                 <p> Select a property: </p>
                 <select name="combo" id="combo" onchange="HandlePropertyChange()"></select>
                 <p>
-                    <input type="checkbox" name="show_color_map" id="show_color_map" onchange="HandleShowColorMapChange()" />
+                    <input type="checkbox" name="show_color_map" id="show_color_map" onchange="HandleShowColorMapChange()" checked="true" />
 
                     <label style=" font: 12px Arial"> Show color map </label>
                 </p>
@@ -175,7 +181,9 @@
     <script src="scripts_DiVE/data_logic.js"></script>
     <script src="scripts_DiVE/drawing.js"></script>
     <script src="data/data.js"></script>
+    <script src="scripts_DiVE/randomColor.js"></script>
     <script src="scripts_DiVE/main.js"></script>
+
 
 
 </body>
