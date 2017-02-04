@@ -82,14 +82,16 @@ is created in any programming language, where the keys are the id’s of the poi
 
 Next, the dictionary is serialized using JavaScriptSerializer and written in *data.json* (name is flexible). 
 Here is an example of an entry of the serialized dictionary in a *data.json* file:
-
-		"3951":{"Coordinates":[0.99860800383893167,0.61276015046241838,0.450976426942296],			
-			"Properties":["0", "1", "5", "12688892", "0.998", "5" , "True", "0", "False", "5", "1",  "True","1","518", "0", "-1", "Rhodotorula", "", "Sporidiobolales", "Microbotryomycetes"]}
-
+```json
+		"3951": {
+    "Coordinates": [0.99860800383893167, 0.61276015046241838, 0.450976426942296],
+    "Properties": ["0", "1", "5", "12688892", "0.998", "5", "True", "0", "False", "5", "1", "True", "1", "518", "0", "-1", "Rhodotorula", "", "Sporidiobolales", "Microbotryomycetes"]
+}
+```
 Optionally, if data has properties, the dictionary should also contain an entry 
-
+```json
 		"NamesOfProperties":["name1", "name2", ..., "name_n"]
-
+```
 
 Optionally, if images are associated to the nodes, the node image can be displayed in a pop-up when hovering over the node. 
 If the datafile starts with `namedataset_` then the folder with images should be `images_namedataset` in folder `data`. 
