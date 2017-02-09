@@ -269,7 +269,8 @@ function InitGlobalDataVariables() {
 
         function ColorizeCategory(indexOfProperty) {
             colorsDict = [];
-            entriesColor = [];                        
+            entriesColor = [];
+            var count10 = 0;
             for (var i = 0; i < graph._nodes.length; i++) {
                 var node = graph._nodes[i];
                 var key = node._propertiesValues[indexOfProperty];
@@ -281,8 +282,11 @@ function InitGlobalDataVariables() {
                     entriesColor[key] = 1;                    
                 }
             }
+            var tenthlargest = findKthLargest(Object.values(entriesColor), 10);
+
             var numberOfColors = Object.keys(entriesColor).length;
             var colors = getColors(numberOfColors);
+            var first10colors=["blue", "green", "red", "yellow", "purple", "orange", "pink", "brown", "tirquize", "magenta"]
             var count = 0;
             for (var i = 0; i < graph._nodes.length; i++) {
                 var node = graph._nodes[i];
@@ -299,9 +303,16 @@ function InitGlobalDataVariables() {
                     { colorPoint = "grey" }
                     else
                     {
-                         colorPoint = colors[count];
+                        if (entriesColor[key] >= tenthlargest && count10 < 10) {
+                            colorPoint = first10colors[count10];
+                            count10++;
+                        }
+                        else {
+                            colorPoint = colors[count];
+                            count++;
+                        }
                     }
-                    count++; 
+                    
                     ChangeColor(node, colorPoint)
                     colorsDict[key] = colorPoint;
                     //entriesColor[key] = 1;
@@ -313,27 +324,63 @@ function InitGlobalDataVariables() {
             redrawSameScene();
         }
     
-        //function getColors(noOfColors) {
-        //    var colors = [];
-        //    var frequency = 10 / noOfColors;
-        //    //var frequency = 1;
-        //    for (var i = 0; i < noOfColors; ++i) {
-        //        var red = Math.sin(frequency * i + 0) * (127) + 128;
-        //        var green = Math.sin(frequency * i + 1) * (127) + 128;
-        //        var blue = Math.sin(frequency * i + 3) * (127) + 128;
-        //        var color = "rgb(" + Math.floor(red) + "," + Math.floor(green) + "," + Math.floor(blue) + ")";
-        //        colors.push(color);
-        //    }
-        //    return colors;
-        //}
         
         function getColors(noOfColors) {
-            var colors = [];            
-            for (var i = 0; i < noOfColors; ++i) {
-                var color = randomColor();
+            var colors = [];          
+            var color;
+            for (var i = 0; i < noOfColors; ++i) {                
+                color = randomColor();
                 colors.push(color);
             }
             return colors;
+        }
+
+        function findKthLargest(nums, k) {
+            if (k < 1 || nums == null || k > nums.length) {
+                return 0;
+            }
+            return getKth(nums.length - k + 1, nums, 0, nums.length - 1);
+        }
+
+        function getKth(k, nums, start, end) {
+
+            var pivot = nums[end];
+
+            var left = start;
+            var right = end;
+
+            while (true) {
+
+                while (nums[left] < pivot && left < right) {
+                    left++;
+                }
+
+                while (nums[right] >= pivot && right > left) {
+                    right--;
+                }
+
+                if (left == right) {
+                    break;
+                }
+
+                swap(nums, left, right);
+            }
+
+            swap(nums, left, end);
+
+            if (k == left + 1) {
+                return pivot;
+            } else if (k < left + 1) {
+                return getKth(k, nums, start, left - 1);
+            } else {
+                return getKth(k, nums, left + 1, end);
+            }
+        }
+
+        function swap(nums, n1, n2) {
+            var tmp = nums[n1];
+            nums[n1] = nums[n2];
+            nums[n2] = tmp;
         }
 
 
@@ -343,6 +390,7 @@ function InitGlobalDataVariables() {
          */
         function Colorize(col, indexOfProperty)//colorizes the nodes that are already loaded in the graph. 
         {
+            RemoveColorMap();
             // init max and min value of property accross nodes
             var max = graph._nodes[0]._propertiesValues[indexOfProperty];
             var min = max;
@@ -429,23 +477,31 @@ function InitGlobalDataVariables() {
                     colorsChildrenIds = undefined;
                 }
             }
-
+            
+          
             function CreateColorMap() {
                 if (show_color_map.checked) {
                     RemoveColorMap();
                     if (entriesColor !== undefined) {
                         var dict = entriesColor;
-                        // Create items array
-                        var items = Object.keys(dict).map(function (key) {
+                        fortythlargest = findKthLargest(Object.values(dict), 40);
+                        //// Create items array
+                        var itemsall = Object.keys(dict).map(function (key) {
                             return [key, dict[key]];
                         });
-
-                        // Sort the array based on the second element
+                       
+                        var items = [];
+                        for (var i = 0; i < itemsall.length; i++)
+                        {
+                            if (itemsall[i][1] >= fortythlargest)
+                            {
+                                items.push(itemsall[i]);
+                            }
+                        }
+                        
                         items.sort(function (first, second) {
                             return second[1] - first[1];
                         });
-                        //items.reverse();
-                        items = items.slice(0, 41);
                         //if (Object.keys(colorsDict).length < 40) {
                         var count = 70;
                         colorsChildrenIds = [];
