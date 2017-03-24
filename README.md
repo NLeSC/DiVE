@@ -10,7 +10,6 @@ DiVE is an interactive 3D web viewer of up to million points on one screen that 
 
 For an online demo click  [here](http://NLeSC.github.io/DiVE/ "online demo").   
 
-New: a pipeline for Linux consisting of LargeVis and DiVE has been released here: https://github.com/sonjageorgievska/Embed-Dive .
 
 ##Installation - for users ##
 
