@@ -23,8 +23,7 @@
         var colorsChildrenIds;
         var entriesColor;
         var dataset = "pentax";
-        var fortythlargest = 0;
-        var progress = document.querySelector('.percent');
+        var fortythlargest =0;
         //################# global variables definitions end here
 
         //################# global code starts here
