@@ -3,27 +3,6 @@
 <head>
     <title>3D data visualization</title>
     <style>
-        #progress_bar {
-            margin: 10px 0;
-            padding: 3px;
-            border: 1px solid #000;
-            font-size: 14px;
-            clear: both;
-            opacity: 0;
-            -moz-transition: opacity 1s linear;
-            -o-transition: opacity 1s linear;
-            -webkit-transition: opacity 1s linear;
-        }
-
-            #progress_bar.loading {
-                opacity: 1.0;
-            }
-
-            #progress_bar .percent {
-                background-color: #99ccff;
-                height: auto;
-                width: 0;
-            }
         #frame {
             position: absolute;
             top: 0;
@@ -118,7 +97,6 @@
         <fieldset class="fieldset-auto-width" style="font: 15px Arial">
             <legend style=" font: 15px Arial">Upload local data file </legend>
             <input type="file" id="dataFile" multiple size="50" onchange="LoadLocalDataSet()">
-            <div id="progress_bar"><div class="percent">0%</div></div>
         </fieldset>
         <p> </p> <p> </p>
         <fieldset class="fieldset-auto-width" style="font: 15px Arial">
