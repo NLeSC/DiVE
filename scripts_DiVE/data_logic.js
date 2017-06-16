@@ -248,7 +248,8 @@ function InitGlobalDataVariables() {
             if (isPropertyCategorical){
                 ColorizeCategory(indexOfProperty);
             }
-            else{
+            else {
+                if (col == undefined) { col = "grey";}
                 Colorize(col, indexOfProperty);
             }
 
@@ -282,11 +283,16 @@ function InitGlobalDataVariables() {
                     entriesColor[key] = 1;                    
                 }
             }
-            var tenthlargest = findKthLargest(Object.values(entriesColor), 10);
-
+            var tenthlargest = 0;
+            if (Object.keys(entriesColor).length > 5000) {
+                tenthlargest = 0.1 * Object.keys(entriesColor).length;
+            }
+            else {
+                tenthlargest = findKthLargest(Object.values(entriesColor), 10);
+            }
             var numberOfColors = Object.keys(entriesColor).length;
             var colors = getColors(numberOfColors);
-            var first10colors=["blue", "green", "red", "yellow", "purple", "orange", "pink", "brown", "tirquize", "magenta"]
+            var first10colors = ["blue", "green", "red", "yellow", "purple", "orange", "pink", "brown", "tirquize", "magenta"]
             var count = 0;
             for (var i = 0; i < graph._nodes.length; i++) {
                 var node = graph._nodes[i];
@@ -303,7 +309,7 @@ function InitGlobalDataVariables() {
                     { colorPoint = "grey" }
                     else
                     {
-                        if (entriesColor[key] >= tenthlargest && count10 < 10) {
+                        if (entriesColor[key] > tenthlargest && count10 < 10) {
                             colorPoint = first10colors[count10];
                             count10++;
                         }
@@ -312,13 +318,14 @@ function InitGlobalDataVariables() {
                             count++;
                         }
                     }
-                    
+
                     ChangeColor(node, colorPoint)
                     colorsDict[key] = colorPoint;
                     //entriesColor[key] = 1;
                     //labelsForColorsDict[node.getColor()] = key;
                 }
             }
+            
 
             CreateColorMap();
             redrawSameScene();
@@ -335,10 +342,39 @@ function InitGlobalDataVariables() {
             return colors;
         }
 
-        function findKthLargest(nums, k) {
+        
+       
+        function findKthLargestM(nums, k)
+        {
+            var n = nums.length;
+            var k_largest_elems = nums.slice(0, k);
+            if (k_largest_elems.length == k) {
+                for (i = 0; i < n; i++) {
+                    var min_k = minimal(k_largest_elems);
+                    if (nums[i] > min_k) {
+                        var index = k_largest_elems.indexOf(min_k);
+                        k_largest_elems[index] = nums[i];
+                    }
+                }
+            }
+            return minimal(k_largest_elems);
+        }
+
+
+        function minimal(array)
+        {
+            var mini = array[0];
+            for (i = 0; i < array.length; i++)
+            {
+                if (mini > array[i]) { mini = array[i] };
+            }
+            return mini;
+        }
+
+        function findKthLargest(nums, k) {//replace this function, it does not stop for certain inputs.
             if (k < 1 || nums == null || k > nums.length) {
                 return 0;
-            }
+            }            
             return getKth(nums.length - k + 1, nums, 0, nums.length - 1);
         }
 
@@ -359,7 +395,7 @@ function InitGlobalDataVariables() {
                     right--;
                 }
 
-                if (left == right) {
+                if (left >= right) {
                     break;
                 }
 
@@ -482,9 +518,17 @@ function InitGlobalDataVariables() {
             function CreateColorMap() {
                 if (show_color_map.checked) {
                     RemoveColorMap();
+                    
                     if (entriesColor !== undefined) {
+                        
                         var dict = entriesColor;
-                        fortythlargest = findKthLargest(Object.values(dict), 40);
+                        var tenthlargest = 0; 
+                        if (Object.keys(dict).length > 5000) {
+                            tenthlargest = 0.1 * Object.keys(dict).length;
+                        }
+                        else {
+                            tenthlargest = findKthLargest(Object.values(dict), 10);
+                        }
                         //// Create items array
                         var itemsall = Object.keys(dict).map(function (key) {
                             return [key, dict[key]];
@@ -493,7 +537,7 @@ function InitGlobalDataVariables() {
                         var items = [];
                         for (var i = 0; i < itemsall.length; i++)
                         {
-                            if (itemsall[i][1] >= fortythlargest)
+                            if (itemsall[i][1] > tenthlargest && items.length < 10)
                             {
                                 items.push(itemsall[i]);
                             }
