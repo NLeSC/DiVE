@@ -1,6 +1,6 @@
 ﻿Please cite the software if you are using it in your scientific publication:
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.581179.svg)](https://doi.org/10.5281/zenodo.581179)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.813437.svg)](https://doi.org/10.5281/zenodo.813437)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/9ba82068db534a19b0d70dd80c8238bd)](https://www.codacy.com/app/sonjageorgievska/DiVE?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=NLeSC/DiVE&amp;utm_campaign=Badge_Grade)
 
 # DiVE   -  Interactive Visualization of Embedded Data
