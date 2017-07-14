@@ -91,7 +91,7 @@ Here is an example of an entry of the serialized dictionary in a *data.json* fil
 ```
 Optionally, if data has properties, the dictionary should also contain an entry 
 ```json
-		"NamesOfProperties":["name1", "name2", ... , "name_n"]
+		"NamesOfProperties":["name1", "name2",  , "name_n"]
 ```
 
 Optionally, if images are associated to the nodes, the node image can be displayed in a pop-up when hovering over the node. 
