@@ -12,7 +12,7 @@ For an online demo click  [here](http://NLeSC.github.io/DiVE/ "online demo").
 
 New: a pipeline for Linux consisting of LargeVis and DiVE has been released here: https://github.com/sonjageorgievska/Embed-Dive .
 
-##Installation - for users ##
+## Installation - for users ##
 
 The simplest way is to download the code and open *index.html* with your browser. Try it by uploading datasets from the *data* folder. The application can work completely offline.    
 
