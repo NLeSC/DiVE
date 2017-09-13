@@ -1,1 +1,0 @@
-This is the default data that is loaded when DiVE is open. Other example data to be found in the folder "data".
