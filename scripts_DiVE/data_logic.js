@@ -270,8 +270,9 @@ function InitGlobalDataVariables() {
 
         function ColorizeCategory(indexOfProperty) {
             colorsDict = [];
+            textColorDict = [];
             entriesColor = [];
-            var count10 = 0;
+            var count30 = 0;
             for (var i = 0; i < graph._nodes.length; i++) {
                 var node = graph._nodes[i];
                 var key = node._propertiesValues[indexOfProperty];
@@ -283,16 +284,22 @@ function InitGlobalDataVariables() {
                     entriesColor[key] = 1;                    
                 }
             }
-            var tenthlargest = 0;
-            if (Object.keys(entriesColor).length > 5000) {
-                tenthlargest = 0.1 * Object.keys(entriesColor).length;
+            var thirthyth_largest = 0;
+            if (Object.keys(entriesColor).length > 5000) {//if number of colors is greater than 5000
+                thirthyth_largest = 0.0033 * Object.keys(entriesColor).length;
             }
             else {
-                tenthlargest = findKthLargest(Object.values(entriesColor), 10);
+                thirthyth_largest = findKthLargest(Object.values(entriesColor), 30);
             }
             var numberOfColors = Object.keys(entriesColor).length;
             var colors = getColors(numberOfColors);
-            var first10colors = ["blue", "green", "red", "yellow", "purple", "orange", "pink", "brown", "tirquize", "magenta"]
+            //var first10colors = ["blue", "green", "red", "yellow", "purple", "orange", "pink", "brown", "tirquize", "magenta"];
+            
+            // https://www.gavick.com/documentation/joomla/templates/customization/change-background-images 
+            var first30colors = [0xFF0000, 0xCCCC99, 0x009999, 0x66CCFF, 0x9933FF, 0xFF6633, 0x00FF00, 0x0066FF, 0xFF99FF, 0x666666,
+                                 0xFF9999, 0XCC9900, 0x66FFCC, 0x0000FF, 0x9999FF, 0xFFCC99, 0x99FF99, 0x00FFFF, 0xFF00FF, 0xCCCCCC,
+                                 0x660000, 0xFFFF00, 0x336666, 0x000066, 0x660099, 0x663300, 0x006600, 0x003399, 0x990066, 0x333333
+            ];
             var count = 0;
             for (var i = 0; i < graph._nodes.length; i++) {
                 var node = graph._nodes[i];
@@ -309,9 +316,9 @@ function InitGlobalDataVariables() {
                     { colorPoint = "grey" }
                     else
                     {
-                        if (entriesColor[key] > tenthlargest && count10 < 10) {
-                            colorPoint = first10colors[count10];
-                            count10++;
+                        if (entriesColor[key] >= thirthyth_largest && count30 < 30) {
+                            colorPoint = first30colors[count30];
+                            count30++;
                         }
                         else {
                             colorPoint = colors[count];
@@ -321,6 +328,7 @@ function InitGlobalDataVariables() {
 
                     ChangeColor(node, colorPoint)
                     colorsDict[key] = colorPoint;
+                     textColorDict[key] = node.getColor();
                     //entriesColor[key] = 1;
                     //labelsForColorsDict[node.getColor()] = key;
                 }
@@ -510,6 +518,8 @@ function InitGlobalDataVariables() {
                         var ch = document.getElementById(idd);
                         document.body.removeChild(ch);
                     }
+                    var ch_title = document.getElementById("title");                                           
+                    if (ch_title != undefined) {document.body.removeChild(ch_title);}                                       
                     colorsChildrenIds = undefined;
                 }
             }
@@ -522,12 +532,12 @@ function InitGlobalDataVariables() {
                     if (entriesColor !== undefined) {
                         
                         var dict = entriesColor;
-                        var tenthlargest = 0; 
+                        var thirtythlargest = 0; 
                         if (Object.keys(dict).length > 5000) {
-                            tenthlargest = 0.1 * Object.keys(dict).length;
+                            thirtythlargest = 0.0033 * Object.keys(dict).length;
                         }
                         else {
-                            tenthlargest = findKthLargest(Object.values(dict), 10);
+                            thirtythlargest = findKthLargest(Object.values(dict), 30);
                         }
                         //// Create items array
                         var itemsall = Object.keys(dict).map(function (key) {
@@ -537,7 +547,7 @@ function InitGlobalDataVariables() {
                         var items = [];
                         for (var i = 0; i < itemsall.length; i++)
                         {
-                            if (itemsall[i][1] > tenthlargest && items.length < 10)
+                            if (itemsall[i][1] >= thirtythlargest && items.length < 30)
                             {
                                 items.push(itemsall[i]);
                             }
@@ -549,6 +559,23 @@ function InitGlobalDataVariables() {
                         //if (Object.keys(colorsDict).length < 40) {
                         var count = 70;
                         colorsChildrenIds = [];
+
+                        var title = document.createElement('div');
+                        title.id = "title";
+                        title.style.position = 'absolute';
+                        //text2.style.zIndex = 1;    // if you still don't see the label, try uncommenting this
+                        //text2.style.width = 100;
+                        title.style.height = 150;
+                        title.innerHTML = "The (max) 30 biggest groups:";
+
+
+                        title.style.fontFamily = "Arial";
+                        title.style.top = count + 'px';
+                        title.style.left = 305 + 'px';
+                        title.style.color = "black";
+                        document.body.appendChild(title);
+                        count += 30;
+
                         //for (var propertyValue in colorsDict) {
                         for (var i = 0; i < items.length; i++) {
                             var propertyValue = items[i][0];
@@ -559,7 +586,9 @@ function InitGlobalDataVariables() {
                             //text2.style.width = 100;
                             text2.style.height = 100;
                             text2.innerHTML = propertyValue + ":" + items[i][1];
-                            text2.style.color = colorsDict[propertyValue];
+                            text2.style.color = textColorDict[propertyValue];
+                            text2.style.fontWeight = "bold";
+                            text2.style.fontFamily = "Arial";
                             text2.style.top = count + 'px';
                             text2.style.left = 305 + 'px';
                             document.body.appendChild(text2);

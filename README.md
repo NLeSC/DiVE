@@ -1,6 +1,6 @@
 ﻿Please cite the software if you are using it in your scientific publication:
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.581179.svg)](https://doi.org/10.5281/zenodo.581179)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.813437.svg)](https://doi.org/10.5281/zenodo.813437)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/9ba82068db534a19b0d70dd80c8238bd)](https://www.codacy.com/app/sonjageorgievska/DiVE?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=NLeSC/DiVE&amp;utm_campaign=Badge_Grade)
 
 # DiVE   -  Interactive Visualization of Embedded Data
@@ -8,11 +8,11 @@
  
 DiVE is an interactive 3D web viewer of up to million points on one screen that represent data. It is meant to provide interaction for viewing high-dimensional data that has been previously [embedded](https://en.wikipedia.org/wiki/Nonlinear_dimensionality_reduction) in 3D. For embedding (non-linear dimensionality reduction, or manifold learning) we recommend [LargeVis](http://github.com/sonjageorgievska/LargeVis/) (a new algorithm by Microsoft Research, ) or [tSNE](https://github.com/lvdmaaten/bhtsne) .       
 
-For an online demo click  [here](http://NLeSC.github.io/DiVE/ "online demo").   
+For an online demo click  [here](http://NLeSC.github.io/DiVE/ "online demo"). You can also use this site to upload your datasets complying to the data format described below.
 
 New: a pipeline for Linux consisting of LargeVis and DiVE has been released here: https://github.com/sonjageorgievska/Embed-Dive .
 
-##Installation - for users ##
+## Installation - for users ##
 
 The simplest way is to download the code and open *index.html* with your browser. Try it by uploading datasets from the *data* folder. The application can work completely offline.    
 
@@ -60,7 +60,7 @@ To use it with a local http server:
 * *Scase point size*: very useful when the user has zoomed-in enough. When this option is not selected, the points do not get bigger as the camera moves closer to them, so that they can be separated and inspected individually. 
 * *Show point info in popup* : when selected, the information about a point when hovering over it will be displayed in a pop-up message  rather than at the top left corner of the screen
 
-### Coloring by value of property###
+### Coloring by value of property ###
 
 As explained in section **Data description and functionality** .
 
@@ -91,7 +91,7 @@ Here is an example of an entry of the serialized dictionary in a *data.json* fil
 ```
 Optionally, if data has properties, the dictionary should also contain an entry 
 ```json
-		"NamesOfProperties":["name1", "name2", ..., "name_n"]
+		"NamesOfProperties":["name1", "name2",  , "name_n"]
 ```
 
 Optionally, if images are associated to the nodes, the node image can be displayed in a pop-up when hovering over the node. 
