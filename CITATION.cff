@@ -1,0 +1,25 @@
+# YAML 1.2
+--- 
+authors: 
+  - 
+    affiliation: "Netherlands eScience Center"
+    family-names: Georgievska
+    given-names: Sonja    
+  - 
+    affiliation: "Netherlands eScience Center"
+    family-names: Meijer
+    given-names: Christiaan  
+cff-version: "1.0.0"
+commit: ea1e0a6b93778839a81be910a4bf7984c3d1a5f1
+date-released: 2017-09-25
+doi: 10.5281/zenodo.598204
+keywords: 
+  - "machine learning"
+  - "visualization"
+  - "big data"
+  - "interactive"
+license: GPL2
+message: "If you use this software, please cite it using these metadata."
+repository-code: "https://github.com/NLeSC/DiVE"
+title: DiVE
+version: "1.1.1"
